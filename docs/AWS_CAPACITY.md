@@ -22,3 +22,9 @@ Created dedicated `aml2026-phase5-worker` instance profile: read project Phase5 
 Evidence: artifacts/cloud/phase5/capacity-20260924T222612Z/inventory.json, quota-requests.json, r8i-price.json, infrastructure.json. Capacity inspection is read-only except separately recorded quota requests and worker-role/security-group creation.
 
 References: [current EC2 families](https://docs.aws.amazon.com/ec2/latest/instancetypes/instance-types.html), [shutdown behavior](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_ChangingInstanceInitiatedShutdownBehavior.html). Detailed quota evidence includes all regional returned quotas, not assumed GPU availability.
+
+## 2026-09-25 IST update
+
+The active full-training retrieval occupies the account's entire on-demand Standard EC2 quota (8 vCPUs). Spot Standard quota is separately 8 vCPUs, but four independent SUB-001 Spot requests across R8i, R6i, R7a and R7i 2xlarge pools failed with EC2 insufficient-capacity errors before any new instance was created. Spot price history did not imply available capacity. The Mac full inference is active. A separate on-demand R8i validator-only job is prepared for the moment the retrieval worker finishes and quota is free. It has a 6-hour independent OS cutoff and $5 planning ceiling; it must not be launched until all 384 Mac shard files have checksum-verified uploads.
+
+Fresh quota checks remain 0 for SageMaker ml.m5.2xlarge training, ml.m5.2xlarge/r5.2xlarge processing and ml.g5.xlarge training; requested increases are CASE_OPENED, not approved. GPU EC2 remains 0. Estimated Cost Explorer gross was $0.0099310264 at the prelaunch check, with billing lag. The $120 soft/$150 hard project caps and $25/$50/$75/$100/$125 budget alerts are active; credit balance is unverified.

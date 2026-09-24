@@ -51,3 +51,9 @@ Now run one bounded CPU configuration each of CatBoost1.2.8 and XGBoost3.0.2 on 
 
 ## Phase5: full-scale execution gate
 Use R8i.2xlarge64GiB within current8vCPU quota to measure index throughput before planning full2.2M retrieval. Request quota increases rather than pretending GPU access exists. Full-training generation does not authorize premature Fold4 label evaluation: withhold its metrics until freeze. Preserve numeric-v2 and all prior outputs.
+
+## Phase5 — SUB-001 release and capacity fallback
+
+Freeze SUB-001 as 51-feature LightGBM NUMERIC-V2 trained on the currently materialized 20,000 natural-sample entities; this is an early calibration submission, not a full-data-trained final model. Keep Fold4 CLOSED and threshold0.83 from the median of three nested OOF outer thresholds. Final test candidates are the union of top100 name and top100 address char3 retrieval per source1 entity; score every final candidate, preserve candidate lists and validate before portal submission. The public reference0.964733 is for perspective only, not a threshold-tuning target.
+
+Spot capacity failed across four 64GiB pools. Run frozen inference locally on the Mac using the checksum-verified v002 bundle. When complete, upload every shard with SHA256 verification and run the prepared validator-only 64GiB on-demand worker after training retrieval releases the 8-vCPU quota. This costs less than rerunning inference and preserves the earliest available result. Do not count any failed Spot attempt as a running instance or spent compute.
