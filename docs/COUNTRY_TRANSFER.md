@@ -20,3 +20,7 @@ Artifacts: outputs/oof/P4-A-001/country_transfer. No test labels or external bus
 The existing full unlabeled audit shows15.72% of France Source1 names and28.27% of France Source1 addresses contain non-ASCII text; train Source1 names are entirely ASCII. The pilot comparison of native Source1 to transliterated target was therefore equivalent on training, but is not a valid universal production convention. Added src/transliteration_features.py requires the same versioned generic mapping for both sides, preserves native representations, and fails loudly for an uncached non-ASCII string. Unit tests cover accented Source1 and reversed roles. This is a tested production building block, not a claim that final test inference already exists. The frozen pilot artifacts and current20k baseline remain unchanged.
 
 Query-context feature probe (15 max/gap/relative features from each query's unlabeled candidate set) produced macro0.922214, delta−0.001193 with paired95% CI[−0.003819,0.001333]. No promotion; a plausible domain-robustness idea did not improve mixed-country OOF. It has not yet been tested in country-transfer controls.
+
+## Canonical numeric feature follow-up
+
+Adding six generic numeric comparison features improves India→US from0.886261 to0.892801 and US→India from0.767327 to0.781921. US→India singleton score improves0.516129→0.612903. Thresholds still use only training-country OOF. This supports keeping the hypothesis for larger validation, but does not resolve the substantial domain gap.

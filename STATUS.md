@@ -53,3 +53,7 @@ Frozen reference: configs/baselines/BASELINE-P4-001.yaml. Results: docs/PHASE4_C
 Completed label-transfer stress test: India→US macro0.886261; US→India0.767327, singleton0.516129. This materially weakens any claim of France robustness. Fixed IDF contains both known countries' external-fold text, so this is not strict held-country-text evaluation. See docs/COUNTRY_TRANSFER.md. Next add sample-size-matched controls and require cross-country evidence before promoting more complex models. No threshold chosen on evaluation-country labels.
 
 All eight feature ablations finished; see docs/PHASE4_ABLATIONS.md. Numeric, transliteration, retrieval and token/character evidence matter; route-count-only effect is inconclusive. A full-country persistent name index matched reference candidates but did not show a speed win; retain chunked20k retrieval. Exact-name address rescue recovered5 development links with830 additional candidates; not yet part of the trained matcher.
+
+## Larger20k confirmation
+
+Baseline OOF macro0.928759, CI[0.9264584347104737, 0.9310251784781759]; singleton0.920403; precision0.980463; recall0.848629. Full-pool candidate recall0.966626, oracle0.988531. Both routes exactly match all nested5k reference pairs/scores. Numeric6-feature20k model is running; new15k subset comparison follows. One-config CatBoost/XGBoost probes did not clearly beat LightGBM.62 tests pass.

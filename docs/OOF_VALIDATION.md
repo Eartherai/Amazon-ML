@@ -25,3 +25,7 @@ Nested samples and validation code implemented; 5k full-pool retrieval in progre
 ## Completed measured run
 
 See [Phase4 checkpoint](PHASE4_CHECKPOINT.md) for per-fold natural prevalence, macro/P/R, source/country scores and bootstrap interval.
+
+## Completed measured run
+
+See [Phase4 checkpoint](PHASE4_CHECKPOINT.md) for per-fold natural prevalence, macro/P/R, source/country scores and bootstrap interval.

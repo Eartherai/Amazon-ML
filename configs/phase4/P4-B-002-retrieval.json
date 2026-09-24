@@ -1,0 +1,27 @@
+{
+  "kernel": "fused",
+  "kernel_threads": 2,
+  "queries_path": "artifacts/validation/phase4-v001/P4-SAMPLE-B.parquet",
+  "fit_owner_folds": [
+    -1,
+    0
+  ],
+  "max_features": 200000,
+  "chunk_rows": 25000,
+  "query_block_rows": 50,
+  "top_k_per_route": 100,
+  "route_runtime_cap_seconds": 7200,
+  "routes": [
+    [
+      "name",
+      3
+    ],
+    [
+      "address",
+      3
+    ]
+  ],
+  "query_sha256": "c13e6cd6655b831dcf56b901b300c1bf7475a581b4bc257c5a218cda2c914188",
+  "code_sha256": "98705da50feb9a39f52585b59e5f04230a36521ee4a40979f17307a334a243d2",
+  "retriever_sha256": "1ff0202a661fecc93c2782a9dcf6227e92808c24372dab3a15c1a2a2854a207e"
+}

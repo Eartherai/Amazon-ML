@@ -24,4 +24,5 @@ class Adapter:
     def booster_(self):return self
     def predict(self,x):return self.model.predict_proba(x)[:,1]
     def save_model(self,path):
-        self.model.save_model(str(Path(path).with_suffix('.cbm' if self.family=='catboost' else '.ubj')))
+        if self.family=='catboost':self.model.save_model(str(Path(path).with_suffix('.cbm')))
+        else:self.model.get_booster().save_model(str(Path(path).with_suffix('.ubj')))

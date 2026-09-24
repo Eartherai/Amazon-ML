@@ -63,3 +63,12 @@ def test_canonical_numeric_is_alternative_not_raw_rewrite():
     assert canonical_numbers('flat ०१२३ unit 000')==['123','0']
     assert compare_numbers('206 main','0206 main')==[1.,1.,0.,1.,1.,0.]
     assert compare_numbers('','')==[0.,0.,0.,0.,0.,0.]
+
+def test_xgboost_native_serialization_preserves_probability(tmp_path):
+    import xgboost as xgb
+    from src.models.family_adapter import Adapter
+    rng=np.random.default_rng(17);x=rng.normal(size=(80,4)).astype(np.float32);y=(x[:,0]>0).astype(int)
+    m=Adapter('xgboost');m.model.set_params(n_estimators=5,min_child_weight=1);m.fit(x,y,feature_name=['a','b','c','d']);before=m.predict(x);m.save_model(tmp_path/'model.txt')
+    restored=xgb.Booster(model_file=tmp_path/'model.ubj');after=restored.predict(xgb.DMatrix(x))
+    np.testing.assert_allclose(before,after,rtol=0,atol=0)
+    assert np.all((before>0)&(before<1))

@@ -1,0 +1,13 @@
+{
+  "parent": "outputs/oof/P4-B-001",
+  "features": "baseline45 plus6 canonical numeric comparisons",
+  "extra_feature_manifest": "artifacts/features/P4-NUMERIC-B-001/manifest.json",
+  "sample": "B natural20k",
+  "folds": [
+    1,
+    2,
+    3
+  ],
+  "threshold": "two inner folds per outer; no outer labels",
+  "fold4": "CLOSED"
+}
