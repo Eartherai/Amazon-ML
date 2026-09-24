@@ -41,9 +41,24 @@ python3.12 -m venv .venv
 .venv/bin/pip install --disable-pip-version-check -r configs/aws/requirements-index.txt
 export PYTHONPATH=code/business_entity_resolution OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=8
 .venv/bin/pip freeze > environment.txt
-if [[ "$JOB_KIND" == sub001_inference ]]; then
-  .venv/bin/pip install --disable-pip-version-check -r configs/aws/requirements-sub001.txt
-  .venv/bin/python -u scripts/submissions/run_sub001.py --inputs inputs --output results --threads 8 --upload-bucket "$BUCKET" --upload-prefix "$OUTPUT_PREFIX"
+if [[ "$JOB_KIND" == sub001_inference || "$JOB_KIND" == sub001_validation ]]; then
+  if [[ "$JOB_KIND" == sub001_inference ]]; then
+    .venv/bin/pip install --disable-pip-version-check -r configs/aws/requirements-sub001.txt
+    .venv/bin/python -u scripts/submissions/run_sub001.py --inputs inputs --output results --threads 8 --upload-bucket "$BUCKET" --upload-prefix "$OUTPUT_PREFIX"
+  else
+    mkdir -p results/shards
+    aws s3 cp "s3://$BUCKET/$SHARD_PREFIX/" results/shards/ --recursive --only-show-errors
+    .venv/bin/python - <<'PY'
+import gzip
+from pathlib import Path
+files=list(Path('results/shards').glob('*.tsv.gz'))
+if not files or len(files)%2:raise RuntimeError('Incomplete shard pair inventory')
+for p in files:
+ with gzip.open(p,'rb') as f:
+  while f.read(8*1024*1024):pass
+PY
+    printf '{"source":"Mac SUB-001 full-test inference","shard_count":%s}\n' "$(find results/shards -name '*-matching.tsv.gz' | wc -l)" > results/COMPLETE.json
+  fi
   mkdir -p student_resource/dataset/test
   for source in test_source1 test_source2 test_source3; do
     aws s3 cp "s3://$BUCKET/amazon-ml-2026/raw/test/${source}.tsv" "student_resource/dataset/test/${source}.tsv" --only-show-errors

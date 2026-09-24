@@ -27,7 +27,7 @@ azs={x['Location'] for x in offerings};subnet=next(s for s in infra['subnets'] i
 if cfg.get('job_kind')=='full_retrieval':
  benchmark=json.loads((root/'P5-INDEX-001/ledger.json').read_text())
  if benchmark.get('exit_code')!=0 or benchmark.get('instance_state')!='terminated':raise RuntimeError('Benchmark must succeed and terminate first')
-values={'JOB_KIND':cfg.get('job_kind','index_benchmark'),'SHUTDOWN_MINUTES':str(cfg['runtime_cap_minutes']),'INDEX_PREFIX':cfg.get('index_prefix',''),'BUCKET':infra['bucket'],'CODE_KEY':key,'CODE_SHA256':receipt['sha256'],'INPUT_PREFIX':cfg['input_prefix'],'OUTPUT_PREFIX':'amazon-ml-2026/phase5/runs/'+cfg['run_id']}
+values={'JOB_KIND':cfg.get('job_kind','index_benchmark'),'SHUTDOWN_MINUTES':str(cfg['runtime_cap_minutes']),'INDEX_PREFIX':cfg.get('index_prefix',''),'SHARD_PREFIX':cfg.get('shard_prefix',''),'BUCKET':infra['bucket'],'CODE_KEY':key,'CODE_SHA256':receipt['sha256'],'INPUT_PREFIX':cfg['input_prefix'],'OUTPUT_PREFIX':'amazon-ml-2026/phase5/runs/'+cfg['run_id']}
 script=Path('scripts/aws/worker_bootstrap.sh').read_text().splitlines()
 bootstrap='\n'.join([script[0],*[k+'='+shlex.quote(v) for k,v in values.items()],*script[1:]])+'\n'
 (run/'user-data.sh').write_text(bootstrap)

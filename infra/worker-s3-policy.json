@@ -9,7 +9,8 @@
       "Resource": [
         "arn:aws:s3:::aml2026-ber-08be19ac500747/amazon-ml-2026/phase5/inputs/*",
         "arn:aws:s3:::aml2026-ber-08be19ac500747/amazon-ml-2026/phase5/code/*",
-        "arn:aws:s3:::aml2026-ber-08be19ac500747/amazon-ml-2026/raw/test/*"
+        "arn:aws:s3:::aml2026-ber-08be19ac500747/amazon-ml-2026/raw/test/*",
+        "arn:aws:s3:::aml2026-ber-08be19ac500747/amazon-ml-2026/phase5/sub001-mac-shards-v001/*"
       ]
     },
     {
@@ -31,7 +32,8 @@
           "s3:prefix": [
             "amazon-ml-2026/phase5/inputs/*",
             "amazon-ml-2026/phase5/code/*",
-            "amazon-ml-2026/phase5/runs/*"
+            "amazon-ml-2026/phase5/runs/*",
+            "amazon-ml-2026/phase5/sub001-mac-shards-v001/*"
           ]
         }
       }

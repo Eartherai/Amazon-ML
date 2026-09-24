@@ -1,0 +1,18 @@
+{
+  "run_id": "P5-SUB001-VALIDATE-001",
+  "experiment": "SUB-001",
+  "job_kind": "sub001_validation",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 360,
+  "compute_usd_per_hour": 0.55568,
+  "total_cost_ceiling_usd": 5.0,
+  "ebs_gib": 100,
+  "purpose": "Merge Mac SUB-001 final scored candidates and matches, run exact official validator plus --check-ids, return hashes and validated files",
+  "fold4": "CLOSED",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/sub001-v002",
+  "input_receipt": "sub001-input-v002-upload.json",
+  "shard_prefix": "amazon-ml-2026/phase5/sub001-mac-shards-v001",
+  "launch_gate": "Only after all Mac shards and their checksum manifest upload, and the on-demand 8-vCPU quota becomes free"
+}
