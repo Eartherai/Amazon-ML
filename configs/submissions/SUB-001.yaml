@@ -1,0 +1,21 @@
+{
+  "id": "SUB-001",
+  "name": "SUB001-BASELINE",
+  "purpose": "Early leaderboard calibration using frozen 20k numeric OOF architecture; Fold4 remains closed",
+  "train_population": "All 20,000 currently materialized natural-sample entities from folds 1-3; exclude negatives owned by folds 0/4. This is not full permitted training population; full-data retrieval is running concurrently.",
+  "train_features": "outputs/oof/P4-B-001/features/part-*.parquet",
+  "numeric_features": "artifacts/features/P4-NUMERIC-B-001/part-*.parquet",
+  "feature_version": "51 features: phase4_oof.NAMES + phase4_numeric.NAMES in exact order",
+  "model_params_source": "configs/baselines/BASELINE-P4-001.yaml",
+  "target_idf_source": "outputs/candidates/P4-B-002/{name,address}_char3_idf.npz",
+  "candidate_config": "name_char3 + address_char3 top100 each over all same-country test S2/S3; frozen IDF from owner folds -1,0; final union scored",
+  "decision": "Raw LightGBM score >= median of three nested OOF outer thresholds; frozen 0.83",
+  "threshold": 0.83,
+  "oof_thresholds": [0.83,0.79,0.83],
+  "oof_macro_f0_5": 0.9318965293021522,
+  "fold4": "CLOSED",
+  "test_target_pool": "all 9,969,589 provided test S2/S3 records",
+  "country_policy": "Arbitrary country string, no France labels or thresholds",
+  "test_transliteration": "Apply same macOS Foundation Any-Latin; Latin-ASCII to non-ASCII query/target names; ASCII passthrough. This is symmetric on France and identical to training S1 ASCII behavior.",
+  "external_identities": false
+}

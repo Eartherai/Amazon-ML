@@ -41,7 +41,20 @@ python3.12 -m venv .venv
 .venv/bin/pip install --disable-pip-version-check -r configs/aws/requirements-index.txt
 export PYTHONPATH=code/business_entity_resolution OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=8
 .venv/bin/pip freeze > environment.txt
-if [[ "$JOB_KIND" == full_retrieval ]]; then
+if [[ "$JOB_KIND" == sub001_inference ]]; then
+  .venv/bin/pip install --disable-pip-version-check -r configs/aws/requirements-sub001.txt
+  .venv/bin/python -u scripts/submissions/run_sub001.py --inputs inputs --output results --threads 8 --upload-bucket "$BUCKET" --upload-prefix "$OUTPUT_PREFIX"
+  mkdir -p student_resource/dataset/test
+  for source in test_source1 test_source2 test_source3; do
+    aws s3 cp "s3://$BUCKET/amazon-ml-2026/raw/test/${source}.tsv" "student_resource/dataset/test/${source}.tsv" --only-show-errors
+  done
+  .venv/bin/python -u scripts/submissions/merge_validate.py --shards results/shards --output output --test-dir student_resource/dataset/test
+  mkdir -p summary
+  gzip -c output/matching_results.tsv > summary/matching_results.tsv.gz
+  gzip -c output/candidate_pairs.tsv > summary/candidate_pairs.tsv.gz
+  cp output/validation.json output/official.log output/official_check_ids.log results/COMPLETE.json environment.txt summary/
+  python3 scripts/aws/upload_verified.py summary "$BUCKET" "$OUTPUT_PREFIX/results" results-receipt.json
+elif [[ "$JOB_KIND" == full_retrieval ]]; then
   aws s3 cp "s3://$BUCKET/$INDEX_PREFIX/results/" indexes/ --recursive --only-show-errors
   aws s3 cp "s3://$BUCKET/$INDEX_PREFIX/receipts/results-receipt.json" index-receipt.json --only-show-errors
   python3 - <<'VERIFY'

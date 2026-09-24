@@ -1,0 +1,20 @@
+{
+  "run_id": "P5-SUB001-001",
+  "experiment": "SUB-001",
+  "job_kind": "sub001_inference",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "spot",
+  "availability_zone": "us-east-1f",
+  "spot_max_price": 0.30,
+  "runtime_cap_minutes": 1440,
+  "compute_usd_per_hour": 0.30,
+  "total_cost_ceiling_usd": 10.0,
+  "ebs_gib": 100,
+  "purpose": "Frozen early SUB-001 full test inference, every final candidate scored, strict and official validation",
+  "fold4": "CLOSED",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/sub001-v002",
+  "input_receipt": "sub001-input-v002-upload.json",
+  "estimate_basis": "100 queries per country full-index smoke on M5 Mac; bounded 24-hour Spot bid ceiling and independent OS termination",
+  "checkpoint": "Per-country per-SHA256-query-shard gzip outputs, checksum verified in S3"
+}

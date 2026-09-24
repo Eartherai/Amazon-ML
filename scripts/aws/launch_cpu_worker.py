@@ -7,19 +7,23 @@ from upload_verified import upload
 root=Path('artifacts/cloud/phase5')
 parser=argparse.ArgumentParser();parser.add_argument('--config',type=Path,default=Path('configs/aws/P5-INDEX-001.json'));args=parser.parse_args()
 cfg=json.loads(args.config.read_text());infra=json.loads((root/'infrastructure.json').read_text())
-run=root/cfg['run_id'];run.mkdir(exist_ok=False)
+from cost_guard import guard
 if subprocess.check_output(['git','status','--porcelain'],text=True).strip():raise RuntimeError('Commit exact worker code before launch')
 commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
 account=aws('sts','get-caller-identity')['Account']
 if account[-4:]!=infra['account_suffix']:raise RuntimeError('Account mismatch')
-quota=aws('service-quotas','get-service-quota','--service-code','ec2','--quota-code','L-1216C47A')['Quota']['Value']
+quota=aws('service-quotas','get-service-quota','--service-code','ec2','--quota-code',('L-34B43A08' if cfg.get('purchase')=='spot' else 'L-1216C47A'))['Quota']['Value']
 if quota<8:raise RuntimeError('Insufficient quota')
 if not (root/cfg.get('input_receipt','input-upload.json')).exists():raise RuntimeError('Inputs not verified')
+price_cap=str(cfg.get('spot_max_price',cfg['compute_usd_per_hour']))
+cost_record=guard(cfg,price_cap)
+run=root/cfg['run_id'];run.mkdir(exist_ok=False)
+(run/'cost_guard.json').write_text(json.dumps(cost_record,indent=2))
 archive=run/'code.tar';subprocess.run(['git','archive','--format=tar','--output',str(archive),commit],check=True)
 key='amazon-ml-2026/phase5/code/'+commit+'.tar';receipt=upload(archive,infra['bucket'],key)
 ami=aws('ssm','get-parameter','--name','/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64')['Parameter']['Value']
 offerings=aws('ec2','describe-instance-type-offerings','--location-type','availability-zone','--filters','Name=instance-type,Values='+cfg['instance_type'])['InstanceTypeOfferings']
-azs={x['Location'] for x in offerings};subnet=next(s for s in infra['subnets'] if s['az'] in azs)
+azs={x['Location'] for x in offerings};subnet=next(s for s in infra['subnets'] if s['az'] in azs and (not cfg.get('availability_zone') or s['az']==cfg['availability_zone']))
 if cfg.get('job_kind')=='full_retrieval':
  benchmark=json.loads((root/'P5-INDEX-001/ledger.json').read_text())
  if benchmark.get('exit_code')!=0 or benchmark.get('instance_state')!='terminated':raise RuntimeError('Benchmark must succeed and terminate first')
@@ -28,6 +32,8 @@ script=Path('scripts/aws/worker_bootstrap.sh').read_text().splitlines()
 bootstrap='\n'.join([script[0],*[k+'='+shlex.quote(v) for k,v in values.items()],*script[1:]])+'\n'
 (run/'user-data.sh').write_text(bootstrap)
 request={'ImageId':ami,'InstanceType':cfg['instance_type'],'MinCount':1,'MaxCount':1,'ClientToken':cfg['run_id'], 'IamInstanceProfile':{'Name':infra['instance_profile']},'InstanceInitiatedShutdownBehavior':'terminate','MetadataOptions':{'HttpTokens':'required','HttpPutResponseHopLimit':1},'NetworkInterfaces':[{'DeviceIndex':0,'SubnetId':subnet['id'],'Groups':[infra['security_group']],'AssociatePublicIpAddress':True}],'BlockDeviceMappings':[{'DeviceName':'/dev/xvda','Ebs':{'VolumeSize':cfg['ebs_gib'],'VolumeType':'gp3','Encrypted':True,'DeleteOnTermination':True}}],'TagSpecifications':[{'ResourceType':t,'Tags':[{'Key':'Project','Value':'aml2026-phase5'},{'Key':'RunId','Value':cfg['run_id']}]} for t in ['instance','volume']]}
+if cfg.get('purchase')=='spot':
+ request['InstanceMarketOptions']={'MarketType':'spot','SpotOptions':{'SpotInstanceType':'one-time','InstanceInterruptionBehavior':'terminate','MaxPrice':str(cfg['spot_max_price'])}}
 (run/'request.json').write_text(json.dumps(request,indent=2))
 ledger={**cfg,'git_sha':commit,'account_suffix':account[-4:],'start':datetime.now(timezone.utc).isoformat(),'stop':None,'actual_cost':None,'s3_inputs':cfg['input_prefix'],'s3_outputs':values['OUTPUT_PREFIX'],'code_upload':receipt}
 (run/'ledger.json').write_text(json.dumps(ledger,indent=2))
