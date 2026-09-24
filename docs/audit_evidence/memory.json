@@ -1,0 +1,419 @@
+{
+  "files": {
+    "train_source1": {
+      "rows": 2206821,
+      "polars_estimated_buffer_bytes": 201242366,
+      "polars_schema": {
+        "entity_id": "String",
+        "business_name": "String",
+        "business_address": "String",
+        "country": "String"
+      },
+      "legal_suffix_token_counts": [
+        {
+          "suffix": "",
+          "n": 855240
+        },
+        {
+          "suffix": "private limited",
+          "n": 431869
+        },
+        {
+          "suffix": "llc",
+          "n": 355736
+        },
+        {
+          "suffix": "inc",
+          "n": 238306
+        },
+        {
+          "suffix": "pvt ltd",
+          "n": 121461
+        },
+        {
+          "suffix": "limited",
+          "n": 90046
+        },
+        {
+          "suffix": "llp",
+          "n": 39725
+        },
+        {
+          "suffix": "corp",
+          "n": 33761
+        },
+        {
+          "suffix": "ltd",
+          "n": 27134
+        },
+        {
+          "suffix": "corporation",
+          "n": 13540
+        },
+        {
+          "suffix": "incorporated",
+          "n": 3
+        }
+      ]
+    },
+    "train_source2": {
+      "rows": 5034616,
+      "polars_estimated_buffer_bytes": 469162954,
+      "polars_schema": {
+        "entity_id": "String",
+        "business_name": "String",
+        "business_address": "String",
+        "country": "String"
+      },
+      "legal_suffix_token_counts": [
+        {
+          "suffix": "",
+          "n": 3289225
+        },
+        {
+          "suffix": "llc",
+          "n": 410508
+        },
+        {
+          "suffix": "inc",
+          "n": 319146
+        },
+        {
+          "suffix": "ltd",
+          "n": 248769
+        },
+        {
+          "suffix": "private limited",
+          "n": 218862
+        },
+        {
+          "suffix": "limited",
+          "n": 203764
+        },
+        {
+          "suffix": "corp",
+          "n": 117497
+        },
+        {
+          "suffix": "pvt ltd",
+          "n": 99403
+        },
+        {
+          "suffix": "corporation",
+          "n": 54370
+        },
+        {
+          "suffix": "llp",
+          "n": 49827
+        },
+        {
+          "suffix": "incorporated",
+          "n": 23165
+        },
+        {
+          "suffix": "sa",
+          "n": 61
+        },
+        {
+          "suffix": "gmbh",
+          "n": 11
+        },
+        {
+          "suffix": "sas",
+          "n": 7
+        },
+        {
+          "suffix": "sarl",
+          "n": 1
+        }
+      ]
+    },
+    "train_source3": {
+      "rows": 5285603,
+      "polars_estimated_buffer_bytes": 482563176,
+      "polars_schema": {
+        "entity_id": "String",
+        "business_name": "String",
+        "business_address": "String",
+        "country": "String"
+      },
+      "legal_suffix_token_counts": [
+        {
+          "suffix": "",
+          "n": 3345454
+        },
+        {
+          "suffix": "llc",
+          "n": 449544
+        },
+        {
+          "suffix": "inc",
+          "n": 336175
+        },
+        {
+          "suffix": "private limited",
+          "n": 301681
+        },
+        {
+          "suffix": "ltd",
+          "n": 247683
+        },
+        {
+          "suffix": "limited",
+          "n": 237742
+        },
+        {
+          "suffix": "pvt ltd",
+          "n": 123387
+        },
+        {
+          "suffix": "corp",
+          "n": 115490
+        },
+        {
+          "suffix": "llp",
+          "n": 59439
+        },
+        {
+          "suffix": "corporation",
+          "n": 49627
+        },
+        {
+          "suffix": "incorporated",
+          "n": 19241
+        },
+        {
+          "suffix": "sa",
+          "n": 123
+        },
+        {
+          "suffix": "gmbh",
+          "n": 10
+        },
+        {
+          "suffix": "sas",
+          "n": 7
+        }
+      ]
+    },
+    "test_source1": {
+      "rows": 1732544,
+      "polars_estimated_buffer_bytes": 168091448,
+      "polars_schema": {
+        "entity_id": "String",
+        "business_name": "String",
+        "business_address": "String",
+        "country": "String"
+      },
+      "legal_suffix_token_counts": [
+        {
+          "suffix": "",
+          "n": 617563
+        },
+        {
+          "suffix": "private limited",
+          "n": 396230
+        },
+        {
+          "suffix": "llc",
+          "n": 178364
+        },
+        {
+          "suffix": "inc",
+          "n": 119196
+        },
+        {
+          "suffix": "pvt ltd",
+          "n": 110856
+        },
+        {
+          "suffix": "limited",
+          "n": 82226
+        },
+        {
+          "suffix": "sarl",
+          "n": 73480
+        },
+        {
+          "suffix": "sas",
+          "n": 52276
+        },
+        {
+          "suffix": "llp",
+          "n": 36037
+        },
+        {
+          "suffix": "ltd",
+          "n": 23783
+        },
+        {
+          "suffix": "corp",
+          "n": 19782
+        },
+        {
+          "suffix": "sa",
+          "n": 12754
+        },
+        {
+          "suffix": "corporation",
+          "n": 9993
+        },
+        {
+          "suffix": "gmbh",
+          "n": 3
+        },
+        {
+          "suffix": "incorporated",
+          "n": 1
+        }
+      ]
+    },
+    "test_source2": {
+      "rows": 4887273,
+      "polars_estimated_buffer_bytes": 489906208,
+      "polars_schema": {
+        "entity_id": "String",
+        "business_name": "String",
+        "business_address": "String",
+        "country": "String"
+      },
+      "legal_suffix_token_counts": [
+        {
+          "suffix": "",
+          "n": 3110774
+        },
+        {
+          "suffix": "private limited",
+          "n": 260039
+        },
+        {
+          "suffix": "limited",
+          "n": 256146
+        },
+        {
+          "suffix": "ltd",
+          "n": 255398
+        },
+        {
+          "suffix": "llc",
+          "n": 249689
+        },
+        {
+          "suffix": "inc",
+          "n": 200416
+        },
+        {
+          "suffix": "pvt ltd",
+          "n": 119495
+        },
+        {
+          "suffix": "sarl",
+          "n": 112380
+        },
+        {
+          "suffix": "corp",
+          "n": 96050
+        },
+        {
+          "suffix": "sas",
+          "n": 79142
+        },
+        {
+          "suffix": "llp",
+          "n": 65214
+        },
+        {
+          "suffix": "corporation",
+          "n": 41155
+        },
+        {
+          "suffix": "sa",
+          "n": 28368
+        },
+        {
+          "suffix": "incorporated",
+          "n": 12994
+        },
+        {
+          "suffix": "gmbh",
+          "n": 13
+        }
+      ]
+    },
+    "test_source3": {
+      "rows": 5082316,
+      "polars_estimated_buffer_bytes": 485672443,
+      "polars_schema": {
+        "entity_id": "String",
+        "business_name": "String",
+        "business_address": "String",
+        "country": "String"
+      },
+      "legal_suffix_token_counts": [
+        {
+          "suffix": "",
+          "n": 3101706
+        },
+        {
+          "suffix": "private limited",
+          "n": 354737
+        },
+        {
+          "suffix": "limited",
+          "n": 296756
+        },
+        {
+          "suffix": "llc",
+          "n": 269998
+        },
+        {
+          "suffix": "ltd",
+          "n": 256976
+        },
+        {
+          "suffix": "inc",
+          "n": 209008
+        },
+        {
+          "suffix": "pvt ltd",
+          "n": 146551
+        },
+        {
+          "suffix": "sarl",
+          "n": 116201
+        },
+        {
+          "suffix": "corp",
+          "n": 93396
+        },
+        {
+          "suffix": "sas",
+          "n": 81918
+        },
+        {
+          "suffix": "llp",
+          "n": 77123
+        },
+        {
+          "suffix": "corporation",
+          "n": 38060
+        },
+        {
+          "suffix": "sa",
+          "n": 29166
+        },
+        {
+          "suffix": "incorporated",
+          "n": 10706
+        },
+        {
+          "suffix": "gmbh",
+          "n": 14
+        }
+      ]
+    }
+  },
+  "scope": "Polars estimated_size reports materialized visible buffer bytes, not total process peak. Files loaded sequentially, not simultaneously. Exact token-boundary ending counts replace early suffix-string probes.",
+  "elapsed_seconds": 8.172080582997296,
+  "peak_rss_gib": 1.6868133544921875
+}

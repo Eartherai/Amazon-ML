@@ -2,12 +2,12 @@
 
 - [x] Test labels unavailable and not inferred.
 - [x] No record sent to external search/services.
-- [ ] Train/test identifier and exact-text overlap audited (unlabeled diagnostics only).
-- [ ] Ground truth IDs, duplicate IDs, coverage and shared ownership checked.
-- [ ] Positive ownership components kept in one fold.
+- [x] Train/test identifier and exact-text overlap audited (unlabeled diagnostics only).
+- [x] Ground truth IDs, duplicate IDs, coverage and shared ownership checked.
+- [x] Positive ownership components kept in one fold (zero shared targets; builder fails if present).
 - [ ] Validation targets excluded from training positives AND negatives.
 - [ ] Train-fit vocabularies, frequency statistics, augmentations and model features.
-- [ ] Development/calibration/locked evaluation roles separate.
+- [x] Development and locked evaluation roles frozen; calibration will use training/development OOF.
 - [ ] US->India and India->US robustness evaluated.
 - [ ] Shared name/address collision groups used for a stricter stress split.
 - [ ] OOF mining and calibration without fold leakage.

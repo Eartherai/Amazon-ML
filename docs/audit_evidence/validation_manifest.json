@@ -1,0 +1,88 @@
+{
+  "seed": 20260925,
+  "fold_algorithm": "int(sha256(str(seed)+\"|\"+entity_id)[:8],16)%5",
+  "fold_roles": {
+    "0": "development and threshold selection",
+    "1,2,3": "initial training",
+    "4": "locked final evaluation; not for tuning"
+  },
+  "shared_targets": 0,
+  "distribution": [
+    {
+      "fold": 0,
+      "country": "India",
+      "entities": 176733,
+      "links": 613353,
+      "singletons": 9888
+    },
+    {
+      "fold": 0,
+      "country": "US",
+      "entities": 264370,
+      "links": 914024,
+      "singletons": 14790
+    },
+    {
+      "fold": 1,
+      "country": "India",
+      "entities": 177042,
+      "links": 612916,
+      "singletons": 9931
+    },
+    {
+      "fold": 1,
+      "country": "US",
+      "entities": 264458,
+      "links": 914725,
+      "singletons": 14788
+    },
+    {
+      "fold": 2,
+      "country": "India",
+      "entities": 176716,
+      "links": 611154,
+      "singletons": 9888
+    },
+    {
+      "fold": 2,
+      "country": "US",
+      "entities": 264272,
+      "links": 914800,
+      "singletons": 14656
+    },
+    {
+      "fold": 3,
+      "country": "India",
+      "entities": 176503,
+      "links": 612155,
+      "singletons": 9792
+    },
+    {
+      "fold": 3,
+      "country": "US",
+      "entities": 265555,
+      "links": 919322,
+      "singletons": 14757
+    },
+    {
+      "fold": 4,
+      "country": "India",
+      "entities": 176194,
+      "links": 610265,
+      "singletons": 9852
+    },
+    {
+      "fold": 4,
+      "country": "US",
+      "entities": 264978,
+      "links": 915651,
+      "singletons": 14905
+    }
+  ],
+  "unowned_targets": 2681854,
+  "training_target_leakage_check": 0,
+  "files": {
+    "validation_folds.parquet": "221cd7b80c0292e0d527b5477c6595ce8c2683969c07b52bcb51412ca743e7d3",
+    "target_ownership.parquet": "b7e91958624e9b5aa1799a47397d42700c3585d98cc3764c45a38a4e5aae7cf7"
+  }
+}

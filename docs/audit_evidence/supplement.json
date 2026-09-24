@@ -1,0 +1,92 @@
+{
+  "script_coverage": {
+    "train_source1": {
+      "devanagari": 0,
+      "bengali": 0,
+      "gurmukhi": 0,
+      "gujarati": 0,
+      "oriya": 0,
+      "tamil": 0,
+      "telugu": 0,
+      "kannada": 0,
+      "malayalam": 0
+    },
+    "train_source2": {
+      "devanagari": 479500,
+      "bengali": 54757,
+      "gurmukhi": 12114,
+      "gujarati": 54763,
+      "oriya": 12207,
+      "tamil": 60220,
+      "telugu": 65393,
+      "kannada": 66637,
+      "malayalam": 30640
+    },
+    "train_source3": {
+      "devanagari": 394374,
+      "bengali": 45061,
+      "gurmukhi": 10319,
+      "gujarati": 45006,
+      "oriya": 9559,
+      "tamil": 49864,
+      "telugu": 52500,
+      "kannada": 55457,
+      "malayalam": 24342
+    },
+    "test_source1": {
+      "devanagari": 0,
+      "bengali": 0,
+      "gurmukhi": 0,
+      "gujarati": 0,
+      "oriya": 0,
+      "tamil": 0,
+      "telugu": 0,
+      "kannada": 0,
+      "malayalam": 0
+    },
+    "test_source2": {
+      "devanagari": 550530,
+      "bengali": 63445,
+      "gurmukhi": 14133,
+      "gujarati": 63211,
+      "oriya": 14046,
+      "tamil": 69865,
+      "telugu": 75238,
+      "kannada": 78006,
+      "malayalam": 35766
+    },
+    "test_source3": {
+      "devanagari": 454885,
+      "bengali": 51991,
+      "gurmukhi": 11454,
+      "gujarati": 52233,
+      "oriya": 11287,
+      "tamil": 57708,
+      "telugu": 60471,
+      "kannada": 64518,
+      "malayalam": 28396
+    }
+  },
+  "transliteration_probe": {
+    "scope": "First 10000 labeled positive pairs sorted by SHA256(S1|target) among non-ASCII target business names. Conditional sample, NOT an overall rate or candidate recall. No negatives tested in this probe.",
+    "engine": "macOS Foundation StringTransform Any-Latin; Latin-ASCII (ICU), runtime macOS 27.0; Linux ICU parity is unverified",
+    "n": 10000,
+    "runtime_seconds": 0.7910423330031335,
+    "by_country": {
+      "India": {
+        "pairs": 6732,
+        "original_jw_ge_09": 0.16488413547237077,
+        "transliterated_jw_ge_09": 0.29783125371360664,
+        "original_low_transliterated_high": 0.10650623885918004,
+        "transliterated_exact": 0.12358882947118241
+      },
+      "US": {
+        "pairs": 3268,
+        "original_jw_ge_09": 0.7861077111383109,
+        "transliterated_jw_ge_09": 0.8598531211750307,
+        "original_low_transliterated_high": 0.0012239902080783353,
+        "transliterated_exact": 0.6248470012239902
+      }
+    }
+  }
+}

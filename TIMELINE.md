@@ -18,3 +18,18 @@ All timestamps include timezone. Never replace historical entries.
 - Interpretation: large candidate pool; multi-match output and cross-script recall are essential. No model training or cloud spend.
 - Repairs: audit attempts 001/002 hit reserved SQL alias names and were retained as failed logs; 003 completed. Unicode audit normalization was then corrected to preserve combining marks; authoritative audit is AUDIT-004/PAIR-002, older reports preserved. Colab 0.7.1 unavailable; PyPI 0.7.2 installed.
 - Next: finalize report, transliteration probe and EXP-001 diagnostic.
+
+## 2026-09-25T01:08:47.520574+05:30 | Codex | Research phase complete
+- Action: measured exact baseline, generic transliteration sample and independent per-file memory; completed research, compute plan, roadmap and handoff prompt.
+- Commands: src.exact_baseline --config configs/experiments/EXP-001.json; src.audit_supplement; src.audit_memory; colab usage; colab sessions.
+- Config: dev fold 0, seed 20260925, full training target pool; non-ASCII positive probe n=10000; no fitting.
+- Result: macro F0.5=0.08327203, precision=1.000000, recall=0.01314345, pairs=20075; Colab authenticated with 0 units and no sessions.
+- Interpretation: exact matching is only a diagnostic; union retrieval and cross-script rescue have highest priority. Generic transliteration helps but does not solve all India noise.
+- Next: EXP-002 lexical retrieval; AWS remains unused, learned training not started.
+
+## 2026-09-25T01:12:50.224359+05:30 | Codex | Final research verification
+- Action: integrated candidate-generation test and completed artifact consistency review.
+- Commands: pytest; compileall; git diff --check; JSON/CSV and inventory assertions.
+- Result: 23 tests passed; six independent parser row counts agree; split covers all 2,206,821 S1; label-integrity and forbidden-target checks pass; no leaderboard submissions; current data/pair/memory evidence preserved in Git.
+- Interpretation: phase-one infrastructure and measured diagnostics are ready for the retrieval work. One-command research wrapper is supplied; its individual stages were verified, not redundantly rerun as a full wrapper.
+- Next: EXP-002.

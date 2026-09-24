@@ -77,3 +77,24 @@ def test_official_validator_on_synthetic_fixture(tmp_path):
     write_lists(c,{'S1-french':{'S2-target'}},'candidate_entity_ids')
     errors,warnings=module.validate(str(m),str(c),str(tmp_path),check_ids=True)
     assert not errors and not warnings
+
+def test_exact_candidate_integration_multiple_targets_and_unseen_country(tmp_path):
+    import duckdb,json,subprocess,sys,os
+    db=tmp_path/'fixture.duckdb';c=duckdb.connect(str(db))
+    c.execute('CREATE TABLE s1_normalized(entity_id VARCHAR,country VARCHAR,n VARCHAR,a VARCHAR)')
+    c.executemany('INSERT INTO s1_normalized VALUES (?,?,?,?)',[
+        ('S1-fr','France','cafe etoile','1 rue'),('S1-new','NewCountry','shop','2 road'),
+        ('S1-blank','India','',''),('S1-empty','US','unmatched','3 road')])
+    c.execute('CREATE TABLE targets_normalized AS SELECT * FROM s1_normalized WHERE false')
+    c.executemany('INSERT INTO targets_normalized VALUES (?,?,?,?)',[
+        ('S2-fr','France','cafe etoile','1 rue'),('S3-fr','France','cafe etoile','1 rue'),
+        ('S2-new','NewCountry','shop','2 road'),('S2-blank','India','',''),
+        ('S2-wrong-country','US','shop','2 road')])
+    c.execute('CREATE TABLE positive_pairs(source1_entity_id VARCHAR,target_id VARCHAR)')
+    c.executemany('INSERT INTO positive_pairs VALUES (?,?)',[('S1-fr','S2-fr'),('S1-fr','S3-fr'),('S1-new','S2-new')])
+    c.execute('CREATE TABLE validation_folds AS SELECT entity_id source1_entity_id,country,0 fold,CASE WHEN entity_id=\'S1-fr\' THEN 2 WHEN entity_id=\'S1-new\' THEN 1 ELSE 0 END n_matches FROM s1_normalized')
+    c.close();cfg=tmp_path/'config.json';cfg.write_text('{"fold": 0}')
+    output=tmp_path/'result'
+    subprocess.run([sys.executable,'-m','src.exact_baseline','--database',str(db),'--config',str(cfg),'--output-dir',str(output)],check=True,capture_output=True,text=True)
+    m=json.loads((output/'metrics.json').read_text())['overall']
+    assert m['candidate_pairs']==3 and m['macro_f0_5']==1 and m['micro_recall']==1

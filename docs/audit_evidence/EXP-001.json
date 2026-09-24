@@ -1,0 +1,81 @@
+{
+  "config": {
+    "experiment_id": "EXP-001",
+    "model": "exact normalized name AND address with country equality",
+    "training": false,
+    "normalization": "NFC + lower + Unicode letters/marks/numbers + whitespace",
+    "fold": 0,
+    "validation": "v1 entity fold; full training target pool",
+    "candidate_filter": "all exact nonblank name/address/country pairs",
+    "prediction_rule": "accept all generated candidates",
+    "seed": 20260925,
+    "purpose": "diagnostic baseline; not a submission"
+  },
+  "overall": {
+    "entities": 441103,
+    "macro_f0_5": 0.08327203326432746,
+    "micro_precision": 1.0,
+    "micro_recall": 0.013143447884837862,
+    "singleton_f0_5": 1.0,
+    "non_singleton_f0_5": 0.02894529312360136,
+    "candidate_pairs": 20075,
+    "tp": 20075,
+    "true_links": 1527377,
+    "candidates_mean": 0.045510912417281224,
+    "candidates_p50_p95_p99": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "candidate_oracle_macro_f0_5": 0.08327203326432746,
+    "candidate_recall": 0.013143447884837862,
+    "reduction_ratio": 0.9999999955901214
+  },
+  "by_country": [
+    {
+      "country": "India",
+      "entities": 176733,
+      "macro_f0_5": 0.07229036545099894,
+      "micro_precision": 1.0,
+      "micro_recall": 0.007884529789533922,
+      "singleton_f0_5": 1.0,
+      "non_singleton_f0_5": 0.017310037203699415,
+      "candidate_pairs": 4836,
+      "tp": 4836,
+      "true_links": 613353,
+      "candidates_mean": 0.027363310756904482,
+      "candidates_p50_p95_p99": [
+        0.0,
+        0.0,
+        1.0
+      ],
+      "candidate_oracle_macro_f0_5": 0.07229036545099894
+    },
+    {
+      "country": "US",
+      "entities": 264370,
+      "macro_f0_5": 0.09061334694459866,
+      "micro_precision": 1.0,
+      "micro_recall": 0.01667242873272474,
+      "singleton_f0_5": 1.0,
+      "non_singleton_f0_5": 0.036723497602949795,
+      "candidate_pairs": 15239,
+      "tp": 15239,
+      "true_links": 914024,
+      "candidates_mean": 0.05764269773423611,
+      "candidates_p50_p95_p99": [
+        0.0,
+        1.0,
+        1.0
+      ],
+      "candidate_oracle_macro_f0_5": 0.09061334694459866
+    }
+  ],
+  "all_empty_control": {
+    "macro_f0_5": 0.0559461168933333
+  },
+  "candidate_pool_targets": 10320219,
+  "git_commit": "a5588f86bde3fa7495da58640b31d71720666e97",
+  "runtime_seconds": 0.6458735829801299,
+  "peak_ram_gib": 1.07501220703125
+}

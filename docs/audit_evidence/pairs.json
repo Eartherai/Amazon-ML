@@ -1,0 +1,217 @@
+{
+  "positive_all": {
+    "pairs": 7638365,
+    "exact_name_rate": 0.21847515796901562,
+    "exact_address_rate": 0.0826576106274052,
+    "high_name_jw_rate": 0.6830533759515289,
+    "high_address_jw_rate": 0.41027261724204067,
+    "numeric_overlap_rate": 0.7987815455270859,
+    "numeric_both_present_rate": 0.8720244450219385,
+    "postal_overlap_rate": 0.04802860297982618,
+    "postal_both_present_rate": 0.051469391682644125,
+    "acronym_equal_rate": 0.372663652496313,
+    "accent_fold_equal_rate": 0.2578682741660028,
+    "nonascii_target_name_rate": 0.13887540069111648,
+    "missing_address_rate": 0.044121745949558575,
+    "both_jw_under_07_rate": 0.029979583327060175,
+    "name_jw_under_07_rate": 0.12323291699205262,
+    "name_jw_quantiles": [
+      0.3602693602693603,
+      0.6267080745341614,
+      0.9454545454545455,
+      1.0,
+      1.0
+    ],
+    "address_jw_quantiles": [
+      0.0,
+      0.6118714021939828,
+      0.8673698088332235,
+      0.9874999999999999,
+      1.0
+    ]
+  },
+  "positive_by_country": [
+    {
+      "country": "India",
+      "pairs": 3059843,
+      "exact_name_rate": 0.1588990023344335,
+      "exact_address_rate": 0.07595553105175658,
+      "high_name_jw_rate": 0.5362356826804513,
+      "high_address_jw_rate": 0.32778609882925364,
+      "numeric_overlap_rate": 0.8259168852781009,
+      "numeric_both_present_rate": 0.8628024379028597,
+      "postal_overlap_rate": 0.0022154731468248534,
+      "postal_both_present_rate": 0.0022432523498754674,
+      "acronym_equal_rate": 0.32232895609349893,
+      "accent_fold_equal_rate": 0.18753315121069938,
+      "nonascii_target_name_rate": 0.2351241550628578,
+      "missing_address_rate": 0.03924613125575397,
+      "both_jw_under_07_rate": 0.06813061977362891,
+      "name_jw_under_07_rate": 0.23865146022197872,
+      "name_jw_quantiles": [
+        0.3582289055973267,
+        0.3733990147783251,
+        0.9142857142857143,
+        1.0,
+        1.0
+      ],
+      "address_jw_quantiles": [
+        0.0,
+        0.5632443560174654,
+        0.8101602826827228,
+        0.9861386138613861,
+        1.0
+      ]
+    },
+    {
+      "country": "US",
+      "pairs": 4578522,
+      "exact_name_rate": 0.2582901206983389,
+      "exact_address_rate": 0.08713663492279823,
+      "high_name_jw_rate": 0.7811721773969853,
+      "high_address_jw_rate": 0.4653986592179747,
+      "numeric_overlap_rate": 0.7806468987153496,
+      "numeric_both_present_rate": 0.8781875461120423,
+      "postal_overlap_rate": 0.07864568522331006,
+      "postal_both_present_rate": 0.08436740065898995,
+      "acronym_equal_rate": 0.40630251421747016,
+      "accent_fold_equal_rate": 0.304873494110108,
+      "nonascii_target_name_rate": 0.07455200608405944,
+      "missing_address_rate": 0.047380137083539185,
+      "both_jw_under_07_rate": 0.004483106120272,
+      "name_jw_under_07_rate": 0.04609828237147272,
+      "name_jw_quantiles": [
+        0.46767676767676764,
+        0.8055555555555557,
+        0.956043956043956,
+        1.0,
+        1.0
+      ],
+      "address_jw_quantiles": [
+        0.0,
+        0.657107183840003,
+        0.8919410376857186,
+        0.9885714285714287,
+        1.0
+      ]
+    }
+  ],
+  "positive_by_target_source": [
+    {
+      "target_source": "S2",
+      "pairs": 3693619,
+      "exact_name_rate": 0.2144262848983612,
+      "exact_address_rate": 0.12479034789457169,
+      "high_name_jw_rate": 0.6960671904709176,
+      "high_address_jw_rate": 0.4500526448450693,
+      "numeric_overlap_rate": 0.7917465228546854,
+      "numeric_both_present_rate": 0.8696906746472768,
+      "postal_overlap_rate": 0.04738794120346468,
+      "postal_both_present_rate": 0.050957610950127775,
+      "acronym_equal_rate": 0.371104058106697,
+      "accent_fold_equal_rate": 0.2527575258845051,
+      "nonascii_target_name_rate": 0.15798056052884718,
+      "missing_address_rate": 0.044721450696457866,
+      "both_jw_under_07_rate": 0.033431439463572174,
+      "name_jw_under_07_rate": 0.13150923254401714,
+      "name_jw_quantiles": [
+        0.35967518320459496,
+        0.49185867895545315,
+        0.9466666666666667,
+        1.0,
+        1.0
+      ],
+      "address_jw_quantiles": [
+        0.0,
+        0.6400980392156863,
+        0.8827765567765569,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "target_source": "S3",
+      "pairs": 3944746,
+      "exact_name_rate": 0.2222662751923698,
+      "exact_address_rate": 0.043207091153650956,
+      "high_name_jw_rate": 0.6708680356098973,
+      "high_address_jw_rate": 0.3730250312694404,
+      "numeric_overlap_rate": 0.8053687106850479,
+      "numeric_both_present_rate": 0.8742096449302439,
+      "postal_overlap_rate": 0.04862847950159529,
+      "postal_both_present_rate": 0.05194859187384942,
+      "acronym_equal_rate": 0.37412396133996967,
+      "accent_fold_equal_rate": 0.262653666421108,
+      "nonascii_target_name_rate": 0.12098649697597767,
+      "missing_address_rate": 0.043560219086349286,
+      "both_jw_under_07_rate": 0.02674747626336398,
+      "name_jw_under_07_rate": 0.11548348106570107,
+      "name_jw_quantiles": [
+        0.3611111111111111,
+        0.6707070707070706,
+        0.9438095238095238,
+        1.0,
+        1.0
+      ],
+      "address_jw_quantiles": [
+        0.0,
+        0.5884598884598885,
+        0.8521451483560545,
+        0.975,
+        1.0
+      ]
+    }
+  ],
+  "exact_name_block_volume": {
+    "pairs": 21680763,
+    "largest_block_pairs": 78588
+  },
+  "hard_negative_probe": {
+    "scope": "SHA256 prefix 000..007 S1 sample against ALL training S2/S3, exact normalized name plus country, excluding labeled positives. Not prevalence across all negatives.",
+    "sample_s1": 4220,
+    "statistics": [
+      {
+        "country": "US",
+        "pairs": 33117,
+        "affected_s1": 917,
+        "exact_address_rate": 0.0,
+        "high_address_jw_rate": 3.0195971857354228e-05
+      },
+      {
+        "country": "India",
+        "pairs": 5360,
+        "affected_s1": 678,
+        "exact_address_rate": 0.0,
+        "high_address_jw_rate": 0.0
+      }
+    ]
+  },
+  "near_duplicate_probes": {
+    "train_source1": {
+      "compared_pairs": 2206819,
+      "near_pairs": 57
+    },
+    "train_source2": {
+      "compared_pairs": 5034614,
+      "near_pairs": 296320
+    },
+    "train_source3": {
+      "compared_pairs": 5285601,
+      "near_pairs": 253827
+    },
+    "test_source1": {
+      "compared_pairs": 1732541,
+      "near_pairs": 669
+    },
+    "test_source2": {
+      "compared_pairs": 4887270,
+      "near_pairs": 304596
+    },
+    "test_source3": {
+      "compared_pairs": 5082313,
+      "near_pairs": 255781
+    }
+  },
+  "near_duplicate_scope": "Exact count for adjacent records sorted by country, normalized name, normalized address, ID within each source; JW>=0.90 both fields, excluding identical normalized pairs and blank fields. Lower-bound diagnostic, not exhaustive fuzzy clustering.",
+  "elapsed_seconds": 35.223644666955806
+}

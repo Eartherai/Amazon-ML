@@ -1,0 +1,1890 @@
+{
+  "files": {
+    "train_source1": {
+      "n": 2206821,
+      "unique_ids": 2206821,
+      "unique_names": 1539229,
+      "unique_addresses": 2130606,
+      "text_characters": 201240344,
+      "invalid_prefixes": 0,
+      "file_bytes": 210069713,
+      "sha256": "591af0e1dfeb65cab71ea6ee8cb69df00f92d6ba6fa79e05746c938775d14973",
+      "schema": {
+        "entity_id": "VARCHAR",
+        "business_name": "VARCHAR",
+        "business_address": "VARCHAR",
+        "country": "VARCHAR"
+      },
+      "fields": {
+        "entity_id": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 11.888905352994193,
+          "min_length": 6,
+          "max_length": 12,
+          "length_quantiles": [
+            10.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0
+          ]
+        },
+        "business_name": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 24.03440333402664,
+          "min_length": 3,
+          "max_length": 105,
+          "length_quantiles": [
+            8.0,
+            18.0,
+            24.0,
+            30.0,
+            37.0,
+            42.0
+          ]
+        },
+        "business_address": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 52.06621923572415,
+          "min_length": 11,
+          "max_length": 256,
+          "length_quantiles": [
+            22.0,
+            33.0,
+            41.0,
+            70.0,
+            103.0,
+            124.0
+          ]
+        },
+        "country": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 3.2006247901393,
+          "min_length": 2,
+          "max_length": 5,
+          "length_quantiles": [
+            2.0,
+            2.0,
+            2.0,
+            5.0,
+            5.0,
+            5.0
+          ]
+        }
+      },
+      "countries": [
+        {
+          "country": "US",
+          "n": 1323633
+        },
+        {
+          "country": "India",
+          "n": 883188
+        }
+      ],
+      "exact_duplicates": {
+        "duplicate_groups": 0,
+        "redundant_rows": 0,
+        "largest_group": 0
+      },
+      "normalized_duplicates": {
+        "duplicate_groups": 0,
+        "redundant_rows": 0,
+        "largest_group": 0
+      },
+      "text_patterns": {
+        "nonascii_name": 0,
+        "nonascii_address": 554,
+        "devanagari": 0,
+        "tamil": 0,
+        "cyrillic": 0,
+        "cjk": 0,
+        "arabic": 0,
+        "postal5_like": 145601,
+        "postal6_like": 1656,
+        "name_with_digits": 35585,
+        "address_with_digits": 2129784
+      },
+      "numeric_token_counts": [
+        {
+          "numeric_tokens": 0,
+          "n": 77037
+        },
+        {
+          "numeric_tokens": 1,
+          "n": 1278852
+        },
+        {
+          "numeric_tokens": 2,
+          "n": 581911
+        },
+        {
+          "numeric_tokens": 3,
+          "n": 164991
+        },
+        {
+          "numeric_tokens": 4,
+          "n": 61786
+        },
+        {
+          "numeric_tokens": 5,
+          "n": 25182
+        },
+        {
+          "numeric_tokens": 6,
+          "n": 10073
+        },
+        {
+          "numeric_tokens": 7,
+          "n": 4065
+        },
+        {
+          "numeric_tokens": 8,
+          "n": 1577
+        },
+        {
+          "numeric_tokens": 9,
+          "n": 626
+        },
+        {
+          "numeric_tokens": 10,
+          "n": 316
+        },
+        {
+          "numeric_tokens": 11,
+          "n": 155
+        },
+        {
+          "numeric_tokens": 12,
+          "n": 100
+        },
+        {
+          "numeric_tokens": 13,
+          "n": 51
+        },
+        {
+          "numeric_tokens": 14,
+          "n": 31
+        },
+        {
+          "numeric_tokens": 15,
+          "n": 21
+        },
+        {
+          "numeric_tokens": 16,
+          "n": 11
+        },
+        {
+          "numeric_tokens": 17,
+          "n": 11
+        },
+        {
+          "numeric_tokens": 18,
+          "n": 6
+        },
+        {
+          "numeric_tokens": 19,
+          "n": 7
+        },
+        {
+          "numeric_tokens": 20,
+          "n": 4
+        },
+        {
+          "numeric_tokens": 21,
+          "n": 2
+        },
+        {
+          "numeric_tokens": 22,
+          "n": 2
+        },
+        {
+          "numeric_tokens": 24,
+          "n": 1
+        },
+        {
+          "numeric_tokens": 27,
+          "n": 2
+        },
+        {
+          "numeric_tokens": 28,
+          "n": 1
+        }
+      ],
+      "legal_suffixes": [
+        {
+          "suffix": "",
+          "n": 833286
+        },
+        {
+          "suffix": "private limited",
+          "n": 432153
+        },
+        {
+          "suffix": "llc",
+          "n": 376267
+        },
+        {
+          "suffix": "inc",
+          "n": 238306
+        },
+        {
+          "suffix": "pvt ltd",
+          "n": 121461
+        },
+        {
+          "suffix": "limited",
+          "n": 89762
+        },
+        {
+          "suffix": "llp",
+          "n": 39725
+        },
+        {
+          "suffix": "corp",
+          "n": 34242
+        },
+        {
+          "suffix": "ltd",
+          "n": 27134
+        },
+        {
+          "suffix": "corporation",
+          "n": 13683
+        },
+        {
+          "suffix": "sa",
+          "n": 794
+        },
+        {
+          "suffix": "sas",
+          "n": 5
+        },
+        {
+          "suffix": "incorporated",
+          "n": 3
+        }
+      ]
+    },
+    "train_source2": {
+      "n": 5034616,
+      "unique_ids": 5034616,
+      "unique_names": 4402009,
+      "unique_addresses": 4337262,
+      "text_characters": 435094729,
+      "invalid_prefixes": 0,
+      "file_bytes": 489301488,
+      "sha256": "6336c1a055eec79cf8a6d99fdc8d32a2e4d9dc2662e00963cb35d66b89ed09ed",
+      "schema": {
+        "entity_id": "VARCHAR",
+        "business_name": "VARCHAR",
+        "business_address": "VARCHAR",
+        "country": "VARCHAR"
+      },
+      "fields": {
+        "entity_id": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 11.88879549105632,
+          "min_length": 6,
+          "max_length": 12,
+          "length_quantiles": [
+            10.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0
+          ]
+        },
+        "business_name": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 6,
+          "mean_length": 25.103574930044317,
+          "min_length": 2,
+          "max_length": 104,
+          "length_quantiles": [
+            8.0,
+            19.0,
+            25.0,
+            31.0,
+            40.0,
+            48.0
+          ]
+        },
+        "business_address": {
+          "null_count": 0,
+          "empty_strings": 168967,
+          "blank_after_trim": 168967,
+          "textual_missing_markers": 0,
+          "mean_length": 46.225912760774605,
+          "min_length": 0,
+          "max_length": 249,
+          "length_quantiles": [
+            0.0,
+            30.0,
+            37.0,
+            61.0,
+            96.0,
+            118.0
+          ]
+        },
+        "country": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 3.202355254104782,
+          "min_length": 2,
+          "max_length": 5,
+          "length_quantiles": [
+            2.0,
+            2.0,
+            2.0,
+            5.0,
+            5.0,
+            5.0
+          ]
+        }
+      },
+      "countries": [
+        {
+          "country": "US",
+          "n": 3016817
+        },
+        {
+          "country": "India",
+          "n": 2017799
+        }
+      ],
+      "exact_duplicates": {
+        "duplicate_groups": 25060,
+        "redundant_rows": 25873,
+        "largest_group": 5
+      },
+      "normalized_duplicates": {
+        "duplicate_groups": 64993,
+        "redundant_rows": 67708,
+        "largest_group": 5
+      },
+      "text_patterns": {
+        "nonascii_name": 764608,
+        "nonascii_address": 478453,
+        "devanagari": 479500,
+        "tamil": 60220,
+        "cyrillic": 0,
+        "cjk": 0,
+        "arabic": 0,
+        "postal5_like": 327300,
+        "postal6_like": 41851,
+        "name_with_digits": 255636,
+        "address_with_digits": 4563675
+      },
+      "numeric_token_counts": [
+        {
+          "numeric_tokens": 0,
+          "n": 470941
+        },
+        {
+          "numeric_tokens": 1,
+          "n": 2824921
+        },
+        {
+          "numeric_tokens": 2,
+          "n": 1053842
+        },
+        {
+          "numeric_tokens": 3,
+          "n": 413588
+        },
+        {
+          "numeric_tokens": 4,
+          "n": 164704
+        },
+        {
+          "numeric_tokens": 5,
+          "n": 64261
+        },
+        {
+          "numeric_tokens": 6,
+          "n": 25369
+        },
+        {
+          "numeric_tokens": 7,
+          "n": 10048
+        },
+        {
+          "numeric_tokens": 8,
+          "n": 3829
+        },
+        {
+          "numeric_tokens": 9,
+          "n": 1482
+        },
+        {
+          "numeric_tokens": 10,
+          "n": 729
+        },
+        {
+          "numeric_tokens": 11,
+          "n": 365
+        },
+        {
+          "numeric_tokens": 12,
+          "n": 200
+        },
+        {
+          "numeric_tokens": 13,
+          "n": 112
+        },
+        {
+          "numeric_tokens": 14,
+          "n": 74
+        },
+        {
+          "numeric_tokens": 15,
+          "n": 51
+        },
+        {
+          "numeric_tokens": 16,
+          "n": 21
+        },
+        {
+          "numeric_tokens": 17,
+          "n": 27
+        },
+        {
+          "numeric_tokens": 18,
+          "n": 15
+        },
+        {
+          "numeric_tokens": 19,
+          "n": 11
+        },
+        {
+          "numeric_tokens": 20,
+          "n": 11
+        },
+        {
+          "numeric_tokens": 21,
+          "n": 5
+        },
+        {
+          "numeric_tokens": 22,
+          "n": 4
+        },
+        {
+          "numeric_tokens": 24,
+          "n": 1
+        },
+        {
+          "numeric_tokens": 27,
+          "n": 2
+        },
+        {
+          "numeric_tokens": 28,
+          "n": 3
+        }
+      ],
+      "legal_suffixes": [
+        {
+          "suffix": "",
+          "n": 3268512
+        },
+        {
+          "suffix": "llc",
+          "n": 427834
+        },
+        {
+          "suffix": "inc",
+          "n": 319325
+        },
+        {
+          "suffix": "ltd",
+          "n": 248770
+        },
+        {
+          "suffix": "private limited",
+          "n": 219295
+        },
+        {
+          "suffix": "limited",
+          "n": 203331
+        },
+        {
+          "suffix": "corp",
+          "n": 118494
+        },
+        {
+          "suffix": "pvt ltd",
+          "n": 99403
+        },
+        {
+          "suffix": "corporation",
+          "n": 54695
+        },
+        {
+          "suffix": "llp",
+          "n": 49828
+        },
+        {
+          "suffix": "incorporated",
+          "n": 23165
+        },
+        {
+          "suffix": "sa",
+          "n": 1873
+        },
+        {
+          "suffix": "sas",
+          "n": 78
+        },
+        {
+          "suffix": "gmbh",
+          "n": 11
+        },
+        {
+          "suffix": "sarl",
+          "n": 2
+        }
+      ]
+    },
+    "train_source3": {
+      "n": 5285603,
+      "unique_ids": 5285603,
+      "unique_names": 4651609,
+      "unique_addresses": 4632765,
+      "text_characters": 459879467,
+      "invalid_prefixes": 0,
+      "file_bytes": 503705637,
+      "sha256": "67da22f5151898ff3006febd836c1a159e97ae95efa7257a5aff4fda685e58e9",
+      "schema": {
+        "entity_id": "VARCHAR",
+        "business_name": "VARCHAR",
+        "business_address": "VARCHAR",
+        "country": "VARCHAR"
+      },
+      "fields": {
+        "entity_id": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 11.8887330357577,
+          "min_length": 5,
+          "max_length": 12,
+          "length_quantiles": [
+            11.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0
+          ]
+        },
+        "business_name": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 18,
+          "mean_length": 25.202143823514554,
+          "min_length": 2,
+          "max_length": 123,
+          "length_quantiles": [
+            6.0,
+            18.0,
+            25.0,
+            31.0,
+            42.0,
+            50.0
+          ]
+        },
+        "business_address": {
+          "null_count": 0,
+          "empty_strings": 175916,
+          "blank_after_trim": 175916,
+          "textual_missing_markers": 0,
+          "mean_length": 46.71443731207206,
+          "min_length": 0,
+          "max_length": 240,
+          "length_quantiles": [
+            0.0,
+            35.0,
+            42.0,
+            54.0,
+            91.0,
+            115.0
+          ]
+        },
+        "country": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 3.2007411453338435,
+          "min_length": 2,
+          "max_length": 5,
+          "length_quantiles": [
+            2.0,
+            2.0,
+            2.0,
+            5.0,
+            5.0,
+            5.0
+          ]
+        }
+      },
+      "countries": [
+        {
+          "country": "US",
+          "n": 3170056
+        },
+        {
+          "country": "India",
+          "n": 2115547
+        }
+      ],
+      "exact_duplicates": {
+        "duplicate_groups": 18381,
+        "redundant_rows": 18860,
+        "largest_group": 4
+      },
+      "normalized_duplicates": {
+        "duplicate_groups": 48574,
+        "redundant_rows": 50425,
+        "largest_group": 4
+      },
+      "text_patterns": {
+        "nonascii_name": 606737,
+        "nonascii_address": 476588,
+        "devanagari": 394374,
+        "tamil": 49864,
+        "cyrillic": 0,
+        "cjk": 0,
+        "arabic": 0,
+        "postal5_like": 343630,
+        "postal6_like": 42140,
+        "name_with_digits": 270847,
+        "address_with_digits": 4799297
+      },
+      "numeric_token_counts": [
+        {
+          "numeric_tokens": 0,
+          "n": 486306
+        },
+        {
+          "numeric_tokens": 1,
+          "n": 2853699
+        },
+        {
+          "numeric_tokens": 2,
+          "n": 1299731
+        },
+        {
+          "numeric_tokens": 3,
+          "n": 412206
+        },
+        {
+          "numeric_tokens": 4,
+          "n": 145963
+        },
+        {
+          "numeric_tokens": 5,
+          "n": 53934
+        },
+        {
+          "numeric_tokens": 6,
+          "n": 20687
+        },
+        {
+          "numeric_tokens": 7,
+          "n": 7835
+        },
+        {
+          "numeric_tokens": 8,
+          "n": 2900
+        },
+        {
+          "numeric_tokens": 9,
+          "n": 1173
+        },
+        {
+          "numeric_tokens": 10,
+          "n": 522
+        },
+        {
+          "numeric_tokens": 11,
+          "n": 248
+        },
+        {
+          "numeric_tokens": 12,
+          "n": 155
+        },
+        {
+          "numeric_tokens": 13,
+          "n": 76
+        },
+        {
+          "numeric_tokens": 14,
+          "n": 52
+        },
+        {
+          "numeric_tokens": 15,
+          "n": 38
+        },
+        {
+          "numeric_tokens": 16,
+          "n": 27
+        },
+        {
+          "numeric_tokens": 17,
+          "n": 11
+        },
+        {
+          "numeric_tokens": 18,
+          "n": 6
+        },
+        {
+          "numeric_tokens": 19,
+          "n": 12
+        },
+        {
+          "numeric_tokens": 20,
+          "n": 6
+        },
+        {
+          "numeric_tokens": 21,
+          "n": 3
+        },
+        {
+          "numeric_tokens": 22,
+          "n": 4
+        },
+        {
+          "numeric_tokens": 23,
+          "n": 1
+        },
+        {
+          "numeric_tokens": 24,
+          "n": 1
+        },
+        {
+          "numeric_tokens": 26,
+          "n": 3
+        },
+        {
+          "numeric_tokens": 28,
+          "n": 3
+        },
+        {
+          "numeric_tokens": 29,
+          "n": 1
+        }
+      ],
+      "legal_suffixes": [
+        {
+          "suffix": "",
+          "n": 3321478
+        },
+        {
+          "suffix": "llc",
+          "n": 469943
+        },
+        {
+          "suffix": "inc",
+          "n": 336358
+        },
+        {
+          "suffix": "private limited",
+          "n": 302123
+        },
+        {
+          "suffix": "ltd",
+          "n": 247686
+        },
+        {
+          "suffix": "limited",
+          "n": 237300
+        },
+        {
+          "suffix": "pvt ltd",
+          "n": 123387
+        },
+        {
+          "suffix": "corp",
+          "n": 116491
+        },
+        {
+          "suffix": "llp",
+          "n": 59439
+        },
+        {
+          "suffix": "corporation",
+          "n": 49926
+        },
+        {
+          "suffix": "incorporated",
+          "n": 19241
+        },
+        {
+          "suffix": "sa",
+          "n": 2134
+        },
+        {
+          "suffix": "sas",
+          "n": 87
+        },
+        {
+          "suffix": "gmbh",
+          "n": 10
+        }
+      ]
+    },
+    "test_source1": {
+      "n": 1732544,
+      "unique_ids": 1732544,
+      "unique_names": 1238867,
+      "unique_addresses": 1677483,
+      "text_characters": 167954077,
+      "invalid_prefixes": 0,
+      "file_bytes": 175022086,
+      "sha256": "3d4a32c54c2ca9c53fd7c2be105bf26f708f94c4d2f88eb370972a195665c2f5",
+      "schema": {
+        "entity_id": "VARCHAR",
+        "business_name": "VARCHAR",
+        "business_address": "VARCHAR",
+        "country": "VARCHAR"
+      },
+      "fields": {
+        "entity_id": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 11.88933845258764,
+          "min_length": 6,
+          "max_length": 12,
+          "length_quantiles": [
+            11.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0
+          ]
+        },
+        "business_name": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 23.836660425362936,
+          "min_length": 3,
+          "max_length": 92,
+          "length_quantiles": [
+            8.0,
+            18.0,
+            24.0,
+            29.0,
+            36.0,
+            42.0
+          ]
+        },
+        "business_address": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 57.21318361900188,
+          "min_length": 11,
+          "max_length": 268,
+          "length_quantiles": [
+            24.0,
+            36.0,
+            50.0,
+            74.0,
+            105.0,
+            126.0
+          ]
+        },
+        "country": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 4.0015457038897715,
+          "min_length": 2,
+          "max_length": 6,
+          "length_quantiles": [
+            2.0,
+            2.0,
+            5.0,
+            5.0,
+            6.0,
+            6.0
+          ]
+        }
+      },
+      "countries": [
+        {
+          "country": "India",
+          "n": 809986
+        },
+        {
+          "country": "US",
+          "n": 663106
+        },
+        {
+          "country": "France",
+          "n": 259452
+        }
+      ],
+      "exact_duplicates": {
+        "duplicate_groups": 0,
+        "redundant_rows": 0,
+        "largest_group": 0
+      },
+      "normalized_duplicates": {
+        "duplicate_groups": 1,
+        "redundant_rows": 1,
+        "largest_group": 2
+      },
+      "text_patterns": {
+        "nonascii_name": 40789,
+        "nonascii_address": 73800,
+        "devanagari": 0,
+        "tamil": 0,
+        "cyrillic": 0,
+        "cjk": 0,
+        "arabic": 0,
+        "postal5_like": 74808,
+        "postal6_like": 826,
+        "name_with_digits": 20207,
+        "address_with_digits": 1660706
+      },
+      "numeric_token_counts": [
+        {
+          "numeric_tokens": 0,
+          "n": 71838
+        },
+        {
+          "numeric_tokens": 1,
+          "n": 1016131
+        },
+        {
+          "numeric_tokens": 2,
+          "n": 408777
+        },
+        {
+          "numeric_tokens": 3,
+          "n": 140432
+        },
+        {
+          "numeric_tokens": 4,
+          "n": 56299
+        },
+        {
+          "numeric_tokens": 5,
+          "n": 23270
+        },
+        {
+          "numeric_tokens": 6,
+          "n": 9289
+        },
+        {
+          "numeric_tokens": 7,
+          "n": 3810
+        },
+        {
+          "numeric_tokens": 8,
+          "n": 1441
+        },
+        {
+          "numeric_tokens": 9,
+          "n": 645
+        },
+        {
+          "numeric_tokens": 10,
+          "n": 256
+        },
+        {
+          "numeric_tokens": 11,
+          "n": 142
+        },
+        {
+          "numeric_tokens": 12,
+          "n": 92
+        },
+        {
+          "numeric_tokens": 13,
+          "n": 46
+        },
+        {
+          "numeric_tokens": 14,
+          "n": 24
+        },
+        {
+          "numeric_tokens": 15,
+          "n": 15
+        },
+        {
+          "numeric_tokens": 16,
+          "n": 11
+        },
+        {
+          "numeric_tokens": 17,
+          "n": 7
+        },
+        {
+          "numeric_tokens": 18,
+          "n": 5
+        },
+        {
+          "numeric_tokens": 19,
+          "n": 2
+        },
+        {
+          "numeric_tokens": 20,
+          "n": 3
+        },
+        {
+          "numeric_tokens": 21,
+          "n": 1
+        },
+        {
+          "numeric_tokens": 22,
+          "n": 3
+        },
+        {
+          "numeric_tokens": 23,
+          "n": 1
+        },
+        {
+          "numeric_tokens": 24,
+          "n": 1
+        },
+        {
+          "numeric_tokens": 26,
+          "n": 1
+        },
+        {
+          "numeric_tokens": 28,
+          "n": 1
+        },
+        {
+          "numeric_tokens": 31,
+          "n": 1
+        }
+      ],
+      "legal_suffixes": [
+        {
+          "suffix": "",
+          "n": 606599
+        },
+        {
+          "suffix": "private limited",
+          "n": 396484
+        },
+        {
+          "suffix": "llc",
+          "n": 188584
+        },
+        {
+          "suffix": "inc",
+          "n": 119197
+        },
+        {
+          "suffix": "pvt ltd",
+          "n": 110856
+        },
+        {
+          "suffix": "limited",
+          "n": 81972
+        },
+        {
+          "suffix": "sarl",
+          "n": 73480
+        },
+        {
+          "suffix": "sas",
+          "n": 52283
+        },
+        {
+          "suffix": "llp",
+          "n": 36037
+        },
+        {
+          "suffix": "ltd",
+          "n": 23783
+        },
+        {
+          "suffix": "corp",
+          "n": 19996
+        },
+        {
+          "suffix": "sa",
+          "n": 13181
+        },
+        {
+          "suffix": "corporation",
+          "n": 10088
+        },
+        {
+          "suffix": "gmbh",
+          "n": 3
+        },
+        {
+          "suffix": "incorporated",
+          "n": 1
+        }
+      ]
+    },
+    "test_source2": {
+      "n": 4887273,
+      "unique_ids": 4887273,
+      "unique_names": 4311041,
+      "unique_addresses": 4224784,
+      "text_characters": 449635231,
+      "invalid_prefixes": 0,
+      "file_bytes": 509456422,
+      "sha256": "79d906c7497af2ace70aa277f6e334a652094909de99bd6c57b53420b6a7b2dd",
+      "schema": {
+        "entity_id": "VARCHAR",
+        "business_name": "VARCHAR",
+        "business_address": "VARCHAR",
+        "country": "VARCHAR"
+      },
+      "fields": {
+        "entity_id": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 11.888974894588454,
+          "min_length": 6,
+          "max_length": 12,
+          "length_quantiles": [
+            11.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0
+          ]
+        },
+        "business_name": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 49,
+          "mean_length": 25.703646184692364,
+          "min_length": 2,
+          "max_length": 102,
+          "length_quantiles": [
+            8.0,
+            19.0,
+            25.0,
+            32.0,
+            42.0,
+            49.0
+          ]
+        },
+        "business_address": {
+          "null_count": 0,
+          "empty_strings": 129408,
+          "blank_after_trim": 129408,
+          "textual_missing_markers": 0,
+          "mean_length": 50.413405594490015,
+          "min_length": 0,
+          "max_length": 269,
+          "length_quantiles": [
+            0.0,
+            32.0,
+            43.0,
+            67.0,
+            99.0,
+            120.0
+          ]
+        },
+        "country": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 3.995224535236726,
+          "min_length": 2,
+          "max_length": 6,
+          "length_quantiles": [
+            2.0,
+            2.0,
+            5.0,
+            5.0,
+            6.0,
+            6.0
+          ]
+        }
+      },
+      "countries": [
+        {
+          "country": "India",
+          "n": 2312565
+        },
+        {
+          "country": "US",
+          "n": 1871330
+        },
+        {
+          "country": "France",
+          "n": 703378
+        }
+      ],
+      "exact_duplicates": {
+        "duplicate_groups": 21909,
+        "redundant_rows": 22641,
+        "largest_group": 5
+      },
+      "normalized_duplicates": {
+        "duplicate_groups": 53906,
+        "redundant_rows": 56112,
+        "largest_group": 5
+      },
+      "text_patterns": {
+        "nonascii_name": 928158,
+        "nonascii_address": 720665,
+        "devanagari": 550530,
+        "tamil": 69865,
+        "cyrillic": 0,
+        "cjk": 0,
+        "arabic": 0,
+        "postal5_like": 221147,
+        "postal6_like": 26789,
+        "name_with_digits": 190009,
+        "address_with_digits": 4529243
+      },
+      "numeric_token_counts": [
+        {
+          "numeric_tokens": 0,
+          "n": 358030
+        },
+        {
+          "numeric_tokens": 1,
+          "n": 2784019
+        },
+        {
+          "numeric_tokens": 2,
+          "n": 997528
+        },
+        {
+          "numeric_tokens": 3,
+          "n": 438128
+        },
+        {
+          "numeric_tokens": 4,
+          "n": 184320
+        },
+        {
+          "numeric_tokens": 5,
+          "n": 75432
+        },
+        {
+          "numeric_tokens": 6,
+          "n": 29795
+        },
+        {
+          "numeric_tokens": 7,
+          "n": 11738
+        },
+        {
+          "numeric_tokens": 8,
+          "n": 4576
+        },
+        {
+          "numeric_tokens": 9,
+          "n": 1852
+        },
+        {
+          "numeric_tokens": 10,
+          "n": 784
+        },
+        {
+          "numeric_tokens": 11,
+          "n": 478
+        },
+        {
+          "numeric_tokens": 12,
+          "n": 248
+        },
+        {
+          "numeric_tokens": 13,
+          "n": 149
+        },
+        {
+          "numeric_tokens": 14,
+          "n": 80
+        },
+        {
+          "numeric_tokens": 15,
+          "n": 27
+        },
+        {
+          "numeric_tokens": 16,
+          "n": 26
+        },
+        {
+          "numeric_tokens": 17,
+          "n": 23
+        },
+        {
+          "numeric_tokens": 18,
+          "n": 6
+        },
+        {
+          "numeric_tokens": 19,
+          "n": 12
+        },
+        {
+          "numeric_tokens": 20,
+          "n": 9
+        },
+        {
+          "numeric_tokens": 21,
+          "n": 5
+        },
+        {
+          "numeric_tokens": 22,
+          "n": 3
+        },
+        {
+          "numeric_tokens": 23,
+          "n": 3
+        },
+        {
+          "numeric_tokens": 26,
+          "n": 1
+        },
+        {
+          "numeric_tokens": 31,
+          "n": 1
+        }
+      ],
+      "legal_suffixes": [
+        {
+          "suffix": "",
+          "n": 3098693
+        },
+        {
+          "suffix": "private limited",
+          "n": 260527
+        },
+        {
+          "suffix": "llc",
+          "n": 259840
+        },
+        {
+          "suffix": "limited",
+          "n": 255658
+        },
+        {
+          "suffix": "ltd",
+          "n": 255401
+        },
+        {
+          "suffix": "inc",
+          "n": 200526
+        },
+        {
+          "suffix": "pvt ltd",
+          "n": 119495
+        },
+        {
+          "suffix": "sarl",
+          "n": 112380
+        },
+        {
+          "suffix": "corp",
+          "n": 96538
+        },
+        {
+          "suffix": "sas",
+          "n": 79182
+        },
+        {
+          "suffix": "llp",
+          "n": 65214
+        },
+        {
+          "suffix": "corporation",
+          "n": 41344
+        },
+        {
+          "suffix": "sa",
+          "n": 29468
+        },
+        {
+          "suffix": "incorporated",
+          "n": 12994
+        },
+        {
+          "suffix": "gmbh",
+          "n": 13
+        }
+      ]
+    },
+    "test_source3": {
+      "n": 5082316,
+      "unique_ids": 5082316,
+      "unique_names": 4521929,
+      "unique_addresses": 4456436,
+      "text_characters": 458831583,
+      "invalid_prefixes": 0,
+      "file_bytes": 506002772,
+      "sha256": "850942b11d2a4343486ed0834e28bce9f3b385f3fd497fd60ccf4ea3b8bda035",
+      "schema": {
+        "entity_id": "VARCHAR",
+        "business_name": "VARCHAR",
+        "business_address": "VARCHAR",
+        "country": "VARCHAR"
+      },
+      "fields": {
+        "entity_id": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 11.888712744347263,
+          "min_length": 4,
+          "max_length": 12,
+          "length_quantiles": [
+            10.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0,
+            12.0
+          ]
+        },
+        "business_name": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 61,
+          "mean_length": 25.65539018038233,
+          "min_length": 2,
+          "max_length": 103,
+          "length_quantiles": [
+            6.0,
+            19.0,
+            25.0,
+            32.0,
+            42.0,
+            50.0
+          ]
+        },
+        "business_address": {
+          "null_count": 0,
+          "empty_strings": 136098,
+          "blank_after_trim": 136098,
+          "textual_missing_markers": 0,
+          "mean_length": 48.74047501178597,
+          "min_length": 0,
+          "max_length": 267,
+          "length_quantiles": [
+            0.0,
+            35.0,
+            43.0,
+            59.0,
+            94.0,
+            117.0
+          ]
+        },
+        "country": {
+          "null_count": 0,
+          "empty_strings": 0,
+          "blank_after_trim": 0,
+          "textual_missing_markers": 0,
+          "mean_length": 3.995440661304807,
+          "min_length": 2,
+          "max_length": 6,
+          "length_quantiles": [
+            2.0,
+            2.0,
+            5.0,
+            5.0,
+            6.0,
+            6.0
+          ]
+        }
+      },
+      "countries": [
+        {
+          "country": "India",
+          "n": 2405000
+        },
+        {
+          "country": "US",
+          "n": 1945701
+        },
+        {
+          "country": "France",
+          "n": 731615
+        }
+      ],
+      "exact_duplicates": {
+        "duplicate_groups": 15861,
+        "redundant_rows": 16293,
+        "largest_group": 4
+      },
+      "normalized_duplicates": {
+        "duplicate_groups": 40273,
+        "redundant_rows": 41790,
+        "largest_group": 4
+      },
+      "text_patterns": {
+        "nonascii_name": 737515,
+        "nonascii_address": 729222,
+        "devanagari": 454885,
+        "tamil": 57708,
+        "cyrillic": 0,
+        "cjk": 0,
+        "arabic": 0,
+        "postal5_like": 229317,
+        "postal6_like": 26777,
+        "name_with_digits": 202470,
+        "address_with_digits": 4700823
+      },
+      "numeric_token_counts": [
+        {
+          "numeric_tokens": 0,
+          "n": 381493
+        },
+        {
+          "numeric_tokens": 1,
+          "n": 2884294
+        },
+        {
+          "numeric_tokens": 2,
+          "n": 1142883
+        },
+        {
+          "numeric_tokens": 3,
+          "n": 413156
+        },
+        {
+          "numeric_tokens": 4,
+          "n": 159114
+        },
+        {
+          "numeric_tokens": 5,
+          "n": 62443
+        },
+        {
+          "numeric_tokens": 6,
+          "n": 23514
+        },
+        {
+          "numeric_tokens": 7,
+          "n": 9101
+        },
+        {
+          "numeric_tokens": 8,
+          "n": 3504
+        },
+        {
+          "numeric_tokens": 9,
+          "n": 1420
+        },
+        {
+          "numeric_tokens": 10,
+          "n": 689
+        },
+        {
+          "numeric_tokens": 11,
+          "n": 258
+        },
+        {
+          "numeric_tokens": 12,
+          "n": 172
+        },
+        {
+          "numeric_tokens": 13,
+          "n": 105
+        },
+        {
+          "numeric_tokens": 14,
+          "n": 54
+        },
+        {
+          "numeric_tokens": 15,
+          "n": 34
+        },
+        {
+          "numeric_tokens": 16,
+          "n": 26
+        },
+        {
+          "numeric_tokens": 17,
+          "n": 16
+        },
+        {
+          "numeric_tokens": 18,
+          "n": 11
+        },
+        {
+          "numeric_tokens": 19,
+          "n": 9
+        },
+        {
+          "numeric_tokens": 20,
+          "n": 2
+        },
+        {
+          "numeric_tokens": 22,
+          "n": 8
+        },
+        {
+          "numeric_tokens": 23,
+          "n": 2
+        },
+        {
+          "numeric_tokens": 24,
+          "n": 2
+        },
+        {
+          "numeric_tokens": 26,
+          "n": 4
+        },
+        {
+          "numeric_tokens": 28,
+          "n": 1
+        },
+        {
+          "numeric_tokens": 29,
+          "n": 1
+        }
+      ],
+      "legal_suffixes": [
+        {
+          "suffix": "",
+          "n": 3088043
+        },
+        {
+          "suffix": "private limited",
+          "n": 355270
+        },
+        {
+          "suffix": "limited",
+          "n": 296223
+        },
+        {
+          "suffix": "llc",
+          "n": 281521
+        },
+        {
+          "suffix": "ltd",
+          "n": 256978
+        },
+        {
+          "suffix": "inc",
+          "n": 209135
+        },
+        {
+          "suffix": "pvt ltd",
+          "n": 146551
+        },
+        {
+          "suffix": "sarl",
+          "n": 116202
+        },
+        {
+          "suffix": "corp",
+          "n": 93929
+        },
+        {
+          "suffix": "sas",
+          "n": 81958
+        },
+        {
+          "suffix": "llp",
+          "n": 77123
+        },
+        {
+          "suffix": "corporation",
+          "n": 38245
+        },
+        {
+          "suffix": "sa",
+          "n": 30418
+        },
+        {
+          "suffix": "incorporated",
+          "n": 10706
+        },
+        {
+          "suffix": "gmbh",
+          "n": 14
+        }
+      ]
+    }
+  },
+  "notes": [
+    "All per-file counts exact, lengths exact quantiles. Strings preserved; blank TSV cells are empty strings, no implicit NA conversion. Postal tokens are shape proxies, not geocoded postal codes."
+  ],
+  "ground_truth": {
+    "file_bytes": 127015583,
+    "sha256": "70bc1d8a16c667e0155c2105d0ab2ebe41d7e7a85d8a529e3ca81c6c3a5af037",
+    "integrity": {
+      "record_count": 2206821,
+      "duplicate_s1": 0,
+      "missing_s1": 0,
+      "unknown_s1": 0,
+      "positive_pairs": 7638365,
+      "unknown_targets": 0,
+      "duplicate_pairs": 0,
+      "shared_targets": 0
+    },
+    "match_counts": [
+      {
+        "n_matches": 0,
+        "n": 123247
+      },
+      {
+        "n_matches": 1,
+        "n": 119157
+      },
+      {
+        "n_matches": 2,
+        "n": 375212
+      },
+      {
+        "n_matches": 3,
+        "n": 530841
+      },
+      {
+        "n_matches": 4,
+        "n": 484115
+      },
+      {
+        "n_matches": 5,
+        "n": 321957
+      },
+      {
+        "n_matches": 6,
+        "n": 164868
+      },
+      {
+        "n_matches": 7,
+        "n": 63968
+      },
+      {
+        "n_matches": 8,
+        "n": 18680
+      },
+      {
+        "n_matches": 9,
+        "n": 4205
+      },
+      {
+        "n_matches": 10,
+        "n": 534
+      },
+      {
+        "n_matches": 11,
+        "n": 37
+      }
+    ],
+    "source_distribution": [
+      {
+        "has_s2": false,
+        "has_s3": false,
+        "n": 123247
+      },
+      {
+        "has_s2": false,
+        "has_s3": true,
+        "n": 164498
+      },
+      {
+        "has_s2": true,
+        "has_s3": false,
+        "n": 143029
+      },
+      {
+        "has_s2": true,
+        "has_s3": true,
+        "n": 1776047
+      }
+    ],
+    "by_country": [
+      {
+        "country": "US",
+        "n": 1323633,
+        "mean_matches": 3.4590570044717834,
+        "singletons": 73896,
+        "one_match": 71689,
+        "two_matches": 225285,
+        "three_plus": 952763
+      },
+      {
+        "country": "India",
+        "n": 883188,
+        "mean_matches": 3.4645432229604567,
+        "singletons": 49351,
+        "one_match": 47468,
+        "two_matches": 149927,
+        "three_plus": 636442
+      }
+    ],
+    "cross_country_pairs": [
+      {
+        "source_country": "India",
+        "target_country": "India",
+        "n": 3059843
+      },
+      {
+        "source_country": "US",
+        "target_country": "US",
+        "n": 4578522
+      }
+    ],
+    "ownership_counts": [
+      {
+        "owners": 1,
+        "targets": 7638365
+      }
+    ]
+  },
+  "train_test_overlap": {
+    "source1": {
+      "shared_ids": 0,
+      "exact_record_test_rows": 0
+    },
+    "source2": {
+      "shared_ids": 0,
+      "exact_record_test_rows": 0
+    },
+    "source3": {
+      "shared_ids": 0,
+      "exact_record_test_rows": 0
+    }
+  },
+  "elapsed_seconds": 33.52126504096668,
+  "peak_rss_gib": 3.1410064697265625,
+  "database_bytes": 2586849280
+}
