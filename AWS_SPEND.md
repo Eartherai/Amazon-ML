@@ -29,3 +29,6 @@ P5-INDEX-001 exit0; stop status22:43:07Z, termination observed22:45:43Z. Job wal
 
 ## 2026-09-24T22:52:42.142603+00:00 — P5-FULL-RETRIEVAL-001 / EXP-025 active
 Profile amamzon_01_a1_0, account ending6318, us-east-1, R8i.2xlarge on-demand, instancei-0609d158c38e96160, start2026-09-24T22:47:45.616413+00:00. Full2,206,821S1retrieval + unlocked label evaluation. Query-time estimate17.76hours/$9.87compute; hard OS runtime cap24hours, total planning allowance$18 (not a guaranteed billing cap). Automatic terminate after verified uploads or failure. Stop/runtime/actualcost pending. S3prefixamazon-ml-2026/phase5/runs/P5-FULL-RETRIEVAL-001. Remaining credit unverified.
+
+## 2026-09-24T23:22:32.013520+00:00 — SUB-001 cost controls and capacity
+Estimated Cost Explorer gross month-to-date at prelaunch: $0.0099310264 (billing lag; not final). Active full-retrieval worker maximum planned commitment $18. Four attempted SUB-001 Spot launches were rejected for insufficient capacity before creation and did not start billable instances. Proposed SUB-001 job had 36h OS cutoff, max Spot price $0.30/h, $1 storage/transfer allowance, $11.80 computed maximum and $12 planning ceiling. Alerts at gross $25/$50/$75/$100/$125. Soft cap $120; hard planning cap $150; target reserve at least $50 from user-reported ~$200, balance not verified.

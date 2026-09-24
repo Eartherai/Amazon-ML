@@ -79,3 +79,6 @@ Best remains20k numeric-v2 macro0.9318965293; no new full-data score. Active AWS
 
 ### Phase5 benchmark completed
 All full-target persistent indexes built,184S3objects verified; benchmark instance terminated. Current best remains20k0.9318965293. Full2.2M retrieval is prepared next (17.76h projection,24hcap,$18planning ceiling). Active profile amamzon_01_a1_0. CPU64/G8/SageMakerG5quota requests CASE_OPENED, not approved. Fold4 remains closed. See docs/PHASE5_CHECKPOINT.md.
+
+## 2026-09-24T23:22:32.013520+00:00 — SUB-001 live status
+SUB-001 RUNNING on Mac against complete test set; frozen 51-feature LightGBM, threshold0.83, 20k natural-sample training population. Input bundle v002 SHA-verified; exact model SHA256 d84957742e05f5cd790d7dfc8c14ca05d3b5a2dc941a5094b8874d623b35117b. Local CV macro F0.5 0.9318965293. Final candidate count, inference runtime, official validator, file hashes, portal submission and public leaderboard PENDING. 69 tests pass. Fold4 CLOSED. AWS full-training retrieval active, with 24h independent cutoff and $18 planning ceiling; 4 SUB-001 Spot attempts lacked capacity, no additional instance launched. Mac path running; cloud validator still required. Project gross soft cap $120, planning hard cap $150; AWS credit balance unverified.

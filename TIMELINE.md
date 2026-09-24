@@ -112,3 +112,9 @@ EXP-025 / P5-FULL-RETRIEVAL-001 launched i-0609d158c38e96160, code5ac0845, all2,
 
 ## 2026-09-24T22:54:18.545341+00:00 — Codex — full-run first checkpoint verified
 EC2 console reports India/name shard0 completed:1,380,300routepairs in182.8521seconds. S3contains first shard archive10,864,640bytes; worker upload uses conditional creation and SHA256head verification before reporting completion. This is one name-route shard, not full union metrics. Fullrun remains active.66tests pass. NoFold4evaluation, finalvalidator or submission.
+
+## 2026-09-24T23:22:32.013520+00:00 — Codex — SUB-001 frozen and local full inference started
+- Frozen 51-feature LightGBM NUMERIC-V2 from 20,000 natural-sample entities; threshold 0.83; Fold4 CLOSED. Model SHA256 d84957742e05f5cd790d7dfc8c14ca05d3b5a2dc941a5094b8874d623b35117b. Code tag SUB001-BASELINE; immutable v002 test inputs checksum verified in S3.
+- Test: 1,732,544 S1 and 9,969,589 S2/S3 targets, including France. Six-query and 300-query all-country smoke runs completed; 69 tests pass. Full Mac run outputs/submissions/SUB-001/local-full/inference is active. Final pairs, runtime, hashes, official validator and leaderboard are pending.
+- Gross budget guard measured $0.0099310264 estimated month-to-date billing at prelaunch; other active full-retrieval worker maximum commitment $18. Proposed bounded Spot max $11.80; project worst-case $29.81 < $120 soft/$150 hard. $25/$50/$75/$100/$125 gross budget alerts configured. Credit balance unverified.
+- Four Spot attempts across R8i/R6i/R7a/R7i failed on EC2 capacity before instance creation; no SUB-001 EC2 running. Training full-retrieval EC2 i-0609d158c38e96160 remains running with 24h OS cutoff.
