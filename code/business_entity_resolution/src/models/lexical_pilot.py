@@ -4,7 +4,7 @@ Fit S1 fold1; select model/threshold on a fixed half of sampled fold0; report th
 other half separately. This is a development pilot, NOT OOF or final holdout.
 """
 from __future__ import annotations
-import argparse,hashlib,json,math,os,resource,time
+import argparse,hashlib,json,math,os,resource,time,subprocess
 from pathlib import Path
 import duckdb
 import numpy as np
@@ -90,6 +90,8 @@ def main():
         for country in ['India','US']:
             selected={q['entity_id'] for q in queries if q['country']==country}&eval_ids
             slices[country]=evaluate({q:truth[q] for q in selected},{q:predictions[q] for q in selected})
+        for target_source in ['S2-','S3-']:
+            slices[target_source[:2]]=evaluate({q:{t for t in truth[q] if t.startswith(target_source)} for q in eval_ids},{q:{t for t in predictions[q] if t.startswith(target_source)} for q in eval_ids})
         for family,predicate in [('singleton',lambda n:n==0),('1_match',lambda n:n==1),('2_matches',lambda n:n==2),('3_to_5_matches',lambda n:3<=n<=5),('6_plus_matches',lambda n:n>=6)]:
             selected={q for q in eval_ids if predicate(len(truth[q]))}
             if selected:slices[family]=evaluate({q:truth[q] for q in selected},{q:predictions[q] for q in selected})
@@ -98,7 +100,13 @@ def main():
         print(json.dumps({'model':name,'threshold':threshold,'calibration_macro':scores['calibration']['macro_f0_5'],'development_check':scores['development_check']}),flush=True)
     best=max(results,key=lambda r:r['scores']['calibration']['macro_f0_5'])
     prediction_frame=dev.select('source1_entity_id','target_id','country','label').with_columns([pl.Series(name,prob) for name,prob in all_probs.items()]);prediction_frame.write_parquet(a.output/'dev_pair_predictions.parquet')
+    selected_scores=all_probs[best['name']];chosen=dev.with_columns(pl.Series('probability',selected_scores)).with_columns((pl.col('probability')>=best['threshold']).alias('predicted'))
+    errors=chosen.filter((pl.col('label')==0)&pl.col('predicted')).sort('probability',descending=True)
+    errors.head(200).write_csv(a.output/'highest_confidence_dev_false_positives.csv')
+    chosen.filter((pl.col('label')==1)&~pl.col('predicted')).sort('probability').head(200).write_csv(a.output/'lowest_confidence_retrieved_dev_positives.csv')
+    families={'false_positive_pairs':len(errors),'exact_name':int(errors['name_exact'].sum()),'name_strong_address_weak':len(errors.filter((pl.col('name_jw')>=.9)&(pl.col('address_jw')<.7))),'address_strong_name_weak':len(errors.filter((pl.col('address_jw')>=.9)&(pl.col('name_jw')<.7))),'numeric_conflict':int(errors['numeric_conflict'].sum()),'singleton_queries':len({q for q in errors['source1_entity_id'] if not truth[q]})}
+    (a.output/'error_families.json').write_text(json.dumps({'scope':'all sampled development, overlapping diagnostic families','counts':families},indent=2))
     # In-sample hard negatives are diagnostic examples only; a later round must use entity-OOF mining.
-    report={'scope':'Small first matcher; 1000 fold1 train entities, 1000 fold0 dev entities split by fixed hash into calibration/check. Not OOF; fold4 remains closed. Candidate architecture was selected on fold0, so check is not an untouched architecture holdout.','train_pairs':len(train),'train_positive_pairs':int(ytrain.sum()),'dev_pairs':len(dev),'calibration_entities':len(calib),'development_check_entities':len(eval_ids),'selected_model':best['name'],'selection_rule':'Maximum calibration macro F0.5 only; tie favors first model','models':results,'features':FEATURES,'runtime_seconds':time.perf_counter()-start,'peak_rss_gib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024**3,'aws_compute_cost_usd':0,'lightgbm_version':lgb.__version__,'limitations':['No final test predictions or submission','No OOF hard-negative mining yet','Only 1000 training entities; expand before selection','Two char3 routes, not full candidate union; current score cannot be assigned to other candidate configurations','No guarantee of calibrated probabilities from raw GBDT scores']}
+    report={'git_commit':subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),'module_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'scope':'Small first matcher; 1000 fold1 train entities, 1000 fold0 dev entities split by fixed hash into calibration/check. Not OOF; fold4 remains closed. Candidate architecture was selected on fold0, so check is not an untouched architecture holdout.','train_pairs':len(train),'train_positive_pairs':int(ytrain.sum()),'dev_pairs':len(dev),'calibration_entities':len(calib),'development_check_entities':len(eval_ids),'selected_model':best['name'],'selection_rule':'Maximum calibration macro F0.5 only; tie favors first model','models':results,'features':FEATURES,'runtime_seconds':time.perf_counter()-start,'peak_rss_gib':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024**3,'aws_compute_cost_usd':0,'lightgbm_version':lgb.__version__,'limitations':['No final test predictions or submission','No OOF hard-negative mining yet','Only 1000 training entities; expand before selection','Two char3 routes, not full candidate union; current score cannot be assigned to other candidate configurations','No guarantee of calibrated probabilities from raw GBDT scores']}
     (a.output/'metrics.json').write_text(json.dumps(report,indent=2));print(json.dumps({'selected':best['name'],'runtime':report['runtime_seconds']}))
 if __name__=='__main__':main()

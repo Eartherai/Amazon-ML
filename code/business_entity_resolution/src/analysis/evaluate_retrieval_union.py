@@ -12,7 +12,7 @@ from src.blocking.token_candidates import summarize_candidates
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--translit',type=Path,default=Path('outputs/candidates/TRANS-002/name_translit_char3.parquet'));a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
+    p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--include-expanded-token',action='store_true');p.add_argument('--translit',type=Path,default=Path('outputs/candidates/TRANS-002/name_translit_char3.parquet'));a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
     start=time.perf_counter();db=duckdb.connect('artifacts/audit.duckdb',read_only=True,config={'threads':2,'memory_limit':'2GB'})
     querypath='outputs/candidates/TOKEN-001/run-002/pilot_queries.parquet';qdf=pl.read_parquet(querypath)
     queries=[dict(zip(('entity_id','country','name','address'),r)) for r in qdf.select('entity_id','country','n','a').iter_rows()];truth={q['entity_id']:set() for q in queries}
@@ -24,6 +24,7 @@ def main():
         path=Path(f'outputs/candidates/CHAR-001/{field}_char{n}.parquet')
         if path.exists():paths[field+f'_char{n}']=path
     if a.translit.exists():paths['name_translit_char3']=a.translit
+    if a.include_expanded_token:paths['expanded_token_union']=Path('outputs/candidates/TOKEN-002/final_candidates.parquet')
     routes={};provenance=[]
     for route,path in paths.items():
         frame=pl.read_parquet(path);routepairs=set(frame.select('source1_entity_id','target_id').iter_rows());routes[route]=routepairs
