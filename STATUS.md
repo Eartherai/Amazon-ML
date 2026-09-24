@@ -1,6 +1,6 @@
 # Status
 
-Updated 2026-09-25T01:54:17.719946+05:30. **Phase 2 evidence package completed; retrieval pilot implemented.** Learned-model training has not started. No final test predictions or leaderboard submissions exist.
+Updated 2026-09-25T01:54:17.719946+05:30. **Phase 3 IN PROGRESS: research, full-target sparse retrieval and S3 multi-view foundation.** Small learned matcher pilots are complete; full-scale training has not started. No final test predictions or leaderboard submissions exist.
 
 ## Current understanding
 
@@ -98,3 +98,11 @@ No blocker to local retrieval prototypes. Remote limitations: zero verified paid
 10. First GBDT only after sufficient candidate coverage; then OOF macro F0.5 calibration.
 
 See docs/PREPROCESSING_VISUAL_REPORT.html, docs/PREPROCESSING_ANALYSIS.md and docs/CANDIDATE_PILOT.md.
+
+## Latest Phase 3 checkpoint — 2026-09-24T21:09:35.946477+00:00
+
+Broad candidate union link recall **97.62%**, complete-entity recall **93.05%**, oracle macro **0.99116**, average candidates **952.4**, P95 **1406**, P99 **1460**. Scope: 1,000 dev queries, full10.32M pool.
+
+Best calibration-selected matcher: GBDT-004 multiview, threshold 0.58; 505-entity check macro **0.91056**, precision **95.35%**, recall **86.26%**, singleton **80.00%**. Not OOF/final holdout. First serious model exists; earlier no-model statements above describe the previous phase. Fold4 closed.
+
+S3 raw + processed complete, 51 checksum-verified objects, 4.33GB. Storage now accrues nominal cost (~$0.0927/month), actual bill unknown; compute $0. Expanded-token volume and nonASCII/hard-pair coverage remain concerns. See docs/PHASE3_CHECKPOINT.md for tables and next work.

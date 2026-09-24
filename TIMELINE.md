@@ -50,3 +50,17 @@ All timestamps include timezone. Never replace historical entries.
 - Repairs: MORPH-001 metadata failed due to variable shadowing, preserved and rerun as MORPH-002. TOKEN-001 first correlated-UNNEST plan hit scratch cap; preserved failure/source and rerun successfully using streamed partitions. Candidate analysis TEMP VIEW parameter binding changed to TEMP TABLE before successful run.
 - Interpretation: raw/Unicode-safe parallel views are essential; exact token routes leave substantial recall gaps. Aggressive normalization is not universally better; ambiguous learned maps remain disabled.
 - Next action: character-ngram and transliteration candidate rescue, larger stratified retrieval benchmark, no model training until coverage improves.
+
+## 2026-09-25T02:15:13.801446+05:30 | Codex | Phase 3 begins
+- Starting commit a716ccc57e620026c3e3c50a80ebbe70e5ee74fe; all 44 tests passed; 20GiB free disk.
+- AWS authentication and configured us-east-1 region verified read-only; no secrets logged.
+- User adopts Phase 3 as adaptable guidance: public methodology research, candidate recall, S3 foundation, models only after retrieval evidence.
+- Exact metric count form retained: 1.25TP/(TP+FP+0.25FN); both-empty=1. No claim that beta=0.5 means only a 2x FP penalty.
+- Next: bounded parallel sparse retrieval/research/Parquet preparation; immutable raw upload with verified cost and access controls.
+
+## 2026-09-24T21:09:35.946477+00:00 | Codex | Phase 3 measured checkpoint
+- Completed six full-target char3/4/5 routes, transliteration, expanded tokens, union ablations, two lexical GBDTs and multiview/hard-negative refinement.
+- Best calibration-selected pilot check macro 0.910560; broad union link recall 0.976225. Not final holdout/OOF. Hard-negative weighting rejected on calibration.
+- S3 raw/processed SHA256 verified; 35 Parquet shards preserve all raw records. No rented compute.
+- Failures preserved: TRANS-001 temp-view connection scope, GBDT-001 reserved label alias, GBDT-003 reserved owner alias. Fresh runs succeeded.
+- Next: larger entity-split training, production retrieval throughput, singleton/OOF calibration and residual error rescue.

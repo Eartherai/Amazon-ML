@@ -39,11 +39,11 @@ def materialize(db,queryfile:Path,routedir:Path,dest:Path,training:bool):
        max(CASE WHEN route='name_char3' THEN 1.0/route_rank ELSE 0 END) name_rank,
        max(CASE WHEN route='address_char3' THEN 1.0/route_rank ELSE 0 END) address_rank,
        count(DISTINCT route) routes FROM read_parquet(?) GROUP BY 1,2''',[[str(routedir/f'{field}_char3.parquet') for field in ['name','address']]])
-    db.execute('''CREATE OR REPLACE TEMP TABLE labeled AS SELECT r.*,p.target_id IS NOT NULL label,o.owner_fold
+    db.execute('''CREATE OR REPLACE TEMP TABLE labeled AS SELECT r.*,p.target_id IS NOT NULL AS is_label,o.owner_fold
       FROM r LEFT JOIN positive_pairs p USING(source1_entity_id,target_id)
       JOIN target_ownership o ON o.target_id=r.target_id''')
     condition='WHERE owner_fold IN (-1,1,2,3)' if training else ''
-    if training and db.execute('SELECT count(*) FROM labeled WHERE label AND owner_fold<>1').fetchone()[0]:raise AssertionError('Unexpected positive owner in training')
+    if training and db.execute('SELECT count(*) FROM labeled WHERE is_label AND owner_fold<>1').fetchone()[0]:raise AssertionError('Unexpected positive owner in training')
     cursor=db.execute(f'''SELECT l.*,q.n,q.a,t.n target_name,t.a target_address,q.country,t.country target_country
        FROM labeled l JOIN q ON q.entity_id=l.source1_entity_id JOIN targets_normalized t ON t.entity_id=l.target_id {condition} ORDER BY l.source1_entity_id,l.target_id''')
     cols=[x[0] for x in cursor.description];rows=cursor.fetchall();result=[]
@@ -51,7 +51,7 @@ def materialize(db,queryfile:Path,routedir:Path,dest:Path,training:bool):
         r=dict(zip(cols,values));n=text_features(r['n'],r['target_name']);a=text_features(r['a'],r['target_address'])
         na,nb=set(re.findall(r'\d+',r['a'])),set(re.findall(r'\d+',r['target_address']));shared=len(na&nb)
         features=n+a+[n[1]*a[1],float(shared>0),float(bool(na and nb) and not shared),shared/len(na|nb) if na or nb else 0.,float(not r['a']),float(not r['target_address']),float(r['country']==r['target_country']),float(r['target_id'].startswith('S2-')),r['name_score'],r['address_score'],r['name_rank'],r['address_rank'],r['routes']]
-        result.append((r['source1_entity_id'],r['target_id'],r['country'],int(r['label']),*features))
+        result.append((r['source1_entity_id'],r['target_id'],r['country'],int(r['is_label']),*features))
         if i and i%50000==0:print(json.dumps({'feature_rows':i,'training':training}),flush=True)
     frame=pl.DataFrame(result,schema=['source1_entity_id','target_id','country','label']+FEATURES,orient='row').with_columns(pl.col(FEATURES).cast(pl.Float32));frame.write_parquet(dest,compression='zstd');return frame
 
