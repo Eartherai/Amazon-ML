@@ -1,6 +1,6 @@
 # Status
 
-Updated 2026-09-25T01:08:47.520574+05:30. **Initial research/audit phase complete.** Learned-model training has not started. No final test predictions or leaderboard submissions exist.
+Updated 2026-09-25T01:54:17.719946+05:30. **Phase 2 evidence package completed; retrieval pilot implemented.** Learned-model training has not started. No final test predictions or leaderboard submissions exist.
 
 ## Current understanding
 
@@ -28,7 +28,8 @@ Business entity resolution with multi-match output and exact macro F0.5. Every S
 - Singleton / non-singleton F0.5: 1.00000000 / 0.02894529.
 - Candidate recall: 1.3143%; 20,075 pairs; oracle macro ceiling 0.08327203.
 - All-empty control: 0.05594612.
-- Latest successful experiment: EXP-001, code commit a5588f86bde3fa7495da58640b31d71720666e97.
+- Latest matcher experiment: EXP-001, code commit a5588f86bde3fa7495da58640b31d71720666e97.
+- Latest retrieval experiment: EXP-002 / TOKEN-001, code commit 70fa711c6c5f020445e6d8d1bca3c82348b8444c.
 - Locked fold 4: no model score computed.
 - Best public leaderboard: none from this task.
 
@@ -55,7 +56,7 @@ Next five unfinished experiments are items 2-6. Details and promotion gates in d
 
 Local M5/24 GiB confirmed; audit peak RSS 3.14 GiB; actual per-file memory measured separately. DuckDB 4 threads/6 GB cap. At test K=50, ~86.6M pairs; a 100-feature float32 matrix alone is ~34.7 GB, so batches/shards are required. Local disk about 20 GiB free after phase one; reserve 8 GiB.
 
-Task AWS spend **$0**; task Colab spend **0 units**. User-reported initial budget **$800 across four accounts**, not verified; current verified dollar balance unknown. Extra credits budget **$0** until confirmed. Preserve $300 contingency. AWS profile exists but session expired and default region missing; no cloud resources launched.
+Task AWS spend **$0**; task Colab spend **0 units**. Latest user-reported budget **~$200 on the configured account**; verified balance unknown. Other accounts and future credits are excluded. Read-only AWS STS authentication succeeded in us-east-1; no cloud resources launched.
 
 Colab official CLI 0.7.2 installed. Login verified after user sign-in; balance 0.00 compute units, rate 0.00/hr, zero assignments/sessions. Free GPU availability untested. Kaggle capacity not inspected or used.
 
@@ -65,10 +66,35 @@ LightGBM on blocked pairs, with Unicode/transliteration-aware lexical routes, na
 
 ## Verification
 
-23 tests pass, including hand-calculated metric cases, Unicode marks, strict TSV/membership checks, deterministic merging, multiple targets, unseen countries and the official validator on a synthetic fixture. Full data counts agree between independent DuckDB and Polars reads. Final real-output validation is pending final predictions.
+44 tests pass, including hand-calculated metric cases, Unicode marks, strict TSV/membership checks, deterministic merging, multiple targets, unseen countries and the official validator on a synthetic fixture. Full data counts agree between independent DuckDB and Polars reads. Final real-output validation is pending final predictions.
 
 ## Current blockers and next action
 
-No blocker to local retrieval prototypes. Remote blockers: zero verified paid Colab balance/free allocation unknown; expired AWS login, account/credit/region/GPU-quota confirmation outstanding. Linux ICU parity and large-scale retrieval speed remain unmeasured. No guarantee of winning.
+No blocker to local retrieval prototypes. Remote limitations: zero verified paid Colab balance/free allocation unknown; AWS credit eligibility/balance and GPU quota unverified. Authentication is working. Linux ICU parity and large-scale retrieval speed remain unmeasured. No guarantee of winning.
 
-**Next action:** implement EXP-002 high-recall lexical union, benchmark 4k-20k development queries against all training targets, then assess rescue from EXP-003/004 before fitting the matcher. Do not submit EXP-001.
+**Current next action:** add character-ngram retrieval and transliteration rescue to the full-target pilot, then measure marginal recall and candidate growth. The 77.33% lexical-union recall is inadequate. No learned matcher yet.
+
+## Phase 2 discoveries and current configuration
+
+- Full profiles: 24,229,173 records / 12 text fields / 30 country-field slices; 675 integrity checks passed. Full run 824.17s, peak process RSS 2.81 GiB; supplement 9.52s.
+- 34 figures, searchable local HTML report, exact within-country train/test JSD/PSI/Wasserstein comparisons.
+- PREP-001: 25k train-fold positive pairs; 100k-string benchmark; zero native parity mismatches. Primary preprocessing retains raw text, NFC/casefold and Unicode combining marks. Aggressive, sorted, Latin-folded and transliterated forms remain separate views. Learned maps disabled.
+- MORPH-002: 48,130 pair comparisons from 2,000 dev queries; light normalization exact positive name agreement 4.18% raw → 20.48%; aggressive raises equality but worsens some similarity discrimination. These are sample diagnostics, not model scores.
+- TOKEN-001/run-002: all 10,320,219 training targets, 1,000 dev queries. Union recall **77.33%**, 179,298 pairs; top-100 **73.56%**, 78,332 pairs. Oracle macro ceiling **0.86630** is not an achieved score. EXP-001 remains the only matcher score.
+- Candidate provenance and ranking persisted. 47/50 pilot singletons have candidates; do not infer a match from candidate existence.
+- Full corpus and sampled analysis scopes are explicit in docs/PREPROCESSING_ANALYSIS.md. No exhaustive all-pairs fuzzy deduplication or supervised France validation is claimed.
+
+## Next ten experiments, in order
+
+1. Full-target character 3/4/5gram candidate retrieval.
+2. Selective token fanout relaxation; diagnose queries with no rare keys.
+3. ICU transliterated rescue plus negative collision audit.
+4. Address-only retrieval with numeric evidence and missing-field handling.
+5. Per-route cap and rank-fusion ablations; retain broad union initially.
+6. Expand query sample by country and nonzero match-count strata.
+7. One-operation suffix/abbreviation map ablations; leave disabled otherwise.
+8. Cross-country and collision-group stress validation.
+9. Persistent index/cache and full-query batch throughput benchmark.
+10. First GBDT only after sufficient candidate coverage; then OOF macro F0.5 calibration.
+
+See docs/PREPROCESSING_VISUAL_REPORT.html, docs/PREPROCESSING_ANALYSIS.md and docs/CANDIDATE_PILOT.md.

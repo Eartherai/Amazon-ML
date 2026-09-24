@@ -1,0 +1,172 @@
+[
+  {
+    "file": "phase2_volume.png",
+    "title": "24.23 million source records: country composition changes",
+    "note": "Exact full-source counts. France exists only in test; no France labels are available."
+  },
+  {
+    "file": "phase2_business_name_length.png",
+    "title": "Name: exact distribution by source and country",
+    "note": "All records; curves show the central range where useful. Full tails and quantiles are retained in PROFILE-001."
+  },
+  {
+    "file": "phase2_business_name_tokens.png",
+    "title": "Name: exact distribution by source and country",
+    "note": "All records; curves show the central range where useful. Full tails and quantiles are retained in PROFILE-001."
+  },
+  {
+    "file": "phase2_business_name_ascii_numeric_tokens.png",
+    "title": "Name: exact distribution by source and country",
+    "note": "All records; curves show the central range where useful. Full tails and quantiles are retained in PROFILE-001."
+  },
+  {
+    "file": "phase2_business_name_punctuation.png",
+    "title": "Name: punctuation presence",
+    "note": "Exact full-corpus document presence; indicators overlap. Script patterns are not inferred language labels."
+  },
+  {
+    "file": "phase2_business_name_scripts.png",
+    "title": "Name: script indicators",
+    "note": "Exact full-corpus document presence; indicators overlap. Script patterns are not inferred language labels."
+  },
+  {
+    "file": "phase2_business_name_quality.png",
+    "title": "Name: missingness, scripts and formatting",
+    "note": "Exact full-corpus row rates. Indicators overlap; combining marks can be essential parts of a written word."
+  },
+  {
+    "file": "phase2_business_name_unicode.png",
+    "title": "Name: Unicode categories",
+    "note": "Character-weighted, exact full corpus. Categories partition codepoints; these are not record-level percentages."
+  },
+  {
+    "file": "phase2_business_name_vocabulary.png",
+    "title": "Name: a long tail of rare tokens",
+    "note": "Exact within-record token document frequency. Source sizes differ; rarity is not automatically an error."
+  },
+  {
+    "file": "phase2_business_name_duplicates.png",
+    "title": "Name: collision pressure",
+    "note": "Exact within-source/country field buckets, including blanks. Field equality does not imply business identity."
+  },
+  {
+    "file": "phase2_business_name_common_tokens.png",
+    "title": "Name: common tokens offer weak identity evidence",
+    "note": "Exact S1 document frequency. Test France is descriptive only; no learned mapping uses its labels."
+  },
+  {
+    "file": "phase2_business_address_length.png",
+    "title": "Address: exact distribution by source and country",
+    "note": "All records; curves show the central range where useful. Full tails and quantiles are retained in PROFILE-001."
+  },
+  {
+    "file": "phase2_business_address_tokens.png",
+    "title": "Address: exact distribution by source and country",
+    "note": "All records; curves show the central range where useful. Full tails and quantiles are retained in PROFILE-001."
+  },
+  {
+    "file": "phase2_business_address_ascii_numeric_tokens.png",
+    "title": "Address: exact distribution by source and country",
+    "note": "All records; curves show the central range where useful. Full tails and quantiles are retained in PROFILE-001."
+  },
+  {
+    "file": "phase2_business_address_punctuation.png",
+    "title": "Address: punctuation presence",
+    "note": "Exact full-corpus document presence; indicators overlap. Script patterns are not inferred language labels."
+  },
+  {
+    "file": "phase2_business_address_scripts.png",
+    "title": "Address: script indicators",
+    "note": "Exact full-corpus document presence; indicators overlap. Script patterns are not inferred language labels."
+  },
+  {
+    "file": "phase2_business_address_quality.png",
+    "title": "Address: missingness, scripts and formatting",
+    "note": "Exact full-corpus row rates. Indicators overlap; combining marks can be essential parts of a written word."
+  },
+  {
+    "file": "phase2_business_address_unicode.png",
+    "title": "Address: Unicode categories",
+    "note": "Character-weighted, exact full corpus. Categories partition codepoints; these are not record-level percentages."
+  },
+  {
+    "file": "phase2_business_address_vocabulary.png",
+    "title": "Address: a long tail of rare tokens",
+    "note": "Exact within-record token document frequency. Source sizes differ; rarity is not automatically an error."
+  },
+  {
+    "file": "phase2_business_address_duplicates.png",
+    "title": "Address: collision pressure",
+    "note": "Exact within-source/country field buckets, including blanks. Field equality does not imply business identity."
+  },
+  {
+    "file": "phase2_business_address_common_tokens.png",
+    "title": "Address: common tokens offer weak identity evidence",
+    "note": "Exact S1 document frequency. Test France is descriptive only; no learned mapping uses its labels."
+  },
+  {
+    "file": "phase2_shift.png",
+    "title": "Train\u2013test shift within known countries",
+    "note": "Exact full histograms. Compare countries separately to avoid hiding shifts behind changing country proportions."
+  },
+  {
+    "file": "phase2_name_pair_features.png",
+    "title": "Name: true matches versus different negative populations",
+    "note": "Fold 0 sampled diagnostics. Exact-name negatives: full target pool. TF-IDF negatives: 100k pool. Curves are conditional, not deployment prevalence."
+  },
+  {
+    "file": "phase2_name_ablations.png",
+    "title": "Name: normalization gain and collision risk",
+    "note": "Independent optional views, evaluated on sampled fold 0 pairs. Equality is evidence, never an automatic merge rule."
+  },
+  {
+    "file": "phase2_address_pair_features.png",
+    "title": "Address: true matches versus different negative populations",
+    "note": "Fold 0 sampled diagnostics. Exact-name negatives: full target pool. TF-IDF negatives: 100k pool. Curves are conditional, not deployment prevalence."
+  },
+  {
+    "file": "phase2_address_ablations.png",
+    "title": "Address: normalization gain and collision risk",
+    "note": "Independent optional views, evaluated on sampled fold 0 pairs. Equality is evidence, never an automatic merge rule."
+  },
+  {
+    "file": "phase2_auc_India.png",
+    "title": "India: easy negatives exaggerate feature quality",
+    "note": "Descriptive single-feature AUC; sampling changes the task. This is not macro F0.5 or a fitted classifier."
+  },
+  {
+    "file": "phase2_auc_US.png",
+    "title": "US: easy negatives exaggerate feature quality",
+    "note": "Descriptive single-feature AUC; sampling changes the task. This is not macro F0.5 or a fitted classifier."
+  },
+  {
+    "file": "phase2_singleton.png",
+    "title": "Singleton confidence requires difficult candidate negatives",
+    "note": "Diagnostic pair sets include sampled positives for non-singletons: optimistic separability, not a validated singleton classifier."
+  },
+  {
+    "file": "phase2_label_topology.png",
+    "title": "Most reference entities have multiple target matches",
+    "note": "All 2,206,821 training S1. Each labeled target has one S1 owner; S1 is not a one-to-one matching problem."
+  },
+  {
+    "file": "phase2_transliteration.png",
+    "title": "Transliteration helps some cross-script pairs",
+    "note": "Non-ASCII true pairs in the frozen fold-0 sample only. Negative collision rates are stored in transliteration.json; no recall or precision claim."
+  },
+  {
+    "file": "phase2_throughput.png",
+    "title": "Native normalization throughput on this Mac",
+    "note": "100k strings; NFC + mark-preserving punctuation + whitespace only. Exact parity: zero mismatches. This excludes the full optional-view bundle."
+  },
+  {
+    "file": "phase2_postal_shapes.png",
+    "title": "Postal-shaped numbers are too sparse for mandatory blocking",
+    "note": "Exact full-source regex shape indicators; they do not identify or validate actual postal codes."
+  },
+  {
+    "file": "phase2_candidate_recall.png",
+    "title": "Full-target lexical retrieval: more rescue routes are needed",
+    "note": "1,000 balanced-country fold-0 queries; all 10.32M targets. Union recall 77.33%, not a trained-model score."
+  }
+]

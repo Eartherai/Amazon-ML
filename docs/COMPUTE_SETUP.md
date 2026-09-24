@@ -25,12 +25,12 @@ This command would allocate a runtime and consume the account's allowance; it ha
 
 ## AWS
 
-AWS CLI 2.37.1 already installed. One local profile exists: `amamzon_01_a1_0`. No default region was configured. A read-only STS check with explicit us-east-1 failed because the saved session is expired. No instances created and no credit balance verified. The four team accounts remain a user-reported resource, not four usable local profiles.
+AWS CLI 2.37.1 is installed. On 2026-09-25, after the user's completed setup, a read-only STS check succeeded in us-east-1. The previous expired-session check is historical. No instances were created and no credit balance was independently verified. The user reports approximately $200 on this configured account; other team accounts are not assumed available.
 
-Sign in using the account's normal CLI login flow, then verify an explicit region, account identity, eligible services/credits, GPU quota, and current regional prices. Never put credentials in Git. No access keys or tokens were read into project logs.
+Authentication identity is recorded only in sanitized local metadata; credentials and complete identifiers are not logged. Quotas, eligible credit services and current prices must be checked only when a measured experiment justifies paid compute. No GPU benchmark is needed for this phase.
 
 ## Budget and schedule
 
-Plan within reported $800; additional credits count as $0 until confirmed. AWS_SPEND.md is the task ledger. Use a measured representative run before any paid full-scale job. Enforce per-job wall-time and cost ceilings; account budgets are alerts, not a guaranteed shutdown mechanism. Check persistent disks, snapshots, public IPs and object storage after stopping compute.
+Plan within the currently reported $200; additional credits count as $0 until confirmed. AWS_SPEND.md is the task ledger. Use a measured representative run before any paid full-scale job. Enforce per-job wall-time and cost ceilings; account budgets are alerts, not a guaranteed shutdown mechanism. Check persistent disks, snapshots, public IPs and object storage after stopping compute.
 
 Use Kaggle only with legitimate per-person accounts and permitted quotas, private competition data, and verified current availability. No Kaggle installation/account access is needed for phase one; it is optional capacity, not a dependency of the plan.

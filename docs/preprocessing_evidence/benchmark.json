@@ -1,0 +1,125 @@
+{
+  "native_results": [
+    {
+      "backend": "python",
+      "operations": [
+        "whitespace"
+      ],
+      "rows": 100000,
+      "elapsed_seconds": 0.040685916028451174,
+      "rows_per_second": 2457852.981116886,
+      "peak_process_rss_gib": 0.0937347412109375,
+      "parity_mismatches": 0,
+      "output_sha256": "e917af19e48255a8c37476888eeb978babcb6e5e1be64a38d764def382d27ab8",
+      "reference_sha256": "e917af19e48255a8c37476888eeb978babcb6e5e1be64a38d764def382d27ab8",
+      "config_hash": "f9743270f1e895d42ed674b94074e196a3caab4d50c4e9c8074468088e7495dc",
+      "timing_scope": "native computation and materialized output; source read and parity reference excluded; DuckDB connection startup included",
+      "rss_scope": "entire fresh process, including source read and parity reference"
+    },
+    {
+      "backend": "duckdb",
+      "operations": [
+        "whitespace"
+      ],
+      "rows": 100000,
+      "elapsed_seconds": 0.11474458395969123,
+      "rows_per_second": 871500.8286153979,
+      "peak_process_rss_gib": 0.137115478515625,
+      "parity_mismatches": 0,
+      "output_sha256": "e917af19e48255a8c37476888eeb978babcb6e5e1be64a38d764def382d27ab8",
+      "reference_sha256": "e917af19e48255a8c37476888eeb978babcb6e5e1be64a38d764def382d27ab8",
+      "config_hash": "f9743270f1e895d42ed674b94074e196a3caab4d50c4e9c8074468088e7495dc",
+      "timing_scope": "native computation and materialized output; source read and parity reference excluded; DuckDB connection startup included",
+      "rss_scope": "entire fresh process, including source read and parity reference"
+    },
+    {
+      "backend": "polars",
+      "operations": [
+        "whitespace"
+      ],
+      "rows": 100000,
+      "elapsed_seconds": 0.031244040990713984,
+      "rows_per_second": 3200610.3189315656,
+      "peak_process_rss_gib": 0.1072998046875,
+      "parity_mismatches": 0,
+      "output_sha256": "e917af19e48255a8c37476888eeb978babcb6e5e1be64a38d764def382d27ab8",
+      "reference_sha256": "e917af19e48255a8c37476888eeb978babcb6e5e1be64a38d764def382d27ab8",
+      "config_hash": "f9743270f1e895d42ed674b94074e196a3caab4d50c4e9c8074468088e7495dc",
+      "timing_scope": "native computation and materialized output; source read and parity reference excluded; DuckDB connection startup included",
+      "rss_scope": "entire fresh process, including source read and parity reference"
+    },
+    {
+      "backend": "python",
+      "operations": [
+        "nfc",
+        "punctuation_space",
+        "whitespace"
+      ],
+      "rows": 100000,
+      "elapsed_seconds": 0.2773403750034049,
+      "rows_per_second": 360567.7680315111,
+      "peak_process_rss_gib": 0.0938873291015625,
+      "parity_mismatches": 0,
+      "output_sha256": "6b42656846ce58be91f7b0fd252283ae11b12b1a7bac2740662c0ced3923e6f7",
+      "reference_sha256": "6b42656846ce58be91f7b0fd252283ae11b12b1a7bac2740662c0ced3923e6f7",
+      "config_hash": "7cb119d52006086ccd4bde2d1defbcc360db25743a41fcb6d2910e4358ddee50",
+      "timing_scope": "native computation and materialized output; source read and parity reference excluded; DuckDB connection startup included",
+      "rss_scope": "entire fresh process, including source read and parity reference"
+    },
+    {
+      "backend": "duckdb",
+      "operations": [
+        "nfc",
+        "punctuation_space",
+        "whitespace"
+      ],
+      "rows": 100000,
+      "elapsed_seconds": 0.1816942500299774,
+      "rows_per_second": 550375.1493704461,
+      "peak_process_rss_gib": 0.135467529296875,
+      "parity_mismatches": 0,
+      "output_sha256": "6b42656846ce58be91f7b0fd252283ae11b12b1a7bac2740662c0ced3923e6f7",
+      "reference_sha256": "6b42656846ce58be91f7b0fd252283ae11b12b1a7bac2740662c0ced3923e6f7",
+      "config_hash": "7cb119d52006086ccd4bde2d1defbcc360db25743a41fcb6d2910e4358ddee50",
+      "timing_scope": "native computation and materialized output; source read and parity reference excluded; DuckDB connection startup included",
+      "rss_scope": "entire fresh process, including source read and parity reference"
+    },
+    {
+      "backend": "polars",
+      "operations": [
+        "nfc",
+        "punctuation_space",
+        "whitespace"
+      ],
+      "rows": 100000,
+      "elapsed_seconds": 0.10477091697975993,
+      "rows_per_second": 954463.3461528107,
+      "peak_process_rss_gib": 0.112640380859375,
+      "parity_mismatches": 0,
+      "output_sha256": "6b42656846ce58be91f7b0fd252283ae11b12b1a7bac2740662c0ced3923e6f7",
+      "reference_sha256": "6b42656846ce58be91f7b0fd252283ae11b12b1a7bac2740662c0ced3923e6f7",
+      "config_hash": "7cb119d52006086ccd4bde2d1defbcc360db25743a41fcb6d2910e4358ddee50",
+      "timing_scope": "native computation and materialized output; source read and parity reference excluded; DuckDB connection startup included",
+      "rss_scope": "entire fresh process, including source read and parity reference"
+    }
+  ],
+  "all_unmapped_views_python": {
+    "rows": 100000,
+    "elapsed_seconds": 3.631252375023905,
+    "rows_per_second": 27538.708322178154,
+    "peak_process_rss_gib": 1.440399169921875,
+    "views": [
+      "raw",
+      "is_null",
+      "light",
+      "compatible",
+      "accent",
+      "compact",
+      "sorted",
+      "deduped",
+      "number_format",
+      "aggressive"
+    ]
+  },
+  "limitation": "Native benchmark covers exactly stated operations, not full casefold/accent/map pipeline. Native lower is not Unicode casefold."
+}

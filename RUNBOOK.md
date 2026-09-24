@@ -52,3 +52,18 @@ Authoritative results already present: AUDIT-004, PAIR-002, supplement-001, memo
 ## Cloud setup status
 
 `colab version` reports 0.7.2; `colab usage` and `colab sessions` verified user login, 0 compute units and no active sessions. Run these again before any cloud experiment. AWS authentication is expired; see docs/COMPUTE_SETUP.md. Account balances/quota/price remain unverified. No paid launch commands have been executed.
+
+## Phase 2 reproduction
+
+Use fresh output directories for new audit/experiment runs. Canonical evidence: PROFILE-001, PREP-001, MORPH-002, TOKEN-001/run-002.
+
+```sh
+PYTHONPATH=code/business_entity_resolution .venv/bin/python -m src.analysis.profile_dataset --output-dir artifacts/data_profile/PROFILE-002 --markdown docs/DATA_PROFILE_002.md
+PYTHONPATH=code/business_entity_resolution .venv/bin/python -m src.analysis.pair_morphology --database artifacts/audit.duckdb --output-dir artifacts/pair_analysis/MORPH-003
+PYTHONPATH=code/business_entity_resolution .venv/bin/python -m src.analysis.transliteration_diagnostics --pairs artifacts/pair_analysis/MORPH-003 --binary artifacts/transliterate_probe
+PYTHONPATH=code/business_entity_resolution .venv/bin/python -m src.blocking.token_candidates --database artifacts/audit.duckdb --config configs/blocking/TOKEN-001.json --output-dir outputs/candidates/TOKEN-001/run-003
+.venv/bin/python scripts/render_preprocessing_report.py
+PYTHONPATH=code/business_entity_resolution .venv/bin/python -m pytest code/business_entity_resolution/tests -q
+```
+
+The report renderer rebuilds presentation files from canonical PROFILE-001/MORPH-002/TOKEN-001 evidence. It does not rerun experimental computations. Swift transliteration binary is Mac-specific; verify cross-platform parity before moving preprocessing to Linux.

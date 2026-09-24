@@ -1,0 +1,99 @@
+{
+  "created_at": "2026-09-24T20:13:12.959582+00:00",
+  "seed": "morph-v1 / morph-pool-v1 SHA256",
+  "config_hash": "bb28f2a80c0e34b570031120e3fb68f14cc77cce2faea7d363997419dd1989a2",
+  "scope": "Fold 0 development only; queries stratified equally by country and singleton status. Pair diagnostics conditional on sampling, not deployment prevalence. Exact-name negatives use all training targets; other blocked/TF-IDF negatives use a 100k target pool excluding fold 4. Training folds 1\u20133 and unowned targets only fit TF-IDF. No positive targets injected into that pool. No retrieval recall claim for sample-pool negatives. No learned matcher or threshold selection.",
+  "queries": 2000,
+  "target_pool": 100000,
+  "pair_counts": [
+    {
+      "country": "India",
+      "population": "exact_name_full_pool",
+      "len": 1704
+    },
+    {
+      "country": "India",
+      "population": "first_token_sample_pool",
+      "len": 2024
+    },
+    {
+      "country": "India",
+      "population": "numeric_sample_pool",
+      "len": 2699
+    },
+    {
+      "country": "India",
+      "population": "positive",
+      "len": 1816
+    },
+    {
+      "country": "India",
+      "population": "random",
+      "len": 3000
+    },
+    {
+      "country": "India",
+      "population": "same_country",
+      "len": 3000
+    },
+    {
+      "country": "India",
+      "population": "tfidf_address_sample_pool",
+      "len": 4981
+    },
+    {
+      "country": "India",
+      "population": "tfidf_name_sample_pool",
+      "len": 4984
+    },
+    {
+      "country": "US",
+      "population": "exact_name_full_pool",
+      "len": 1317
+    },
+    {
+      "country": "US",
+      "population": "first_token_sample_pool",
+      "len": 2192
+    },
+    {
+      "country": "US",
+      "population": "numeric_sample_pool",
+      "len": 2611
+    },
+    {
+      "country": "US",
+      "population": "positive",
+      "len": 1822
+    },
+    {
+      "country": "US",
+      "population": "random",
+      "len": 3000
+    },
+    {
+      "country": "US",
+      "population": "same_country",
+      "len": 3000
+    },
+    {
+      "country": "US",
+      "population": "tfidf_address_sample_pool",
+      "len": 4989
+    },
+    {
+      "country": "US",
+      "population": "tfidf_name_sample_pool",
+      "len": 4991
+    }
+  ],
+  "runtime_seconds": 71.64324329199735,
+  "peak_rss_gib": 2.3787841796875,
+  "full_pool_exact_negative_queries": 786,
+  "limitations": [
+    "No exhaustive all-pairs fuzzy duplicate scan",
+    "No fold-4 validation score",
+    "No supervised France labels",
+    "No production recall estimate from bounded negative pool"
+  ]
+}

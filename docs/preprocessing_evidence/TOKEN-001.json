@@ -1,0 +1,763 @@
+{
+  "run_id": "TOKEN-001",
+  "created_utc": "2026-09-24T20:18:26.967795+00:00",
+  "database": "artifacts/audit.duckdb",
+  "database_mode": "read_only; temporary tables only",
+  "config": {
+    "run_id": "TOKEN-001",
+    "queries_per_country": 500,
+    "query_fold": 0,
+    "frequency_fit_owner_folds": [
+      -1,
+      1,
+      2,
+      3
+    ],
+    "max_full_pool_token_df": 1000,
+    "max_query_tokens_per_field": 3,
+    "route_top_k_per_target_source": 100,
+    "rrf_constant": 60,
+    "total_top_k": [
+      20,
+      50,
+      100
+    ],
+    "routes": [
+      "exact_name",
+      "exact_address",
+      "rare_name",
+      "rare_address",
+      "numeric_name"
+    ],
+    "target_pool": "all train S2/S3, no ownership filtering at inference",
+    "normalization": "existing audited light NFC/lower/Unicode-LMN/whitespace",
+    "purpose": "Diagnostic full-pool retrieval scaffold; no matcher training or submission"
+  },
+  "config_sha256": "bb4da02a0f36f8fed5af6c6418a32d3950c8a5b91ab759ebdb2a52f209d1efc3",
+  "module_sha256": "7cc7c94c183a55f03f5a5fa6dd044fda9a9da55f42f095a7617620da500b3eaf",
+  "runtime_seconds": 34.650931041978765,
+  "peak_process_rss_gib": 1.2584686279296875,
+  "generation": {
+    "timings": {
+      "name_frequency_seconds": 7.335318375029601,
+      "address_frequency_seconds": 11.316690957988612,
+      "exact_name_seconds": 0.39622183301253244,
+      "rare_name_seconds": 4.504865625000093,
+      "exact_address_seconds": 0.43314620800083503,
+      "rare_address_seconds": 8.225421708018985,
+      "numeric_name_seconds": 0.4674677500152029,
+      "total_generation_seconds": 33.62386554200202
+    },
+    "query_count": 1000,
+    "target_pool_count": 10320219,
+    "target_pool_by_country_source": [
+      [
+        "India",
+        "S2",
+        2017799
+      ],
+      [
+        "India",
+        "S3",
+        2115547
+      ],
+      [
+        "US",
+        "S2",
+        3016817
+      ],
+      [
+        "US",
+        "S3",
+        3170056
+      ]
+    ],
+    "selected_key_counts": [
+      [
+        "address",
+        1162,
+        705
+      ],
+      [
+        "name",
+        589,
+        464
+      ]
+    ],
+    "full_union_pairs": 179298,
+    "raw_route_pairs": [
+      [
+        "exact_address",
+        326
+      ],
+      [
+        "exact_name",
+        7201
+      ],
+      [
+        "numeric_name",
+        5458
+      ],
+      [
+        "rare_address",
+        303869
+      ],
+      [
+        "rare_name",
+        136397
+      ]
+    ],
+    "frequency_scope": "train_df uses only target owners in -1,1,2,3; full_df is an inference-index fanout cap",
+    "normalization": "Existing audited NFC + lower + preserve Unicode L/M/N + whitespace; no new fitted map",
+    "numeric_route": "ASCII address digit-token agreement within rare-name hits; rank promotion only, no unique-pair rescue"
+  },
+  "metrics": {
+    "total_top_20": {
+      "query_count": 1000,
+      "true_links": 3449,
+      "retrieved_links": 2262,
+      "candidate_pairs": 17546,
+      "target_pool_count": 10320219,
+      "link_recall": 0.6558422731226442,
+      "oracle_macro_f0_5": 0.7915220697536703,
+      "oracle_non_singleton_f0_5": 0.7805495471091267,
+      "oracle_singleton_f0_5": 1.0,
+      "positive_entity_any_coverage": 0.8589473684210527,
+      "positive_entity_all_coverage": 0.3968421052631579,
+      "singleton_count": 50,
+      "singleton_rate": 0.05,
+      "singleton_candidate_free_rate": 0.06,
+      "average_candidates_per_query": 17.546,
+      "candidate_quantiles": {
+        "p50": 20.0,
+        "p95": 20.0,
+        "p99": 20.0
+      },
+      "max_candidates_per_query": 20,
+      "candidate_reduction_ratio_vs_unrestricted_pool": 0.9999982998422805,
+      "by_country_source": [
+        {
+          "country": "India",
+          "target_source": "S2",
+          "true_links": 843,
+          "retrieved_links": 599,
+          "link_recall": 0.7105575326215896
+        },
+        {
+          "country": "India",
+          "target_source": "S3",
+          "true_links": 896,
+          "retrieved_links": 614,
+          "link_recall": 0.6852678571428571
+        },
+        {
+          "country": "US",
+          "target_source": "S2",
+          "true_links": 845,
+          "retrieved_links": 530,
+          "link_recall": 0.6272189349112426
+        },
+        {
+          "country": "US",
+          "target_source": "S3",
+          "true_links": 865,
+          "retrieved_links": 519,
+          "link_recall": 0.6
+        }
+      ],
+      "by_country": [
+        {
+          "country": "India",
+          "queries": 500,
+          "link_recall": 0.6975273145485912,
+          "oracle_macro_f0_5": 0.8173876995653532,
+          "singleton_count": 22
+        },
+        {
+          "country": "US",
+          "queries": 500,
+          "link_recall": 0.6134502923976608,
+          "oracle_macro_f0_5": 0.7656564399419878,
+          "singleton_count": 28
+        }
+      ]
+    },
+    "total_top_50": {
+      "query_count": 1000,
+      "true_links": 3449,
+      "retrieved_links": 2432,
+      "candidate_pairs": 41449,
+      "target_pool_count": 10320219,
+      "link_recall": 0.7051319222963178,
+      "oracle_macro_f0_5": 0.8214062867050486,
+      "oracle_non_singleton_f0_5": 0.8120066175842617,
+      "oracle_singleton_f0_5": 1.0,
+      "positive_entity_any_coverage": 0.88,
+      "positive_entity_all_coverage": 0.4631578947368421,
+      "singleton_count": 50,
+      "singleton_rate": 0.05,
+      "singleton_candidate_free_rate": 0.06,
+      "average_candidates_per_query": 41.449,
+      "candidate_quantiles": {
+        "p50": 50.0,
+        "p95": 50.0,
+        "p99": 50.0
+      },
+      "max_candidates_per_query": 50,
+      "candidate_reduction_ratio_vs_unrestricted_pool": 0.9999959837092605,
+      "by_country_source": [
+        {
+          "country": "India",
+          "target_source": "S2",
+          "true_links": 843,
+          "retrieved_links": 649,
+          "link_recall": 0.7698695136417556
+        },
+        {
+          "country": "India",
+          "target_source": "S3",
+          "true_links": 896,
+          "retrieved_links": 660,
+          "link_recall": 0.7366071428571429
+        },
+        {
+          "country": "US",
+          "target_source": "S2",
+          "true_links": 845,
+          "retrieved_links": 569,
+          "link_recall": 0.6733727810650888
+        },
+        {
+          "country": "US",
+          "target_source": "S3",
+          "true_links": 865,
+          "retrieved_links": 554,
+          "link_recall": 0.6404624277456648
+        }
+      ],
+      "by_country": [
+        {
+          "country": "India",
+          "queries": 500,
+          "link_recall": 0.7527314548591144,
+          "oracle_macro_f0_5": 0.8518496662425246,
+          "singleton_count": 22
+        },
+        {
+          "country": "US",
+          "queries": 500,
+          "link_recall": 0.6567251461988304,
+          "oracle_macro_f0_5": 0.7909629071675727,
+          "singleton_count": 28
+        }
+      ]
+    },
+    "total_top_100": {
+      "query_count": 1000,
+      "true_links": 3449,
+      "retrieved_links": 2537,
+      "candidate_pairs": 78332,
+      "target_pool_count": 10320219,
+      "link_recall": 0.7355755291388808,
+      "oracle_macro_f0_5": 0.840257478492857,
+      "oracle_non_singleton_f0_5": 0.831849977360902,
+      "oracle_singleton_f0_5": 1.0,
+      "positive_entity_any_coverage": 0.8947368421052632,
+      "positive_entity_all_coverage": 0.5073684210526316,
+      "singleton_count": 50,
+      "singleton_rate": 0.05,
+      "singleton_candidate_free_rate": 0.06,
+      "average_candidates_per_query": 78.332,
+      "candidate_quantiles": {
+        "p50": 100.0,
+        "p95": 100.0,
+        "p99": 100.0
+      },
+      "max_candidates_per_query": 100,
+      "candidate_reduction_ratio_vs_unrestricted_pool": 0.9999924098509925,
+      "by_country_source": [
+        {
+          "country": "India",
+          "target_source": "S2",
+          "true_links": 843,
+          "retrieved_links": 672,
+          "link_recall": 0.797153024911032
+        },
+        {
+          "country": "India",
+          "target_source": "S3",
+          "true_links": 896,
+          "retrieved_links": 682,
+          "link_recall": 0.7611607142857143
+        },
+        {
+          "country": "US",
+          "target_source": "S2",
+          "true_links": 845,
+          "retrieved_links": 596,
+          "link_recall": 0.7053254437869823
+        },
+        {
+          "country": "US",
+          "target_source": "S3",
+          "true_links": 865,
+          "retrieved_links": 587,
+          "link_recall": 0.6786127167630058
+        }
+      ],
+      "by_country": [
+        {
+          "country": "India",
+          "queries": 500,
+          "link_recall": 0.7786083956296722,
+          "oracle_macro_f0_5": 0.8665414737928595,
+          "singleton_count": 22
+        },
+        {
+          "country": "US",
+          "queries": 500,
+          "link_recall": 0.691812865497076,
+          "oracle_macro_f0_5": 0.8139734831928546,
+          "singleton_count": 28
+        }
+      ]
+    },
+    "route_capped_union": {
+      "query_count": 1000,
+      "true_links": 3449,
+      "retrieved_links": 2667,
+      "candidate_pairs": 179298,
+      "target_pool_count": 10320219,
+      "link_recall": 0.7732676138011018,
+      "oracle_macro_f0_5": 0.8663000441671672,
+      "oracle_non_singleton_f0_5": 0.8592632043864918,
+      "oracle_singleton_f0_5": 1.0,
+      "positive_entity_any_coverage": 0.9136842105263158,
+      "positive_entity_all_coverage": 0.5726315789473684,
+      "singleton_count": 50,
+      "singleton_rate": 0.05,
+      "singleton_candidate_free_rate": 0.06,
+      "average_candidates_per_query": 179.298,
+      "candidate_quantiles": {
+        "p50": 200.0,
+        "p95": 400.0,
+        "p99": 432.04999999999995
+      },
+      "max_candidates_per_query": 506,
+      "candidate_reduction_ratio_vs_unrestricted_pool": 0.9999826265314719,
+      "by_country_source": [
+        {
+          "country": "India",
+          "target_source": "S2",
+          "true_links": 843,
+          "retrieved_links": 697,
+          "link_recall": 0.8268090154211151
+        },
+        {
+          "country": "India",
+          "target_source": "S3",
+          "true_links": 896,
+          "retrieved_links": 706,
+          "link_recall": 0.7879464285714286
+        },
+        {
+          "country": "US",
+          "target_source": "S2",
+          "true_links": 845,
+          "retrieved_links": 634,
+          "link_recall": 0.7502958579881657
+        },
+        {
+          "country": "US",
+          "target_source": "S3",
+          "true_links": 865,
+          "retrieved_links": 630,
+          "link_recall": 0.7283236994219653
+        }
+      ],
+      "by_country": [
+        {
+          "country": "India",
+          "queries": 500,
+          "link_recall": 0.8067855089131685,
+          "oracle_macro_f0_5": 0.8870273235672407,
+          "singleton_count": 22
+        },
+        {
+          "country": "US",
+          "queries": 500,
+          "link_recall": 0.7391812865497076,
+          "oracle_macro_f0_5": 0.8455727647670936,
+          "singleton_count": 28
+        }
+      ]
+    }
+  },
+  "per_route": {
+    "exact_address": {
+      "query_count": 1000,
+      "true_links": 3449,
+      "retrieved_links": 298,
+      "candidate_pairs": 326,
+      "target_pool_count": 10320219,
+      "link_recall": 0.08640185561032183,
+      "oracle_macro_f0_5": 0.21172482646371293,
+      "oracle_non_singleton_f0_5": 0.1702366594354873,
+      "oracle_singleton_f0_5": 1.0,
+      "positive_entity_any_coverage": 0.24947368421052632,
+      "positive_entity_all_coverage": 0.00631578947368421,
+      "singleton_count": 50,
+      "singleton_rate": 0.05,
+      "singleton_candidate_free_rate": 0.98,
+      "average_candidates_per_query": 0.326,
+      "candidate_quantiles": {
+        "p50": 0.0,
+        "p95": 2.0,
+        "p99": 3.0
+      },
+      "max_candidates_per_query": 5,
+      "candidate_reduction_ratio_vs_unrestricted_pool": 0.999999968411523,
+      "by_country_source": [
+        {
+          "country": "India",
+          "target_source": "S2",
+          "true_links": 843,
+          "retrieved_links": 92,
+          "link_recall": 0.10913404507710557
+        },
+        {
+          "country": "India",
+          "target_source": "S3",
+          "true_links": 896,
+          "retrieved_links": 44,
+          "link_recall": 0.049107142857142856
+        },
+        {
+          "country": "US",
+          "target_source": "S2",
+          "true_links": 845,
+          "retrieved_links": 122,
+          "link_recall": 0.14437869822485208
+        },
+        {
+          "country": "US",
+          "target_source": "S3",
+          "true_links": 865,
+          "retrieved_links": 40,
+          "link_recall": 0.046242774566473986
+        }
+      ],
+      "by_country": [
+        {
+          "country": "India",
+          "queries": 500,
+          "link_recall": 0.078205865439908,
+          "oracle_macro_f0_5": 0.19371765588212958,
+          "singleton_count": 22
+        },
+        {
+          "country": "US",
+          "queries": 500,
+          "link_recall": 0.09473684210526316,
+          "oracle_macro_f0_5": 0.2297319970452963,
+          "singleton_count": 28
+        }
+      ]
+    },
+    "exact_name": {
+      "query_count": 1000,
+      "true_links": 3449,
+      "retrieved_links": 733,
+      "candidate_pairs": 7195,
+      "target_pool_count": 10320219,
+      "link_recall": 0.2125253696723688,
+      "oracle_macro_f0_5": 0.42138955951206924,
+      "oracle_non_singleton_f0_5": 0.3909363784337571,
+      "oracle_singleton_f0_5": 1.0,
+      "positive_entity_any_coverage": 0.54,
+      "positive_entity_all_coverage": 0.034736842105263156,
+      "singleton_count": 50,
+      "singleton_rate": 0.05,
+      "singleton_candidate_free_rate": 0.6,
+      "average_candidates_per_query": 7.195,
+      "candidate_quantiles": {
+        "p50": 1.0,
+        "p95": 25.09999999999991,
+        "p99": 118.02999999999997
+      },
+      "max_candidates_per_query": 196,
+      "candidate_reduction_ratio_vs_unrestricted_pool": 0.9999993028248723,
+      "by_country_source": [
+        {
+          "country": "India",
+          "target_source": "S2",
+          "true_links": 843,
+          "retrieved_links": 129,
+          "link_recall": 0.15302491103202848
+        },
+        {
+          "country": "India",
+          "target_source": "S3",
+          "true_links": 896,
+          "retrieved_links": 146,
+          "link_recall": 0.16294642857142858
+        },
+        {
+          "country": "US",
+          "target_source": "S2",
+          "true_links": 845,
+          "retrieved_links": 230,
+          "link_recall": 0.27218934911242604
+        },
+        {
+          "country": "US",
+          "target_source": "S3",
+          "true_links": 865,
+          "retrieved_links": 228,
+          "link_recall": 0.2635838150289017
+        }
+      ],
+      "by_country": [
+        {
+          "country": "India",
+          "queries": 500,
+          "link_recall": 0.15813686026451984,
+          "oracle_macro_f0_5": 0.33927272148291127,
+          "singleton_count": 22
+        },
+        {
+          "country": "US",
+          "queries": 500,
+          "link_recall": 0.26783625730994154,
+          "oracle_macro_f0_5": 0.5035063975412273,
+          "singleton_count": 28
+        }
+      ]
+    },
+    "numeric_name": {
+      "query_count": 1000,
+      "true_links": 3449,
+      "retrieved_links": 1134,
+      "candidate_pairs": 5458,
+      "target_pool_count": 10320219,
+      "link_recall": 0.32879095389968105,
+      "oracle_macro_f0_5": 0.40611462119106406,
+      "oracle_non_singleton_f0_5": 0.37485749599059376,
+      "oracle_singleton_f0_5": 1.0,
+      "positive_entity_any_coverage": 0.40421052631578946,
+      "positive_entity_all_coverage": 0.17473684210526316,
+      "singleton_count": 50,
+      "singleton_rate": 0.05,
+      "singleton_candidate_free_rate": 0.78,
+      "average_candidates_per_query": 5.458,
+      "candidate_quantiles": {
+        "p50": 0.0,
+        "p95": 31.049999999999955,
+        "p99": 92.00999999999999
+      },
+      "max_candidates_per_query": 166,
+      "candidate_reduction_ratio_vs_unrestricted_pool": 0.999999471135254,
+      "by_country_source": [
+        {
+          "country": "India",
+          "target_source": "S2",
+          "true_links": 843,
+          "retrieved_links": 319,
+          "link_recall": 0.37841043890865955
+        },
+        {
+          "country": "India",
+          "target_source": "S3",
+          "true_links": 896,
+          "retrieved_links": 307,
+          "link_recall": 0.34263392857142855
+        },
+        {
+          "country": "US",
+          "target_source": "S2",
+          "true_links": 845,
+          "retrieved_links": 249,
+          "link_recall": 0.29467455621301775
+        },
+        {
+          "country": "US",
+          "target_source": "S3",
+          "true_links": 865,
+          "retrieved_links": 259,
+          "link_recall": 0.2994219653179191
+        }
+      ],
+      "by_country": [
+        {
+          "country": "India",
+          "queries": 500,
+          "link_recall": 0.3599769982748706,
+          "oracle_macro_f0_5": 0.4333054472932477,
+          "singleton_count": 22
+        },
+        {
+          "country": "US",
+          "queries": 500,
+          "link_recall": 0.2970760233918129,
+          "oracle_macro_f0_5": 0.3789237950888805,
+          "singleton_count": 28
+        }
+      ]
+    },
+    "rare_address": {
+      "query_count": 1000,
+      "true_links": 3449,
+      "retrieved_links": 1679,
+      "candidate_pairs": 107174,
+      "target_pool_count": 10320219,
+      "link_recall": 0.48680777036822265,
+      "oracle_macro_f0_5": 0.5940455950204685,
+      "oracle_non_singleton_f0_5": 0.5726795737057563,
+      "oracle_singleton_f0_5": 1.0,
+      "positive_entity_any_coverage": 0.6242105263157894,
+      "positive_entity_all_coverage": 0.31473684210526315,
+      "singleton_count": 50,
+      "singleton_rate": 0.05,
+      "singleton_candidate_free_rate": 0.32,
+      "average_candidates_per_query": 107.174,
+      "candidate_quantiles": {
+        "p50": 128.5,
+        "p95": 200.0,
+        "p99": 200.0
+      },
+      "max_candidates_per_query": 200,
+      "candidate_reduction_ratio_vs_unrestricted_pool": 0.999989615142857,
+      "by_country_source": [
+        {
+          "country": "India",
+          "target_source": "S2",
+          "true_links": 843,
+          "retrieved_links": 548,
+          "link_recall": 0.6500593119810202
+        },
+        {
+          "country": "India",
+          "target_source": "S3",
+          "true_links": 896,
+          "retrieved_links": 487,
+          "link_recall": 0.5435267857142857
+        },
+        {
+          "country": "US",
+          "target_source": "S2",
+          "true_links": 845,
+          "retrieved_links": 292,
+          "link_recall": 0.3455621301775148
+        },
+        {
+          "country": "US",
+          "target_source": "S3",
+          "true_links": 865,
+          "retrieved_links": 352,
+          "link_recall": 0.4069364161849711
+        }
+      ],
+      "by_country": [
+        {
+          "country": "India",
+          "queries": 500,
+          "link_recall": 0.5951696377228292,
+          "oracle_macro_f0_5": 0.7086090784705901,
+          "singleton_count": 22
+        },
+        {
+          "country": "US",
+          "queries": 500,
+          "link_recall": 0.37660818713450295,
+          "oracle_macro_f0_5": 0.47948211157034687,
+          "singleton_count": 28
+        }
+      ]
+    },
+    "rare_name": {
+      "query_count": 1000,
+      "true_links": 3449,
+      "retrieved_links": 1284,
+      "candidate_pairs": 64255,
+      "target_pool_count": 10320219,
+      "link_recall": 0.3722818208176283,
+      "oracle_macro_f0_5": 0.4325034478706241,
+      "oracle_non_singleton_f0_5": 0.4026352082848675,
+      "oracle_singleton_f0_5": 1.0,
+      "positive_entity_any_coverage": 0.4263157894736842,
+      "positive_entity_all_coverage": 0.23894736842105263,
+      "singleton_count": 50,
+      "singleton_rate": 0.05,
+      "singleton_candidate_free_rate": 0.54,
+      "average_candidates_per_query": 64.255,
+      "candidate_quantiles": {
+        "p50": 0.0,
+        "p95": 200.0,
+        "p99": 200.0
+      },
+      "max_candidates_per_query": 200,
+      "candidate_reduction_ratio_vs_unrestricted_pool": 0.9999937738724343,
+      "by_country_source": [
+        {
+          "country": "India",
+          "target_source": "S2",
+          "true_links": 843,
+          "retrieved_links": 341,
+          "link_recall": 0.4045077105575326
+        },
+        {
+          "country": "India",
+          "target_source": "S3",
+          "true_links": 896,
+          "retrieved_links": 348,
+          "link_recall": 0.38839285714285715
+        },
+        {
+          "country": "US",
+          "target_source": "S2",
+          "true_links": 845,
+          "retrieved_links": 301,
+          "link_recall": 0.3562130177514793
+        },
+        {
+          "country": "US",
+          "target_source": "S3",
+          "true_links": 865,
+          "retrieved_links": 294,
+          "link_recall": 0.3398843930635838
+        }
+      ],
+      "by_country": [
+        {
+          "country": "India",
+          "queries": 500,
+          "link_recall": 0.39620471535365154,
+          "oracle_macro_f0_5": 0.4635785507360531,
+          "singleton_count": 22
+        },
+        {
+          "country": "US",
+          "queries": 500,
+          "link_recall": 0.347953216374269,
+          "oracle_macro_f0_5": 0.4014283450051951,
+          "singleton_count": 28
+        }
+      ]
+    }
+  },
+  "artifacts": {
+    "final_candidates.parquet": "44c09149f2488dc66588f925fd3cf6aac401fe55583e7011888eb0eeec80079d",
+    "token_stats.parquet": "8eaf9bb84f768ecd642929a5ac25dda928c88ef57363d28c1689c1eb769035fa",
+    "capped_routes.parquet": "705580080804e8ce4cb8bf7ebf5658f871fe6037ca27a9e9f8838bd6d51364b6",
+    "pilot_queries.parquet": "db6656c5161baea8236418834fd5c1abcb19f3b524aa6c4ebe05ef020afb2a8f",
+    "selected_keys.parquet": "a120a0e487884ac70163927b29b235d9bae6c63cf14c46ac8fa1bfeb777b2bf3"
+  },
+  "limitations": [
+    "1,000 balanced-country development queries, not population-weighted and not locked evaluation",
+    "Lexical exact-token routes cannot solve absent shared text or cross-script matches",
+    "Frequency cap and three-token key budget discard high-fanout/nonexact matches",
+    "K applies to final RRF ranked union; route caps apply separately per target source",
+    "Candidate oracle is an upper bound, not a trained-model validation score",
+    "Numeric route uses ASCII digits and promotes existing name hits rather than adding unique pairs"
+  ]
+}

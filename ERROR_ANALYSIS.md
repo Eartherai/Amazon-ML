@@ -7,3 +7,7 @@ Full positive diagnostics (7,638,365 links) and examples are under outputs/audit
 A deterministic 4,220-S1 probe against all targets found 38,477 same-normalized-name nonmatches. Common-name businesses at different addresses are routine. One hard case shares the street/city and business name but differs by house number 531 vs 532, with address JW above 0.94. Numeric contradiction and informative-location tokens need separate features. A blanket first-number veto is also unsafe because positives contain inserted leading numbers.
 
 Next error report must distinguish: candidate miss, candidate retrieved but scored low, singleton false merge, competing S1 ownership, missing address, cross-script retrieval, common-name collision, misleading high token-set score, source-specific address noise, and country-transfer degradation. Report counts and weighted entity score loss, not only selected anecdotes.
+
+## Phase 2 / TOKEN-001
+
+The union misses 782/3,449 pilot links. Among 336 missed Indian links, 39.9% have non-ASCII names versus 17.9% among retrieved links. Among 446 missed US links, mean name JW is still 0.899, supporting fuzzy character retrieval. Missing addresses are about 8% in missed links versus about 4% retrieved. These are associations in the pilot, not causal estimates. Detailed local examples and country summaries: outputs/candidates/TOKEN-001/run-002/. Aggressive normalization can increase negative high-name-similarity while reducing positive high similarity; do not replace the light view globally.
