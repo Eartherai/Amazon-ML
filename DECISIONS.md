@@ -38,3 +38,7 @@ The Phase3 broad-union audit now orders name/address char3 first: these alone re
 ## Phase4 — local fused retrieval benchmark
 
 Reference5k retrieval took738.51s and1.927GiB peak RSS. Test sparse-dot-topn1.2.0 (Apache2.0) to remove dense intermediate selection cost; bounded subset gives2.59x/3.42x speedup and identical candidate sets. Use two threads, topK+1 and reference fallback for boundary near-ties. Run20k locally while5k OOF trains; compare nested5k candidates to reference before claiming parity. No AWS compute required by current resource measurements. Package versions pinned; no business information fetched.
+
+## Phase4 — country robustness is not established
+
+The mixed-country5k OOF result is0.923407, but India→US label transfer0.886261 and US→India0.767327. Training-country OOF alone chose thresholds0.72/0.81; no held-country labels were used. Fixed external IDF contains both known-country texts, so even this is weaker than a strict unseen-text-country check. Keep this failure prominent. Require sample-size-matched controls and domain stress results for promotions; never use fold4 as a tuning remedy.

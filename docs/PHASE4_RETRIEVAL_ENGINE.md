@@ -9,3 +9,9 @@ A bounded unlabeled benchmark of1,000 India queries against25,000 targets measur
 The20k run uses this fused kernel with2 threads; the5k reference artifacts remain immutable. Because the natural samples are nested and IDF is identical, compare all5k nested candidate sets across the runs before trusting kernel equivalence at scale. Do not explain a candidate difference as model improvement.
 
 The subset's CSR sizes extrapolate to approximately1.90GiB for names and4.48GiB for addresses before IDs and allocator overhead. These are estimates from one country/subset, not measured full-index sizes. Persisting both locally must respect the8GiB free-space reserve. Current Parquet candidates/features and saved IDF are reusable; full target CSR indexes are not yet persisted.
+
+## Full-country persistent-index probe
+
+A full India name CSR index (4,133,346 targets) was built and persisted under artifacts/retrieval/P4-INDEX-PROBE-001. Build40.32s; compressed save55.60s;1,000-query search81.98s; peak RSS2.73GiB; stored690,736,787bytes. All1,000 candidate sets matched the reference exactly. These timings were measured alongside other bounded local jobs.
+
+This did not demonstrate a speed advantage over the chunked kernel. Keep the existing chunked20k run. A single large index is not automatically faster; cache locality/working-set size is a hypothesis, not yet profiled. The stored index is preserved for reproducibility and future chunked-cache benchmarking.

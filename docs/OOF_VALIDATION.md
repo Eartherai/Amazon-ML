@@ -21,3 +21,7 @@ Metrics include exact macro F0.5, micro precision/recall (explicitly named), sin
 ## Execution status
 
 Nested samples and validation code implemented; 5k full-pool retrieval in progress. No Phase4 OOF score available yet. Fold counts and measured results will be appended after successful execution. No leaderboard submission and no EC2/GPU launch.
+
+## Completed measured run
+
+See [Phase4 checkpoint](PHASE4_CHECKPOINT.md) for per-fold natural prevalence, macro/P/R, source/country scores and bootstrap interval.

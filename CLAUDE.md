@@ -8,3 +8,7 @@ Read STATUS.md and docs/PREPROCESSING_ANALYSIS.md first. Full 24.23M profile, 34
 
 ## Latest Phase3 handoff
 Read docs/PHASE3_CHECKPOINT.md. Fulltarget pilot union97.62% link recall /93.05% completeentity, 952446 pairs across1000queries. Best small matcher GBDT-004 multiview devcheck0.91056 (505entities); not OOF. Fold4closed. Raw+processed S3verified, storage nominally accruing; no EC2/GPU. 52tests pass. Next larger training/index-throughput/OOFsingleton calibration.
+
+## Phase4 handoff
+
+Read STATUS.md and docs/PHASE4_CHECKPOINT.md. First5k nested entity OOF macro0.9234065, CI0.918577–0.927935. Fold4 CLOSED. Keep Phase3 reference immutable.20k retrieval P4-B-002 uses disjoint IDF and fused kernel; verify nested5k candidate parity before using it. Ablations running under outputs/oof/P4-A-001/ablations. No submission or paid compute.

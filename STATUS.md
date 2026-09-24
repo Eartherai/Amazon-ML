@@ -1,39 +1,55 @@
-# Phase4 checkpoint — validation preparation
+# Phase4 checkpoint — first nested OOF measured
 
-Current action: 5,000 natural-prevalence S1 full-pool name/address char3 retrieval running locally. Nested entity OOF implementation and safeguards ready; execution follows retrieval. Fold4 CLOSED. No leaderboard submission.
+Current action:20k natural-prevalence full-pool retrieval running locally (P4-B-002), plus eight feature ablations on the completed5k OOF. Fold4 CLOSED. No submission or paid AWS compute.
 
-## Measured evidence
+## Validation result
 
-- Frozen reference: configs/baselines/BASELINE-P4-001.yaml, Git9e08d01d7bba8035acf858f3240258861106f466; GBDT-004 multiview,45 features, threshold0.58.
-- Old development check: macro0.910560, precision0.953547, recall0.862578, singleton0.80;505 repeatedly inspected S1. Not OOF and not expected leaderboard performance.
-- Old two-char3-route candidate recall96.3468%,197.318 candidates/S1. The96.7817% number additionally includes token_union.
-- Broad pilot union:97.6225% recall,93.0526% complete-positive-entity recall,0.991159 oracle,952.446 candidates/S1. Not a model score.
-- Nested natural samples built:5k,20k,50k,100k; singleton rates5.32%,5.465%,5.598%,5.601%. Separate diagnostic sample available. Samples do not open fold4.
--54 tests pass. Paid AWS compute $0; S3 storage accruing, estimated $0.092684/month plus request charges; actual billed total/credit balance unverified.
+- OOF entities:5,000; outer folds:3; two inner folds select each outer threshold.
+- OOF macro F0.5:0.923407; fold std:0.002393; fold min/max:0.920961/0.925744.
+- Entity-bootstrap95% CI:0.918577–0.927935 (conditional on fitted procedure).
+- Micro precision:0.980893; micro recall:0.834650.
+- Singleton F0.5:0.879699; non-singleton:0.925862.
+- India:0.902014; US:0.938733; source-specific S2:0.894321; S3:0.890603.
+- Selected reference remains45-feature multiview LightGBM. Nested raw thresholds:0.83/0.82/0.81. Baseline-P4-001 at0.58 remains immutable for comparison.
+- Isotonic0.923497 versus raw0.923407 is insufficient evidence to add complexity. Platt0.922785. Pair+empty0.923113 raises singleton score to0.906015 but slightly lowers macro. Retain raw nested procedure.
 
-## OOF metrics
+## Candidate configuration
 
-OOF entities/folds scored:0/0. OOF macro, standard deviation,95% CI, precision, recall, singleton, non-singleton, India, US, S2 and S3: pending successful run. Do not substitute pilot results.
+P4-A-001: name_char3+address_char3, top100 each, same-country full10,320,219 training targets. Fixed vocabulary/IDF fit only fold0-owned/unowned text; OOF1–3 text excluded from fitting.
 
-## Validation decisions
+- Link recall:0.966503; complete-positive-entity recall:0.903464; oracle:0.989149.
+- Candidates:985,945; average:197.189; p95/p99:200/200.
+- Most expensive route: address_char3,476.99s versus261.01s for name.
+- Best targeted rescue: not yet validated at scale. Broad Phase3 union remains only a pilot diagnostic; do not attach its97.62% recall to this model.
+- P4-B-001 was stopped before completing a route to avoid repeated target-matrix transposes; preserved. P4-B-002 moves transpose outside query blocks and uses fused sparse topK with deterministic near-tie fallback. Nested5k parity is required before20k OOF.
 
-Original IDF used folds1–3 and cannot be reused as training-only OOF there. Phase4 fits IDF only on fixed fold0-owned/unowned training targets. Full training target pool remains searchable. All held-out-owned targets are excluded from model-training negatives. Threshold selection uses two inner folds wholly inside each outer training partition. Three outer folds1–3; no pair split. See docs/OOF_VALIDATION.md.
+## Errors
 
-## Error evidence
+282 outer OOF false merges;162 raw scores>=0.90. Leading overlapping observed patterns: different-known-owner113, name-token containment91, near-identical name51, missing address26, exact name/different address23. No chain/franchise cause inferred from these flags.
 
-Broad pilot misses82 links: weak address76, weak name46, both weak43, non-ASCII target name41, missing address12, numeric disagreement8. Overlapping descriptive flags, not proven causes. Expanded tokens add493,006 candidates for7 final marginal links. Large-scale false merges and best rescue/singleton strategy remain pending OOF.
+581 unretrieved positives: weak address473, weak name272, non-ASCII target name257, both weak228, missing address137. India393/US188. Causes like cap truncation remain unproven without deeper rankings.
+
+## Compute and reproducibility
+
+5k retrieval738.51s/1.93GiB peak; nested OOF81.58s/2.79GiB peak.57 tests pass. AWS compute$0; S3 storage accruing at estimated$0.092684/month plus requests, actual bill/remaining credits unverified. No new cloud resource launched. Local free-space reserve remains8GiB.
+
+Frozen reference: configs/baselines/BASELINE-P4-001.yaml. Results: docs/PHASE4_CHECKPOINT.md. Candidate/feature/model artifacts are immutable under outputs/candidates/P4-A-001 and outputs/oof/P4-A-001. Experiments006–008 recorded. These are development OOF results, not final leaderboard forecasts.
 
 ## Next10 experiments
 
-1. Complete5k two-route retrieval and measure oracle/coverage.
-2. Run3-fold nested OOF with frozen multiview GBDT.
-3. Audit every outer OOF false merge and unretrieved positive.
-4. Compare global threshold with joint pair/empty threshold.
-5. Compare nested Platt/isotonic calibration and reliability.
-6. Measure feature-group ablations on identical folds/candidates.
-7. Run20k full-pool retrieval with a recorded local runtime estimate.
-8. Expand OOF and quantify paired entity bootstrap uncertainty.
-9. Test observable-query rescue triggers against universal expansion.
-10. Only then compare model families/category-aware negatives and gate dense benchmarks.
+1. Finish feature ablations and compare paired entity-bootstrap deltas.
+2. Finish20k retrieval and verify nested5k candidate parity.
+3. Run20k nested OOF with the retained reference model.
+4. Compare score, country gap and singleton stability across sample sizes.
+5. Test transliteration/name and address rescue on observable query triggers.
+6. Measure marginal complete-entity coverage and candidate cost.
+7. Test nested S1-level singleton/meta-model if error evidence supports it.
+8. Test source-specific thresholds and category-aware negatives with nested selection.
+9. Compare GBDT families on fixed candidates/folds; dense only after lexical marginal benchmark.
+10. Freeze final procedure before one-time fold4 evaluation, then deterministic test generation/validator and submission gate.
 
-Current blockers: none for5k; larger retrieval/index scaling requires measured cost/runtime. No final calibrated model, submission artifact or fold4 score exists.
+## Important new risk — country transfer
+
+Completed label-transfer stress test: India→US macro0.886261; US→India0.767327, singleton0.516129. This materially weakens any claim of France robustness. Fixed IDF contains both known countries' external-fold text, so this is not strict held-country-text evaluation. See docs/COUNTRY_TRANSFER.md. Next add sample-size-matched controls and require cross-country evidence before promoting more complex models. No threshold chosen on evaluation-country labels.
+
+All eight feature ablations finished; see docs/PHASE4_ABLATIONS.md. Numeric, transliteration, retrieval and token/character evidence matter; route-count-only effect is inconclusive. A full-country persistent name index matched reference candidates but did not show a speed win; retain chunked20k retrieval. Exact-name address rescue recovered5 development links with830 additional candidates; not yet part of the trained matcher.

@@ -23,10 +23,10 @@ def top_k(ids: np.ndarray, scores: np.ndarray, k: int) -> tuple[np.ndarray,np.nd
     return ids[keep][order],scores[keep][order]
 
 
-def fused_top_k_rows(queries, targets, ids, k, threads=2):
+def fused_top_k_rows(queries, targets, ids, k, threads=2, transposed=False):
     """Fused sparse top-K; reference fallback for ties/near-ties at the boundary."""
     from sparse_dot_topn import sp_matmul_topn
-    transposed=targets.T.tocsr()
+    transposed=targets if transposed else targets.T.tocsr()
     product=sp_matmul_topn(queries,transposed,top_n=min(k+1,len(ids)),threshold=0.,sort=True,n_threads=threads)
     results=[]
     for j in range(queries.shape[0]):
@@ -66,11 +66,12 @@ def retrieve(con, queries, field, ngram, config, output):
             if time.perf_counter()-start>config['route_runtime_cap_seconds']:
                 raise TimeoutError('Route runtime cap reached; partial result is not a full-pool route')
             ids=np.array([r[0] for r in batch]); targets=vectorizer.transform([r[1] for r in batch])
+            fused_targets=targets.T.tocsr() if config.get('kernel','reference')=='fused' else None
             # Query blocks bound the dense working product; the full sparse index is never retained.
             for lo in range(0,len(qs),config['query_block_rows']):
                 block=matrix[lo:lo+config['query_block_rows']]
                 if config.get('kernel','reference')=='fused':
-                    selected=fused_top_k_rows(block,targets,ids,k,config.get('kernel_threads',2))
+                    selected=fused_top_k_rows(block,fused_targets,ids,k,config.get('kernel_threads',2),transposed=True)
                 else:
                     selected=[top_k(ids,values,k) for values in (block@targets.T).toarray()]
                 for j,(new_ids,new_scores) in enumerate(selected):

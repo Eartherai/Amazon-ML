@@ -1,0 +1,14 @@
+{
+  "query_sha256": "34c23f2a5d2eb25a60a92ffba6f70885608e6fbf9d29880da046b6174c21cce4",
+  "git_commit": "7f21039f8cff6464bacf207b55757b90f522e386",
+  "baseline": "configs/baselines/BASELINE-P4-001.yaml",
+  "outer_folds": [
+    1,
+    2,
+    3
+  ],
+  "inner_folds": 2,
+  "threshold_selection": "inner-only",
+  "candidate_path": "outputs/candidates/P4-A-001",
+  "fold4": "CLOSED"
+}
