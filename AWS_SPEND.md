@@ -26,3 +26,6 @@ Account ending6318, profile amamzon_01_a1_0, us-east-1. Launched i-01871abb0c9bb
 
 ### 2026-09-24T22:47:14.680824+00:00 — benchmark completion
 P5-INDEX-001 exit0; stop status22:43:07Z, termination observed22:45:43Z. Job wall521.283586seconds, compute estimate$0.080463 through job completion, excludes shutdown lag.184verified result/status/receipt objects6,078,184,306bytes. Exact AWS bill pending. Additional best20k backup2objects591,802,307bytes.
+
+## 2026-09-24T22:52:42.142603+00:00 — P5-FULL-RETRIEVAL-001 / EXP-025 active
+Profile amamzon_01_a1_0, account ending6318, us-east-1, R8i.2xlarge on-demand, instancei-0609d158c38e96160, start2026-09-24T22:47:45.616413+00:00. Full2,206,821S1retrieval + unlocked label evaluation. Query-time estimate17.76hours/$9.87compute; hard OS runtime cap24hours, total planning allowance$18 (not a guaranteed billing cap). Automatic terminate after verified uploads or failure. Stop/runtime/actualcost pending. S3prefixamazon-ml-2026/phase5/runs/P5-FULL-RETRIEVAL-001. Remaining credit unverified.

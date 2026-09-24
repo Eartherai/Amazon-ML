@@ -1,3 +1,11 @@
+# Latest Phase5 status — 2026-09-24T22:52:42.142603+00:00
+
+Full-training retrieval is RUNNING on EC2: P5-FULL-RETRIEVAL-001, instancei-0609d158c38e96160, frozen code5ac0845. All2,206,821S1queries,10,320,219targets,64SHA256shards per country/route. Projected17.76hours plus overhead,24hshutdown,$18planningallowance; actualcostunknown. Automatic S3checkpoint verification and termination are installed. Do not launch a duplicate. Collect with scripts/aws/collect_run.py.
+
+Best remains20k NUMERIC-V2 macro0.9318965293, precision0.98158282, recall0.85593807, singleton0.92131747. Country-balanced EXP-026did not improve mixed OOF:0.93171205; India improves,US declines. Full-data retrieval/model scores pending. Fold4 CLOSED; testinference/validator/submission/package NOTREADY. Active AWSprofile amamzon_01_a1_0, same account ending6318 asdefault. CPU64/G8/SageMakerG5quota requests awaiting AWSapproval. Creditsunverified. Next: collect checkpoints/full metrics, build larger OOF feature store, test targeted lexical rescue, reassess countryrobustness, then GPUrescue if quota/evidence permit.
+
+Prior status entries follow.
+
 # Phase4 checkpoint — first nested OOF measured
 
 Current action:20k natural-prevalence full-pool retrieval running locally (P4-B-002), plus eight feature ablations on the completed5k OOF. Fold4 CLOSED. No submission or paid AWS compute.

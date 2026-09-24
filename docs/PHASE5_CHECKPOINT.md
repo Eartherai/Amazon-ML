@@ -6,13 +6,13 @@ This is an interim checkpoint, not completion of Phase5.
 |---|---|
 | Full train S1 count | 2,206,821 |
 | Full retrieval link / complete-entity recall / oracle | Pending. Fold4 label metrics withheld until freeze. |
-| Full average / p95 / p99 / total candidate pairs | Pending full run |
+| Full average / p95 / p99 / total candidate pairs | RUNNING: P5-FULL-RETRIEVAL-001, metrics pending |
 | Current OOF entities / folds | 20,000 / 3 nested entity outer folds |
 | Current OOF macro F0.5 | 0.9318965293 |
 | 95% CI | Paired gain over baseline +0.00313760, CI[+0.00194174,+0.00431221]; not an absolute score CI |
 | Precision / recall | 0.98158282 / 0.85593807 |
 | Singleton F0.5 | 0.92131747 |
-| Large OOF India / US | Pending |
+| Current20k India / US | 0.908355395 / 0.947973595; large OOF pending |
 | India→US / US→India | 0.89280089 / 0.78192088,5k label-transfer stress, not France forecast |
 | Best model | LightGBM51features, NUMERIC-V2, inner-OOF threshold selection |
 | Best measured retrieval | P4-B-002 name/address char3top100 union; full target pools |
@@ -20,7 +20,7 @@ This is an interim checkpoint, not completion of Phase5.
 | Hard-negative configuration | Baseline eligible candidates; no promoted upweighting |
 | Dense rescue / cross-encoder / ensemble | None selected; pending lexical miss evidence and GPU quota |
 | Fold4 | CLOSED |
-| EC2 used | R8i.2xlarge64GiB; full index benchmark completed, terminated |
+| EC2 used | R8i.2xlarge64GiB; index benchmark completed/terminated; full retrieval worker active |
 | SageMaker used / GPU type | None; requested quotas awaiting AWS |
 | AWS cost | Benchmark compute estimate$0.0805 excluding termination lag/storage/IP; actual pending |
 | Remaining credit | Unverified; user reported approximately$200 |

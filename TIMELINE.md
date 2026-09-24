@@ -106,3 +106,6 @@ Read latest user directive; inventoried configured profiles, EC2/SageMaker quota
 
 ## 2026-09-24T22:47:14.680824+00:00 — Codex — cloud benchmark completed
 P5-INDEX-001 / EXP-024 built6.078GB full-target indexes; all4country/route candidate parity tests passed at2/4/8threads. S3uploads verified; exit0; EC2terminated.63tests passed before retrieval evaluator; its2new tests additionally verify oracle and Fold4rejection.20k best checkpoint backed up. FullS1text2,206,821exported with no labels; separate evaluation export excludesFold4 (1,765,649queries). Full-run17.76h extrapolation,24hcap,$18planningceiling. Next launch EXP-025 with checkpointed shards.
+
+## 2026-09-24T22:52:42.142603+00:00 — Codex — full training retrieval running and country trial
+EXP-025 / P5-FULL-RETRIEVAL-001 launched i-0609d158c38e96160, code5ac0845, all2,206,821trainingS1,24hshutdown. Inputs/indexes checksummed; output shards versioned toS3. NoFold4labels supplied. EXP-026country balancing20k completed:0.93171205 vs0.93189653; India +0.00196164,US -0.00165014. Not promoted. Best staysNUMERIC-V2. Researched/pinned candidate embedding licenses; none selected or executed.
