@@ -1,0 +1,27 @@
+{
+  "run_id": "TRAIN-001",
+  "queries_path": "outputs/candidates/TRAIN-001/queries.parquet",
+  "token_candidates_path": "outputs/candidates/TRAIN-001/empty_tokens.parquet",
+  "routes": [
+    [
+      "name",
+      3
+    ],
+    [
+      "address",
+      3
+    ]
+  ],
+  "max_features": 200000,
+  "chunk_rows": 25000,
+  "query_block_rows": 50,
+  "top_k_per_route": 100,
+  "route_runtime_cap_seconds": 600,
+  "fit_owner_folds": [
+    -1,
+    1,
+    2,
+    3
+  ],
+  "fit_sample": "sha256(target_id) prefix 00,01,02,03; deterministic approximately 1/64"
+}

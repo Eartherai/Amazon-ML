@@ -1,0 +1,14 @@
+{
+  "id": "FOUNDATION-001",
+  "rows_per_shard": 750000,
+  "minimum_free_gib": 8,
+  "compression": "zstd:3",
+  "materialized": ["raw", "null_empty_blank_flags", "light", "raw_decimal_numeric_tokens"],
+  "light_operations": ["nfc", "casefold", "punctuation_space", "whitespace"],
+  "regenerable": ["compatible", "accent", "compact", "sorted", "deduped", "number_format", "aggressive"],
+  "regeneration_module": "src.preprocessing:1.0.0",
+  "learned_maps": "disabled; proposals require separate validation and explicit versioned map",
+  "transliteration": {"materialized": false, "recipe": "scripts/transliterate_probe.swift; Foundation String.applyingTransform Any-Latin; Latin-ASCII", "policy": "optional feature only; pin OS/ICU runtime before generating a versioned cache"},
+  "fit_policy": "stateless; no vocabulary or dictionary fit; source and test transform independently",
+  "raw_missing_policy": "TSV missing UTF8 fields preserved as empty strings; literal NA/NULL tokens retained"
+}

@@ -1,0 +1,30 @@
+{
+  "run_id": "TOKEN-002",
+  "queries_per_country": 500,
+  "query_fold": 0,
+  "frequency_fit_owner_folds": [
+    -1,
+    1,
+    2,
+    3
+  ],
+  "max_full_pool_token_df": 10000,
+  "max_query_tokens_per_field": 5,
+  "route_top_k_per_target_source": 200,
+  "rrf_constant": 60,
+  "total_top_k": [
+    20,
+    50,
+    100
+  ],
+  "routes": [
+    "exact_name",
+    "exact_address",
+    "rare_name",
+    "rare_address",
+    "numeric_name"
+  ],
+  "target_pool": "all train S2/S3, no ownership filtering at inference",
+  "normalization": "existing audited light NFC/lower/Unicode-LMN/whitespace",
+  "purpose": "Diagnostic full-pool retrieval scaffold; no matcher training or submission"
+}

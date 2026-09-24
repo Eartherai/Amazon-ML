@@ -6,6 +6,7 @@ fonttools==4.66.0
 iniconfig==2.3.0
 joblib==1.6.0
 kiwisolver==1.5.1
+lightgbm==4.7.0
 matplotlib==3.11.2
 narwhals==2.26.0
 numpy==2.5.3
