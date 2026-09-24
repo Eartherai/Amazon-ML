@@ -57,3 +57,7 @@ All eight feature ablations finished; see docs/PHASE4_ABLATIONS.md. Numeric, tra
 ## Larger20k confirmation
 
 Baseline OOF macro0.928759, CI[0.9264584347104737, 0.9310251784781759]; singleton0.920403; precision0.980463; recall0.848629. Full-pool candidate recall0.966626, oracle0.988531. Both routes exactly match all nested5k reference pairs/scores. Numeric6-feature20k model is running; new15k subset comparison follows. One-config CatBoost/XGBoost probes did not clearly beat LightGBM.62 tests pass.
+
+## Current best —20k numeric confirmation
+
+51-feature LightGBM with preserved raw/original numeric features plus6 Unicode-digit/leading-zero comparisons: macro0.931897, precision0.981583, recall0.855938, singleton0.921317. Nested3outer/2inner folds,20k natural entities. New15k-only delta+0.003299,95% CI[+0.001840,+0.004701]. See docs/NUMERIC_CONFIRMATION.md. Current best artifact outputs/experiments/P4-NUMERIC-B-001; original reference unchanged. All launched local jobs completed. Next priorities: targeted India retrieval rescue and nested singleton/meta-model, then larger validation. Fold4 CLOSED; no submission; country robustness unresolved.62 tests pass.

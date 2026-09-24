@@ -12,3 +12,7 @@ Read docs/PHASE3_CHECKPOINT.md. Fulltarget pilot union97.62% link recall /93.05%
 ## Phase4 handoff
 
 Read STATUS.md and docs/PHASE4_CHECKPOINT.md. First5k nested entity OOF macro0.9234065, CI0.918577–0.927935. Fold4 CLOSED. Keep Phase3 reference immutable.20k retrieval P4-B-002 uses disjoint IDF and fused kernel; verify nested5k candidate parity before using it. Ablations running under outputs/oof/P4-A-001/ablations. No submission or paid compute.
+
+## Current best —20k numeric confirmation
+
+51-feature LightGBM with preserved raw/original numeric features plus6 Unicode-digit/leading-zero comparisons: macro0.931897, precision0.981583, recall0.855938, singleton0.921317. Nested3outer/2inner folds,20k natural entities. New15k-only delta+0.003299,95% CI[+0.001840,+0.004701]. See docs/NUMERIC_CONFIRMATION.md. Current best artifact outputs/experiments/P4-NUMERIC-B-001; original reference unchanged. All launched local jobs completed. Next priorities: targeted India retrieval rescue and nested singleton/meta-model, then larger validation. Fold4 CLOSED; no submission; country robustness unresolved.62 tests pass.
