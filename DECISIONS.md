@@ -23,3 +23,6 @@ All train positive pairs have equal country and unique target ownership. This su
 
 ## 2026-09-25T01:54:17.719946+05:30: preprocessing and candidate evidence
 Keep raw + light Unicode-safe representations; optional compatibility, Latin fold, sorted and transliteration features remain parallel. Disable mined abbreviation maps because training evidence contains cycles and ambiguity. Postal/numeric agreement is optional evidence, not a mandatory filter. Fit dictionaries/IDF on training-owned/unowned text only. Sample pair AP is not deployed precision. Full-pool candidate pilot recall is 77.33%, insufficient: prioritize char-ngram and cross-script rescue before GBDT. Budget currently plans on user-reported ~$200 one account, not earlier unverified $800. AWS authentication verified read-only; no paid compute justified.
+
+## Phase3 measured selection
+Multiview GBDT selected using calibration macroF0.5; separate dev check0.91056. 3x inner-OOF hardnegative weighting rejected (calibration/check both lower). Expandedtoken union adds little recall for ~500k pairs; keep only as diagnostic broad ceiling until targeted rescue validated. No fullpopulation or OOF score claimed. S3 uploads complete; compute remains local.

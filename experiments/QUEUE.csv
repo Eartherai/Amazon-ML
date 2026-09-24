@@ -1,9 +1,9 @@
 priority,experiment_id,hypothesis,expected_information_gain,expected_score_gain,estimated_runtime,estimated_cost,dependency,status
-1,CHAR-001,Independent full-target char3/4/5 name and address routes rescue lexical misses,high,unmeasured,10-20 local CPU minutes,0,TOKEN-001,running
-2,TRANS-002,Transliterated name char3 recovers cross-script links,high,unmeasured,3-5 local CPU minutes,0,TRANS-001 cache,running
-3,TOKEN-002,Relax rare token DF cap selectively,medium,unmeasured,1-3 local CPU minutes,0,CHAR-001 marginal analysis,queued
-4,UNION-001,Route ablation balances recall and candidate volume,high,unmeasured,under 2 local minutes,0,CHAR-001 and TRANS-002,queued
-5,GBDT-001,Cheap lexical matcher separates actual retrieval hard negatives,high,unmeasured,benchmark required,0,Strong candidate union and training-fold retrieval,blocked_by_retrieval_gate
+1,CHAR-001,Independent full-target char3/4/5 name and address routes rescue lexical misses,high,unmeasured,10-20 local CPU minutes,0,TOKEN-001,completed
+2,TRANS-002,Transliterated name char3 recovers cross-script links,high,unmeasured,3-5 local CPU minutes,0,TRANS-001 cache,completed
+3,TOKEN-002,Relax rare token DF cap selectively,medium,unmeasured,1-3 local CPU minutes,0,CHAR-001 marginal analysis,completed_low_marginal_gain
+4,UNION-001,Route ablation balances recall and candidate volume,high,unmeasured,under 2 local minutes,0,CHAR-001 and TRANS-002,completed_UNION-003
+5,GBDT-001,Cheap lexical matcher separates actual retrieval hard negatives,high,unmeasured,benchmark required,0,Strong candidate union and training-fold retrieval,completed_GBDT-004_pilot
 6,DENSE-001,Small multilingual encoder rescues residual lexical misses,medium,unmeasured,benchmark required,not authorized for full scale,UNION-001 residual analysis,conditional
 7,OOF-001,Entity-held-out calibration supports stable singleton decisions,high,unmeasured,benchmark required,0 initially,GBDT-001,queued
 8,RERANK-001,Cross-encoder helps measured ambiguous errors,medium,unmeasured,benchmark required,not estimated yet,GBDT hard-negative baseline,conditional
