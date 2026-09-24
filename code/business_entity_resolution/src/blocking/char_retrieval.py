@@ -27,9 +27,13 @@ def retrieve(con, queries, field, ngram, config, output):
     start=time.perf_counter(); col={'name':'n','address':'a'}[field]
     table=config.get('target_table','targets_normalized')
     if table not in {'targets_normalized','translit_targets'}:raise ValueError('Unsupported target view')
+    fit_folds=config.get('fit_owner_folds',[-1,1,2,3])
+    if not fit_folds or any(type(f) is not int or f not in [-1,0,1,2,3] for f in fit_folds):
+        raise ValueError('Invalid fit folds; locked fold4 cannot fit IDF')
+    fit_sql=','.join(str(f) for f in fit_folds)
     fit=con.execute(f"""SELECT t.entity_id,t.{col} FROM {table} t
         JOIN target_ownership o ON o.target_id=t.entity_id
-        WHERE o.owner_fold IN (-1,1,2,3) AND substr(sha256(t.entity_id),1,2) IN ('00','01','02','03')
+        WHERE o.owner_fold IN ({fit_sql}) AND substr(sha256(t.entity_id),1,2) IN ('00','01','02','03')
         ORDER BY t.entity_id""").fetchall()
     vectorizer=TfidfVectorizer(analyzer='char',ngram_range=(ngram,ngram),lowercase=False,
         min_df=2,max_features=config['max_features'],dtype=np.float32,norm='l2')
@@ -60,7 +64,7 @@ def retrieve(con, queries, field, ngram, config, output):
         print(json.dumps({'route':f'{field}_char{ngram}','country':country,'targets_scored':rows_scored,
             'seconds':time.perf_counter()-start}),flush=True)
     return results,{'field':field,'ngram':ngram,'fit_rows':fit_count,'fit_ids_sha256':fit_sha,
-        'vocabulary_size':len(vectorizer.vocabulary_),'target_rows_scored':rows_scored,
+        'fit_owner_folds':fit_folds,'vocabulary_size':len(vectorizer.vocabulary_),'target_rows_scored':rows_scored,
         'seconds':time.perf_counter()-start}
 
 

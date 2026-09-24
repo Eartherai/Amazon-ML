@@ -26,3 +26,11 @@ Keep raw + light Unicode-safe representations; optional compatibility, Latin fol
 
 ## Phase3 measured selection
 Multiview GBDT selected using calibration macroF0.5; separate dev check0.91056. 3x inner-OOF hardnegative weighting rejected (calibration/check both lower). Expandedtoken union adds little recall for ~500k pairs; keep only as diagnostic broad ceiling until targeted rescue validated. No fullpopulation or OOF score claimed. S3 uploads complete; compute remains local.
+
+## Phase4 — freeze and stricter OOF boundary
+
+Freeze BASELINE-P4-001 at 9e08d01. Preserve its exact 45 features, model and threshold. The old IDF includes folds1–3 text and cannot support training-only OOF across those folds. Phase4 therefore fits IDF only on a fixed fold0/unowned target sample; full target search remains allowed. This is an explicit prerequisite change, not an unreported baseline reproduction.
+
+Use three original entity folds with nested two-fold threshold selection. Exclude every held-out owner's target from fit negatives. Natural samples use uniform deterministic hash ranking; diagnostic stratification is separate. Start with5k before paying for more compute. Do not interpret pooled threshold optimization on those same OOF scores as independent evaluation. Fold4 stays closed.
+
+The Phase3 broad-union audit now orders name/address char3 first: these alone recall96.35%, while96.78% includes token_union. Expanded tokens add493,006 candidates for7 links at the end of the union. Universal expansion is not justified by this pilot.

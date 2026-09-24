@@ -67,3 +67,12 @@ PYTHONPATH=code/business_entity_resolution .venv/bin/python -m pytest code/busin
 ```
 
 The report renderer rebuilds presentation files from canonical PROFILE-001/MORPH-002/TOKEN-001 evidence. It does not rerun experimental computations. Swift transliteration binary is Mac-specific; verify cross-platform parity before moving preprocessing to Linux.
+
+## Phase4 commands
+
+- Freeze/samples (new outputs only): `.venv/bin/python scripts/phase4_prepare.py`
+- Retrieval: `PYTHONPATH=code/business_entity_resolution OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 .venv/bin/python -m src.blocking.phase4_retrieval --sample A --output outputs/candidates/P4-A-001`
+- Nested OOF: `PYTHONPATH=code/business_entity_resolution OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 .venv/bin/python scripts/run_with_openmp.py -m src.models.phase4_oof --sample A --routes outputs/candidates/P4-A-001 --output outputs/oof/P4-A-001`
+- Error analysis: `.venv/bin/python scripts/phase4_error_analysis.py --run outputs/oof/P4-A-001`
+
+Output directories refuse overwrite. Use new versioned IDs for reruns. Candidate config validates query hash and fit-owner folds. Phase4 retrieval uses full target search but disjoint fixed IDF fitting; see docs/OOF_VALIDATION.md. Do not reuse Phase3 IDF for OOF1–3.

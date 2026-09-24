@@ -64,3 +64,11 @@ All timestamps include timezone. Never replace historical entries.
 - S3 raw/processed SHA256 verified; 35 Parquet shards preserve all raw records. No rented compute.
 - Failures preserved: TRANS-001 temp-view connection scope, GBDT-001 reserved label alias, GBDT-003 reserved owner alias. Fresh runs succeeded.
 - Next: larger entity-split training, production retrieval throughput, singleton/OOF calibration and residual error rescue.
+
+## 2026-09-25 — Codex Phase4 preparation
+- Request: freeze Phase3, prove validation credibility; preserve fold4 and submission gates.
+- Actions: froze BASELINE-P4-001 with exact hashes; generated nested natural5k/20k/50k/100k and separate stratified diagnostics; added disjoint-IDF retrieval, nested3-fold OOF and owner exclusion tests.
+- Commands: scripts/phase4_prepare.py; src.blocking.phase4_retrieval --sample A --output outputs/candidates/P4-A-001; pytest.
+- Results: samples complete;54 tests pass;5k retrieval running. Initial DuckDB COPY parameter-order failure preserved in phase4-v001-failed-copy-parameters; repaired integer-bound COPY. Pilot diagnostics initially required unavailable Arrow; changed to bounded ordinary row transfer and preserved failed directory.
+- Interpretation: old0.91056 remains development-only. Char3-only recall96.35%;96.78% also includes tokens. Expanded token marginal cost493,006 pairs/7links.
+- Next: complete retrieval, run nested OOF, report real scores with uncertainty. No paid compute or fold4 evaluation.
