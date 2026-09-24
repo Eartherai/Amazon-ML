@@ -16,3 +16,7 @@ Private S3 Standard in us-east-1, ≤10 GiB planned, ≤1,000 PUT-class requests
 ### Phase 3 storage upload complete
 
 2026-09-24T20:53:30.255143+00:00: raw 8 objects, 2,520,577,195 bytes. 2026-09-24T20:55:29.622341+00:00: processed 43 objects, 1,806,340,084 bytes. Every object verified with service SHA256, length, metadata SHA256 and version ID. Combined 4,326,917,279 bytes; calculated storage run-rate $0.0927/month before optional transfer/logging. Estimated successful PUT charges $0.000255, excluding setup/HEAD/retry requests. Actual billed cost and credits unknown. Compute spend $0; no EC2/GPU launched. Storage is now accruing charges, so total project spend should not be described as exactly zero.
+
+## 2026-09-24T21:57:24.552608+00:00 — Phase4 checkpoint
+
+Completed5k model/candidates/features/OOF/calibration/ablations/country-transfer backed up under existing private bucket checkpoints/phase4/A-001/. Two checksum-verified objects; 205,762,384bytes. Additional S3 storage estimate $0.004408/month plus approximately$0.000010 PUT cost; no paid compute, actual billed spend and credit balance not queried. Source commit ae5cfcb; manifest and receipts in artifacts/cloud/phase4/checkpoint-A-001.

@@ -84,3 +84,8 @@ All timestamps include timezone. Never replace historical entries.
 - Exact-name collision rescue adds830 candidates for5 links/5 complete entities in2.36s;126 queries triggered from observable fanout>100. Not promoted to matcher yet.
 - Full-country name index probe preserved:40.32s build,55.60s store,81.98s/1000 queries search, perfect reference candidate parity. No demonstrated search speed win; retain chunked retrieval.
 - P4-B-001 stopped before completed route to remove repeated transpose; P4-B-002 continues with transpose once per target chunk. No fold4 or leaderboard activity.
+
+## 2026-09-24T21:57:24.552608+00:00 — verified Phase4 S3 checkpoint and kernel parity
+- Private existing-bucket conditional uploads:2objects/205762384bytes, service SHA256/size verified.20k ongoing files excluded.
+- Full-pool name retrieval parity: all500,000 pairs and scores identical for nested5k queries between reference and fused20k run. Address parity pending completion.
+- Query-context features did not improve OOF (0.922214 vs0.923407); not promoted. Alternative canonical numeric view now under nested validation; preserves raw digits.

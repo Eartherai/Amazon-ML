@@ -35,3 +35,31 @@ def test_fused_topk_resolves_boundary_ties_lexically():
     result=fused_top_k_rows(queries,targets,np.array(['z','a','b','c']),2)
     assert result[0][0].tolist()==['a','b']
     assert result[1][0].tolist()==[]
+
+def test_query_context_is_local_and_zero_safe():
+    import polars as pl
+    from src.models.phase4_ablation import add_query_context,CONTEXT_BASE
+    f=pl.DataFrame({'source1_entity_id':['a','a','b'],**{n:[.2,.8,0.] for n in CONTEXT_BASE}})
+    result=add_query_context(f)
+    assert result['name_jw_query_max'].to_list()==[.8,.8,0.]
+    assert result['name_jw_query_relative'].to_list()==[.25,1.,0.]
+    assert result['name_jw_query_gap'].to_list()[1:]==[0.,0.]
+
+def test_transliteration_is_symmetric_for_accented_source():
+    from src.transliteration_features import compare_transliterated
+    mapping={'café du port':'cafe du port'}
+    assert compare_transliterated('café du port','cafe du port',mapping)==[1.,1.,1.,1.]
+    assert compare_transliterated('cafe du port','café du port',mapping)==[1.,1.,1.,1.]
+    assert compare_transliterated('','café du port',mapping)==[0.,0.,0.,0.]
+
+def test_transliteration_missing_nonascii_mapping_fails_loudly():
+    import pytest
+    from src.transliteration_features import compare_transliterated
+    with pytest.raises(ValueError,match='missing'):
+        compare_transliterated('école','ecole',{})
+
+def test_canonical_numeric_is_alternative_not_raw_rewrite():
+    from src.models.phase4_numeric import canonical_numbers,compare_numbers
+    assert canonical_numbers('flat ०१२३ unit 000')==['123','0']
+    assert compare_numbers('206 main','0206 main')==[1.,1.,0.,1.,1.,0.]
+    assert compare_numbers('','')==[0.,0.,0.,0.,0.,0.]
