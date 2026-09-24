@@ -64,3 +64,6 @@ Baseline OOF macro0.928759, CI[0.9264584347104737, 0.9310251784781759]; singleto
 
 ## Phase5 started — current action
 Best remains20k numeric-v2 macro0.9318965293; no new full-data score. Active AWS profile amamzon_01_a1_0 verified same account ending6318. CPU8vCPU; GPU/SageMaker training0. Increases pending. Persistent full-target index benchmark EXP-024 prepared with90min cap; not yet measured. Fold4 CLOSED. Full OOF, test inference, validator and submission remain pending.
+
+### Phase5 benchmark completed
+All full-target persistent indexes built,184S3objects verified; benchmark instance terminated. Current best remains20k0.9318965293. Full2.2M retrieval is prepared next (17.76h projection,24hcap,$18planning ceiling). Active profile amamzon_01_a1_0. CPU64/G8/SageMakerG5quota requests CASE_OPENED, not approved. Fold4 remains closed. See docs/PHASE5_CHECKPOINT.md.

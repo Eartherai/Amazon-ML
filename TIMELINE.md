@@ -103,3 +103,6 @@ All timestamps include timezone. Never replace historical entries.
 
 ## 2026-09-24T22:34:01.376480+00:00 — Codex — Phase5 cloud foundation
 Read latest user directive; inventoried configured profiles, EC2/SageMaker quotas and instance offerings. Named profile refreshed by user; same account as default. Requested CPU64/G8/SageMakerG5=1 quotas (pending). Created scoped EC2 role and no-ingress group, uploaded checksummed unlabeled10,320,219-target benchmark inputs. Persistent source/country index merger test passed, including boundary ties/unseen Unicode country. Preparing EXP-02490minR8i benchmark. Fold4 closed; no leaderboard submission.
+
+## 2026-09-24T22:47:14.680824+00:00 — Codex — cloud benchmark completed
+P5-INDEX-001 / EXP-024 built6.078GB full-target indexes; all4country/route candidate parity tests passed at2/4/8threads. S3uploads verified; exit0; EC2terminated.63tests passed before retrieval evaluator; its2new tests additionally verify oracle and Fold4rejection.20k best checkpoint backed up. FullS1text2,206,821exported with no labels; separate evaluation export excludesFold4 (1,765,649queries). Full-run17.76h extrapolation,24hcap,$18planningceiling. Next launch EXP-025 with checkpointed shards.

@@ -17,7 +17,7 @@ finish() {
   shutdown -P now
 }
 # Independent OS watchdog covers failed bootstrap/job/upload; launch uses terminate-on-shutdown.
-shutdown -P +90
+shutdown -P +"$SHUTDOWN_MINUTES"
 trap finish EXIT
 mkdir -p /opt/aml
 cd /opt/aml
@@ -40,8 +40,39 @@ dnf install -y python3.12 python3.12-pip libgomp
 python3.12 -m venv .venv
 .venv/bin/pip install --disable-pip-version-check -r configs/aws/requirements-index.txt
 export PYTHONPATH=code/business_entity_resolution OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=8
-.venv/bin/python -u scripts/aws/benchmark_indexes.py --input inputs --output results --queries-per-country 200
-python3 scripts/aws/upload_verified.py results "$BUCKET" "$OUTPUT_PREFIX/results" results-receipt.json
+.venv/bin/pip freeze > environment.txt
+if [[ "$JOB_KIND" == full_retrieval ]]; then
+  aws s3 cp "s3://$BUCKET/$INDEX_PREFIX/results/" indexes/ --recursive --only-show-errors
+  aws s3 cp "s3://$BUCKET/$INDEX_PREFIX/receipts/results-receipt.json" index-receipt.json --only-show-errors
+  python3 - <<'VERIFY'
+import hashlib,json
+from pathlib import Path
+for row in json.loads(Path('index-receipt.json').read_text()):
+ p=Path('indexes')/row['key'].split('/results/',1)[1]
+ h=hashlib.sha256()
+ with p.open('rb') as f:
+  for b in iter(lambda:f.read(8*1024**2),b''):h.update(b)
+ assert p.stat().st_size==row['bytes'] and h.hexdigest()==row['sha256'],str(p)
+VERIFY
+  .venv/bin/python -u scripts/aws/retrieve_cached.py --indexes indexes --idf inputs --queries inputs/queries.parquet --output results --upload-bucket "$BUCKET" --upload-prefix "$OUTPUT_PREFIX/shards"
+  aws s3 cp "s3://$BUCKET/amazon-ml-2026/phase5/inputs/retrieval-eval-v001/" evaluation-labels/ --recursive --only-show-errors
+  python3 - <<'VERIFY_LABELS'
+import hashlib,json
+from pathlib import Path
+for row in json.loads(Path('evaluation-labels/manifest.json').read_text())['files']:
+ p=Path('evaluation-labels')/row['name']
+ assert hashlib.sha256(p.read_bytes()).hexdigest()==row['sha256'],row['name']
+VERIFY_LABELS
+  .venv/bin/python -u scripts/aws/evaluate_retrieval.py --candidates results --labels evaluation-labels --output evaluation
+  mkdir -p summary
+  cp evaluation/metrics.json summary/retrieval-metrics-unlocked.json
+  cp results/*.json results/query_coverage.parquet environment.txt summary/
+  python3 scripts/aws/upload_verified.py summary "$BUCKET" "$OUTPUT_PREFIX/results" results-receipt.json
+else
+  .venv/bin/python -u scripts/aws/benchmark_indexes.py --input inputs --output results --queries-per-country 200
+  cp environment.txt results/
+  python3 scripts/aws/upload_verified.py results "$BUCKET" "$OUTPUT_PREFIX/results" results-receipt.json
+fi
 mkdir -p upload-receipts
 cp results-receipt.json upload-receipts/
 python3 scripts/aws/upload_verified.py upload-receipts "$BUCKET" "$OUTPUT_PREFIX/receipts" /tmp/receipts.json

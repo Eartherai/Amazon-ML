@@ -76,3 +76,11 @@ The report renderer rebuilds presentation files from canonical PROFILE-001/MORPH
 - Error analysis: `.venv/bin/python scripts/phase4_error_analysis.py --run outputs/oof/P4-A-001`
 
 Output directories refuse overwrite. Use new versioned IDs for reruns. Candidate config validates query hash and fit-owner folds. Phase4 retrieval uses full target search but disjoint fixed IDF fitting; see docs/OOF_VALIDATION.md. Do not reuse Phase3 IDF for OOF1–3.
+
+## Phase5 cloud execution
+
+Active profile: `amamzon_01_a1_0`. Benchmark command: `scripts/aws/launch_cpu_worker.sh`. Full run: `scripts/aws/launch_cpu_worker.sh --config configs/aws/P5-FULL-RETRIEVAL-001.json`. Requires committed source, uploaded input receipts and successful terminated benchmark. Each run uses a new immutable directory and S3 prefix.
+
+Collect status: `AWS_PROFILE=amamzon_01_a1_0 .venv/bin/python scripts/aws/collect_run.py RUN_ID`. Emergency terminate only tagged project workers: `scripts/aws/terminate_workers.sh`. Full-run shards are immutable `.tar` files under its S3 `shards/` prefix; every upload is SHA256verified before proceeding. Work is bounded by24h scheduled OS shutdown, terminate behavior, encrypted delete-on-terminationEBS. Do not launch duplicate full jobs. See cloud ledger for exact instance ID and commit.
+
+Full label metrics intentionally excludeFold4; evaluator rejects locked labels. `results/retrieval-metrics-unlocked.json` will hold exact unlocked-fold metrics after completion. Full candidate coverage counts use allS1without labels. Fullquery outputs do not constitute OOF model predictions or final submission files.

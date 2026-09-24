@@ -20,3 +20,9 @@ Private S3 Standard in us-east-1, ≤10 GiB planned, ≤1,000 PUT-class requests
 ## 2026-09-24T21:57:24.552608+00:00 — Phase4 checkpoint
 
 Completed5k model/candidates/features/OOF/calibration/ablations/country-transfer backed up under existing private bucket checkpoints/phase4/A-001/. Two checksum-verified objects; 205,762,384bytes. Additional S3 storage estimate $0.004408/month plus approximately$0.000010 PUT cost; no paid compute, actual billed spend and credit balance not queried. Source commit ae5cfcb; manifest and receipts in artifacts/cloud/phase4/checkpoint-A-001.
+
+## 2026-09-24T22:36:34.808653+00:00 — P5-INDEX-001 / EXP-024
+Account ending6318, profile amamzon_01_a1_0, us-east-1. Launched i-01871abb0c9bb0e07 at2026-09-24T22:34:27Z, R8i.2xlarge on-demand. Stop/runtime pending. Compute quote$0.55568/hour;90min ceiling compute$0.83352, total planning ceiling$2 including temporary EBS/IP/requests. Actual job cost unknown. Inputs/results at S3 amazon-ml-2026/phase5/. Monthly budget API reports$100budget and$0.01actual before run; this is not a credit balance. User-reported$200remains unverified.
+
+### 2026-09-24T22:47:14.680824+00:00 — benchmark completion
+P5-INDEX-001 exit0; stop status22:43:07Z, termination observed22:45:43Z. Job wall521.283586seconds, compute estimate$0.080463 through job completion, excludes shutdown lag.184verified result/status/receipt objects6,078,184,306bytes. Exact AWS bill pending. Additional best20k backup2objects591,802,307bytes.

@@ -1,0 +1,21 @@
+{
+  "run_id": "P5-FULL-RETRIEVAL-001",
+  "experiment": "EXP-025",
+  "job_kind": "full_retrieval",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 1440,
+  "compute_usd_per_hour": 0.55568,
+  "total_cost_ceiling_usd": 18.0,
+  "ebs_gib": 100,
+  "purpose": "Retrieve all 2206821 training S1 against all 10320219 training targets using persistent frozen char3 indexes; checkpoint deterministic shards to S3",
+  "fold4": "Labels CLOSED; unlabeled candidate generation only",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/full-query-v001",
+  "input_receipt": "full-query-upload.json",
+  "index_prefix": "amazon-ml-2026/phase5/runs/P5-INDEX-001",
+  "estimated_query_hours": 17.761190717056667,
+  "estimated_compute_usd": 9.869538457654048,
+  "estimate_basis": "200 queries per country per route on same EC2 type; excludes bootstrap/download/write/upload overhead, not a measured full runtime",
+  "checkpoint": "64 SHA256 query shards per country and route; each shard tar is uploaded with SHA256 verification before continuing"
+}

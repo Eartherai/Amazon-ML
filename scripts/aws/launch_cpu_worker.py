@@ -1,11 +1,12 @@
 """Launch the frozen bounded EC2 index benchmark; fail before launch if unready."""
-import hashlib,json,subprocess,shlex
+import argparse,hashlib,json,subprocess,shlex
 from datetime import datetime,timezone
 from pathlib import Path
 from provision_worker import aws
 from upload_verified import upload
 root=Path('artifacts/cloud/phase5')
-cfg=json.loads(Path('configs/aws/P5-INDEX-001.json').read_text());infra=json.loads((root/'infrastructure.json').read_text())
+parser=argparse.ArgumentParser();parser.add_argument('--config',type=Path,default=Path('configs/aws/P5-INDEX-001.json'));args=parser.parse_args()
+cfg=json.loads(args.config.read_text());infra=json.loads((root/'infrastructure.json').read_text())
 run=root/cfg['run_id'];run.mkdir(exist_ok=False)
 if subprocess.check_output(['git','status','--porcelain'],text=True).strip():raise RuntimeError('Commit exact worker code before launch')
 commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
@@ -13,13 +14,16 @@ account=aws('sts','get-caller-identity')['Account']
 if account[-4:]!=infra['account_suffix']:raise RuntimeError('Account mismatch')
 quota=aws('service-quotas','get-service-quota','--service-code','ec2','--quota-code','L-1216C47A')['Quota']['Value']
 if quota<8:raise RuntimeError('Insufficient quota')
-if not (root/'input-upload.json').exists():raise RuntimeError('Inputs not verified')
+if not (root/cfg.get('input_receipt','input-upload.json')).exists():raise RuntimeError('Inputs not verified')
 archive=run/'code.tar';subprocess.run(['git','archive','--format=tar','--output',str(archive),commit],check=True)
 key='amazon-ml-2026/phase5/code/'+commit+'.tar';receipt=upload(archive,infra['bucket'],key)
 ami=aws('ssm','get-parameter','--name','/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64')['Parameter']['Value']
 offerings=aws('ec2','describe-instance-type-offerings','--location-type','availability-zone','--filters','Name=instance-type,Values='+cfg['instance_type'])['InstanceTypeOfferings']
 azs={x['Location'] for x in offerings};subnet=next(s for s in infra['subnets'] if s['az'] in azs)
-values={'BUCKET':infra['bucket'],'CODE_KEY':key,'CODE_SHA256':receipt['sha256'],'INPUT_PREFIX':cfg['input_prefix'],'OUTPUT_PREFIX':'amazon-ml-2026/phase5/runs/'+cfg['run_id']}
+if cfg.get('job_kind')=='full_retrieval':
+ benchmark=json.loads((root/'P5-INDEX-001/ledger.json').read_text())
+ if benchmark.get('exit_code')!=0 or benchmark.get('instance_state')!='terminated':raise RuntimeError('Benchmark must succeed and terminate first')
+values={'JOB_KIND':cfg.get('job_kind','index_benchmark'),'SHUTDOWN_MINUTES':str(cfg['runtime_cap_minutes']),'INDEX_PREFIX':cfg.get('index_prefix',''),'BUCKET':infra['bucket'],'CODE_KEY':key,'CODE_SHA256':receipt['sha256'],'INPUT_PREFIX':cfg['input_prefix'],'OUTPUT_PREFIX':'amazon-ml-2026/phase5/runs/'+cfg['run_id']}
 script=Path('scripts/aws/worker_bootstrap.sh').read_text().splitlines()
 bootstrap='\n'.join([script[0],*[k+'='+shlex.quote(v) for k,v in values.items()],*script[1:]])+'\n'
 (run/'user-data.sh').write_text(bootstrap)

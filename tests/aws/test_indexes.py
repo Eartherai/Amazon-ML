@@ -26,3 +26,15 @@ def test_index_roundtrip_and_merge(tmp_path):
     assert len(result['routes'])==2
     assert all(t['candidate_set_mismatches']==0 for r in result['routes'] for t in r['trials'])
     assert all(r['country']=='Unseen-É' for r in result['routes'])
+
+    empty=pl.DataFrame({'entity_id':['S1-empty'],'country':['Unseen-É'],'n':[''],'a':['']})
+    pl.concat([queries,empty]).write_parquet(inp/'full-queries.parquet')
+    cached=tmp_path/'cached'
+    proc=subprocess.run([sys.executable,'scripts/aws/retrieve_cached.py','--indexes',str(out),'--idf',str(inp),'--queries',str(inp/'full-queries.parquet'),'--output',str(cached),'--shards','3','--batch-size','1','--threads','2'],env=os.environ,capture_output=True,text=True)
+    assert proc.returncode==0,proc.stderr
+    assert pl.read_parquet(cached/'query_coverage.parquet')['entity_id'].n_unique()==2
+    for field in ['name','address']:
+        actual=pl.read_parquet(str(cached/f'{field}-*.parquet'))
+        assert actual.filter(pl.col('source1_entity_id')=='S1-empty').is_empty()
+        assert set(actual['target_id'])==set(pl.read_parquet(inp/f'{field}_char3.parquet')['target_id'])
+    assert (cached/'COMPLETE.json').exists()
