@@ -1,0 +1,17 @@
+{
+  "config_id": "PREP-003",
+  "implementation": "src.preprocessing:1.0.0",
+  "purpose": "Explicit legal/address phrase-map experiment",
+  "enabled_by_default": false,
+  "requires_explicit_token_map": true,
+  "views": {
+    "legal_map": ["nfkc", "casefold", "ampersand", "punctuation_space", "whitespace", "token_map"],
+    "address_map": ["nfkc", "casefold", "ampersand", "punctuation_space", "whitespace", "token_map"]
+  },
+  "legal_map_field": "name",
+  "address_map_field": "address",
+  "proposal_evidence": "artifacts/preprocessing/PREP-001/token_replacement_evidence.json",
+  "fit_folds": [1, 2, 3],
+  "default_maps": {"name": {}, "address": {}},
+  "promotion_gate": "Review ambiguous mappings; assess incremental positive rescue AND distinct-entity collision/false-positive costs on development data; do not tune on fold 4"
+}

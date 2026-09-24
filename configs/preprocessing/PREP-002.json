@@ -1,0 +1,19 @@
+{
+  "config_id": "PREP-002",
+  "implementation": "src.preprocessing:1.0.0",
+  "purpose": "Optional retrieval/feature ablations; never overwrite raw or light",
+  "enabled_by_default": false,
+  "views": {
+    "accent": ["nfkc", "casefold", "ampersand", "punctuation_space", "whitespace", "latin_accent_fold"],
+    "compact": ["nfkc", "casefold", "ampersand", "punctuation_delete", "whitespace"],
+    "sorted": ["nfkc", "casefold", "ampersand", "punctuation_space", "whitespace", "token_sort"],
+    "deduped": ["nfkc", "casefold", "ampersand", "punctuation_space", "whitespace", "token_set"],
+    "number_format": ["nfkc", "casefold", "number_format_join", "punctuation_space", "whitespace"]
+  },
+  "warnings": [
+    "Accent removal can collide distinct names; Indic and other non-Latin marks are preserved",
+    "Compact punctuation deletion merges token boundaries",
+    "Sorted retains duplicates; deduped loses token multiplicity",
+    "Number formatting joins comma and period between digits; decimals and thousands can collide"
+  ]
+}

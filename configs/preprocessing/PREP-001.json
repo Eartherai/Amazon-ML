@@ -1,0 +1,15 @@
+{
+  "config_id": "PREP-001",
+  "implementation": "src.preprocessing:1.0.0",
+  "purpose": "Conservative independent views; raw is always retained",
+  "enabled_by_default": true,
+  "null_policy": "retain raw null and is_null; normalized views use empty string; exclude empty keys from exact blocks",
+  "country_policy": "arbitrary metadata; no country-specific dictionaries",
+  "views": {
+    "raw": [],
+    "light": ["nfc", "casefold", "punctuation_space", "whitespace"],
+    "compatible": ["nfkc", "casefold", "ampersand", "punctuation_space", "whitespace"]
+  },
+  "map_policy": "No fitted or manual token map is enabled",
+  "training_data_policy": "No learned parameters"
+}

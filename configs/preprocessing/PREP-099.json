@@ -1,0 +1,11 @@
+{
+  "config_id": "PREP-099",
+  "implementation": "src.preprocessing:1.0.0",
+  "purpose": "UNSAFE stress ablation to quantify normalization collision damage",
+  "enabled_by_default": false,
+  "production_approved": false,
+  "views": {
+    "aggressive": ["nfkc", "casefold", "ampersand", "latin_accent_fold", "number_format_join", "punctuation_delete", "whitespace", "token_set"]
+  },
+  "warning": "Erases punctuation boundaries, accents, numeric separators and duplicate tokens. Must never be a sole identity criterion or mandatory canonical form."
+}
