@@ -1,0 +1,14 @@
+.DS_Store
+.venv/
+__pycache__/
+.pytest_cache/
+*.pyc
+*.zip
+*.pdf
+student_resource/dataset/
+artifacts/
+outputs/
+tmp/
+.env
+*.pem
+*.key

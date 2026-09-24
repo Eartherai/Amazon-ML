@@ -1,0 +1,12 @@
+{
+  "seed": 20260925,
+  "folds": 5,
+  "algorithm": "sha256 seed|S1 ID, first 8 hex digits modulo 5",
+  "initial_training_folds": [1, 2, 3],
+  "development_fold": 0,
+  "locked_fold": 4,
+  "exclude_heldout_owned_targets_from_training_negatives": true,
+  "shared_targets": "fail and require components if any are found",
+  "learned_preprocessing_fit": "training folds only",
+  "test_fitted_vocabulary": false
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "model": "intfloat/multilingual-e5-small",
+    "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+    "license": "mit",
+    "parameters": {
+      "parameters": {
+        "I64": 512,
+        "F32": 117653760
+      },
+      "total": 117654272
+    },
+    "checked_at": "2026-09-24T19:24:18.541323+00:00",
+    "source": "https://huggingface.co/intfloat/multilingual-e5-small"
+  },
+  {
+    "model": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "license": "mit",
+    "parameters": {},
+    "checked_at": "2026-09-24T19:24:18.831683+00:00",
+    "source": "https://huggingface.co/BAAI/bge-m3"
+  },
+  {
+    "model": "BAAI/bge-reranker-v2-m3",
+    "revision": "953dc6f6f85a1b2dbfca4c34a2796e7dde08d41e",
+    "license": "apache-2.0",
+    "parameters": {
+      "parameters": {
+        "F32": 567755777
+      },
+      "total": 567755777
+    },
+    "checked_at": "2026-09-24T19:24:19.145822+00:00",
+    "source": "https://huggingface.co/BAAI/bge-reranker-v2-m3"
+  },
+  {
+    "model": "FacebookAI/xlm-roberta-base",
+    "revision": "e73636d4f797dec63c3081bb6ed5c7b0bb3f2089",
+    "license": "mit",
+    "parameters": {
+      "parameters": {
+        "F32": 278885778
+      },
+      "total": 278885778
+    },
+    "checked_at": "2026-09-24T19:24:19.453795+00:00",
+    "source": "https://huggingface.co/FacebookAI/xlm-roberta-base"
+  }
+]

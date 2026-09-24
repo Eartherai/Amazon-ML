@@ -1,0 +1,12 @@
+{
+  "experiment_id": "EXP-001",
+  "model": "exact normalized name AND address with country equality",
+  "training": false,
+  "normalization": "NFC + lower + Unicode letters/marks/numbers + whitespace",
+  "fold": 0,
+  "validation": "v1 entity fold; full training target pool",
+  "candidate_filter": "all exact nonblank name/address/country pairs",
+  "prediction_rule": "accept all generated candidates",
+  "seed": 20260925,
+  "purpose": "diagnostic baseline; not a submission"
+}

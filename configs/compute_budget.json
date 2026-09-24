@@ -1,0 +1,15 @@
+{
+  "reported_total_usd": 800,
+  "verified_total_usd": null,
+  "extra_credits_usd": 0,
+  "prototype_ceiling_usd": 40,
+  "retrieval_cpu_storage_ceiling_usd": 140,
+  "neural_research_ceiling_usd": 180,
+  "final_inference_ceiling_usd": 140,
+  "contingency_usd": 300,
+  "per_account_initial_planned_cap_usd": 150,
+  "local_minimum_disk_free_gib": 8,
+  "local_duckdb_memory_limit": "6GB",
+  "local_threads": 4,
+  "remote_launches_this_phase": 0
+}
