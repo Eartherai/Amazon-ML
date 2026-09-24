@@ -61,3 +61,6 @@ Baseline OOF macro0.928759, CI[0.9264584347104737, 0.9310251784781759]; singleto
 ## Current best —20k numeric confirmation
 
 51-feature LightGBM with preserved raw/original numeric features plus6 Unicode-digit/leading-zero comparisons: macro0.931897, precision0.981583, recall0.855938, singleton0.921317. Nested3outer/2inner folds,20k natural entities. New15k-only delta+0.003299,95% CI[+0.001840,+0.004701]. See docs/NUMERIC_CONFIRMATION.md. Current best artifact outputs/experiments/P4-NUMERIC-B-001; original reference unchanged. All launched local jobs completed. Next priorities: targeted India retrieval rescue and nested singleton/meta-model, then larger validation. Fold4 CLOSED; no submission; country robustness unresolved.62 tests pass.
+
+## Phase5 started — current action
+Best remains20k numeric-v2 macro0.9318965293; no new full-data score. Active AWS profile amamzon_01_a1_0 verified same account ending6318. CPU8vCPU; GPU/SageMaker training0. Increases pending. Persistent full-target index benchmark EXP-024 prepared with90min cap; not yet measured. Fold4 CLOSED. Full OOF, test inference, validator and submission remain pending.

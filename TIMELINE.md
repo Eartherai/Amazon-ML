@@ -100,3 +100,6 @@ All timestamps include timezone. Never replace historical entries.
 - Macro0.931896529 versus baseline0.928758931; paired delta+0.003137599. New15k-only delta+0.003299244 with CI[0.001839712,0.004700534].
 - Interpretation: retain canonical numeric comparison features as current development best; no automatic number-equivalence merge rule. Country transfer remains weak.
 - Next: targeted lexical rescue, singleton modeling, larger validation; no fold4/submission.
+
+## 2026-09-24T22:34:01.376480+00:00 — Codex — Phase5 cloud foundation
+Read latest user directive; inventoried configured profiles, EC2/SageMaker quotas and instance offerings. Named profile refreshed by user; same account as default. Requested CPU64/G8/SageMakerG5=1 quotas (pending). Created scoped EC2 role and no-ingress group, uploaded checksummed unlabeled10,320,219-target benchmark inputs. Persistent source/country index merger test passed, including boundary ties/unseen Unicode country. Preparing EXP-02490minR8i benchmark. Fold4 closed; no leaderboard submission.

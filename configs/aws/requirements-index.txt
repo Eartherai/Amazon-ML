@@ -1,0 +1,6 @@
+duckdb==1.5.5
+numpy==2.5.3
+polars==1.44.2
+scipy==1.18.1
+scikit-learn==1.9.1
+sparse-dot-topn==1.2.0

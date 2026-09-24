@@ -1,0 +1,15 @@
+{
+  "run_id": "P5-INDEX-001",
+  "experiment": "EXP-024",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 90,
+  "compute_usd_per_hour": 0.55568,
+  "total_cost_ceiling_usd": 2.0,
+  "ebs_gib": 100,
+  "purpose": "Build persistent full-target name/address char3 indexes, benchmark 2/4/8 threads and verify reference candidate parity without labels",
+  "fold4": "CLOSED",
+  "queries_per_country": 200,
+  "input_prefix": "amazon-ml-2026/phase5/inputs/index-v001"
+}

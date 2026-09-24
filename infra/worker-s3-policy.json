@@ -1,0 +1,39 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::aml2026-ber-08be19ac500747/amazon-ml-2026/phase5/inputs/*",
+        "arn:aws:s3:::aml2026-ber-08be19ac500747/amazon-ml-2026/phase5/code/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject",
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::aml2026-ber-08be19ac500747/amazon-ml-2026/phase5/runs/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::aml2026-ber-08be19ac500747",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "amazon-ml-2026/phase5/inputs/*",
+            "amazon-ml-2026/phase5/code/*",
+            "amazon-ml-2026/phase5/runs/*"
+          ]
+        }
+      }
+    }
+  ]
+}

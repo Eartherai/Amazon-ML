@@ -48,3 +48,6 @@ The mixed-country5k OOF result is0.923407, but India→US label transfer0.886261
 P4-NUMERIC-001 adds six generic comparison features: canonical Unicode decimal/leading-zero overlap, Jaccard, conflict, zero-format rescue, first-number equality/conflict. Raw strings and original numeric features remain. Nested5k macro0.927768 versus0.923407; paired delta+0.004361,95% CI[+0.001716,+0.006888]. Precision0.978401, recall0.851369; singleton0.872180. Provisional only until20k and country-transfer confirmation. No numeric equivalence is an automatic merge rule; postal leading zeros may be meaningful.
 
 Now run one bounded CPU configuration each of CatBoost1.2.8 and XGBoost3.0.2 on the exact baseline45 features/candidates/folds. No sweeps, no early stopping against outer labels. Both libraries document Apache2.0 licenses; model-family comparisons remain development evidence. Do not combine numeric and family changes until individual effects are understood.
+
+## Phase5: full-scale execution gate
+Use R8i.2xlarge64GiB within current8vCPU quota to measure index throughput before planning full2.2M retrieval. Request quota increases rather than pretending GPU access exists. Full-training generation does not authorize premature Fold4 label evaluation: withhold its metrics until freeze. Preserve numeric-v2 and all prior outputs.
