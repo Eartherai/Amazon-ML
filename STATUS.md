@@ -1,8 +1,12 @@
-# Latest Phase5 status — 2026-09-24T22:52:42.142603+00:00
+# Latest Phase5 status
 
-Full-training retrieval is RUNNING on EC2: P5-FULL-RETRIEVAL-001, instancei-0609d158c38e96160, frozen code5ac0845. All2,206,821S1queries,10,320,219targets,64SHA256shards per country/route. Projected17.76hours plus overhead,24hshutdown,$18planningallowance; actualcostunknown. Automatic S3checkpoint verification and termination are installed. Do not launch a duplicate. Collect with scripts/aws/collect_run.py.
+Full-training retrieval is **RUNNING** on EC2: `P5-FULL-RETRIEVAL-001`, instance `i-0609d158c38e96160`, frozen code `5ac0845`. It covers all **2,206,821 S1 queries** against **10,320,219 targets**, using 64 deterministic query shards per country and route. Projected query time is 17.76 hours plus overhead, with a 24-hour shutdown cap and an $18 total planning allowance. Actual cost is unknown. Each completed shard is checksum-verified in S3. Do not launch a duplicate job. Read its ledger and use `scripts/aws/collect_run.py` to collect progress.
 
-Best remains20k NUMERIC-V2 macro0.9318965293, precision0.98158282, recall0.85593807, singleton0.92131747. Country-balanced EXP-026did not improve mixed OOF:0.93171205; India improves,US declines. Full-data retrieval/model scores pending. Fold4 CLOSED; testinference/validator/submission/package NOTREADY. Active AWSprofile amamzon_01_a1_0, same account ending6318 asdefault. CPU64/G8/SageMakerG5quota requests awaiting AWSapproval. Creditsunverified. Next: collect checkpoints/full metrics, build larger OOF feature store, test targeted lexical rescue, reassess countryrobustness, then GPUrescue if quota/evidence permit.
+Current best remains the 20k NUMERIC-V2 model: macro F0.5 **0.9318965293**, precision **0.98158282**, recall **0.85593807**, singleton F0.5 **0.92131747**. Country-balanced EXP-026 scored **0.93171205**: India improved while US declined, so it was not promoted. Full-data retrieval and larger OOF scores remain pending.
+
+**Fold 4 is CLOSED.** Test inference has not started; final validator, submission, and package are not ready. The active AWS profile is `amamzon_01_a1_0`, which accesses the same account ending 6318 as `default`. CPU 64-vCPU, GPU 8-vCPU, and SageMaker G5 quota requests await AWS approval. Remaining credits are unverified.
+
+Next five steps: collect full retrieval metrics; materialize the larger OOF feature store; measure targeted lexical rescue; test country robustness at larger scale; benchmark licensed dense rescue when GPU quota and miss evidence are available. Current full retrieval evaluates labels only for the 1,765,649 entities outside Fold 4. No leaderboard submission exists.
 
 Prior status entries follow.
 

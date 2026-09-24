@@ -30,3 +30,5 @@ This is an interim checkpoint, not completion of Phase5.
 | Next action | Full-training sharded retrieval using verified persistent indexes; evaluate unlocked1,765,649entities only. Then larger OOF and targeted rescue. |
 
 Current20k retrieval reference (not full-data claim): link recall0.96662630, complete-entity recall0.90305178, oracle0.98853146,3,943,627pairs,mean197.18135,p95/p99=200. Preserve these until full run completes.
+
+First full-run checkpoint confirmed: India/name shard0,1,380,300routepairs,182.85seconds; S3archive10,864,640bytes. This is progress evidence, not the final union candidate count. Fullrun continues automatically; final metrics remain pending.66tests pass.

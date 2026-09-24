@@ -109,3 +109,6 @@ P5-INDEX-001 / EXP-024 built6.078GB full-target indexes; all4country/route candi
 
 ## 2026-09-24T22:52:42.142603+00:00 — Codex — full training retrieval running and country trial
 EXP-025 / P5-FULL-RETRIEVAL-001 launched i-0609d158c38e96160, code5ac0845, all2,206,821trainingS1,24hshutdown. Inputs/indexes checksummed; output shards versioned toS3. NoFold4labels supplied. EXP-026country balancing20k completed:0.93171205 vs0.93189653; India +0.00196164,US -0.00165014. Not promoted. Best staysNUMERIC-V2. Researched/pinned candidate embedding licenses; none selected or executed.
+
+## 2026-09-24T22:54:18.545341+00:00 — Codex — full-run first checkpoint verified
+EC2 console reports India/name shard0 completed:1,380,300routepairs in182.8521seconds. S3contains first shard archive10,864,640bytes; worker upload uses conditional creation and SHA256head verification before reporting completion. This is one name-route shard, not full union metrics. Fullrun remains active.66tests pass. NoFold4evaluation, finalvalidator or submission.

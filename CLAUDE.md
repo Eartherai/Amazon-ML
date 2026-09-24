@@ -16,3 +16,7 @@ Read STATUS.md and docs/PHASE4_CHECKPOINT.md. First5k nested entity OOF macro0.9
 ## Current best —20k numeric confirmation
 
 51-feature LightGBM with preserved raw/original numeric features plus6 Unicode-digit/leading-zero comparisons: macro0.931897, precision0.981583, recall0.855938, singleton0.921317. Nested3outer/2inner folds,20k natural entities. New15k-only delta+0.003299,95% CI[+0.001840,+0.004701]. See docs/NUMERIC_CONFIRMATION.md. Current best artifact outputs/experiments/P4-NUMERIC-B-001; original reference unchanged. All launched local jobs completed. Next priorities: targeted India retrieval rescue and nested singleton/meta-model, then larger validation. Fold4 CLOSED; no submission; country robustness unresolved.62 tests pass.
+
+## Phase5 handoff — active cloud run
+
+Full retrieval is running as P5-FULL-RETRIEVAL-001 on i-0609d158c38e96160 (us-east-1, named profile amamzon_01_a1_0), code5ac0845. Do not launch a duplicate. Read STATUS.md and artifacts/cloud/phase5/P5-FULL-RETRIEVAL-001/ledger.json; collect_run.py fetches compact status/results. Shards upload to the dedicated S3 run prefix, each SHA256 verified. The24h OS shutdown terminates the worker. Index benchmark P5-INDEX-001 completed and terminated with exact sampled candidate parity. Its persistent indexes are in S3. Full label metrics exclude Fold4. Best stays20k NUMERIC-V2 macro0.93189653; country-balanced trial not promoted. GPU/SageMaker quotas remain pending. All outputs/history preserved.
