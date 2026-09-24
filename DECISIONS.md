@@ -34,3 +34,7 @@ Freeze BASELINE-P4-001 at 9e08d01. Preserve its exact 45 features, model and thr
 Use three original entity folds with nested two-fold threshold selection. Exclude every held-out owner's target from fit negatives. Natural samples use uniform deterministic hash ranking; diagnostic stratification is separate. Start with5k before paying for more compute. Do not interpret pooled threshold optimization on those same OOF scores as independent evaluation. Fold4 stays closed.
 
 The Phase3 broad-union audit now orders name/address char3 first: these alone recall96.35%, while96.78% includes token_union. Expanded tokens add493,006 candidates for7 links at the end of the union. Universal expansion is not justified by this pilot.
+
+## Phase4 — local fused retrieval benchmark
+
+Reference5k retrieval took738.51s and1.927GiB peak RSS. Test sparse-dot-topn1.2.0 (Apache2.0) to remove dense intermediate selection cost; bounded subset gives2.59x/3.42x speedup and identical candidate sets. Use two threads, topK+1 and reference fallback for boundary near-ties. Run20k locally while5k OOF trains; compare nested5k candidates to reference before claiming parity. No AWS compute required by current resource measurements. Package versions pinned; no business information fetched.

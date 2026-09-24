@@ -26,3 +26,12 @@ def test_joint_empty_threshold_keeps_missing_entities():
     (pair,empty),trials=empty_search(np.array([.8,.3]),np.array([0,1]),np.array([1,0]),np.array([1,0,1]))
     assert empty>=pair
     assert max(r['macro_f0_5'] for r in trials)==2/3
+
+def test_fused_topk_resolves_boundary_ties_lexically():
+    from scipy.sparse import csr_matrix
+    from src.blocking.char_retrieval import fused_top_k_rows
+    queries=csr_matrix(np.array([[1.,0.],[0.,0.]],dtype=np.float32))
+    targets=csr_matrix(np.array([[1.,0.],[1.,0.],[1.,0.],[0.,1.]],dtype=np.float32))
+    result=fused_top_k_rows(queries,targets,np.array(['z','a','b','c']),2)
+    assert result[0][0].tolist()==['a','b']
+    assert result[1][0].tolist()==[]

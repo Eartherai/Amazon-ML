@@ -25,3 +25,5 @@ scikit-learn==1.9.1
 scipy==1.18.1
 six==1.17.0
 threadpoolctl==3.7.0
+sparse-dot-topn==1.2.0
+psutil==7.2.2

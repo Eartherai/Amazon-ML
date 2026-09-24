@@ -122,3 +122,7 @@ Reject models selected only on pairwise F1/public LB. Reject blockers tested on 
 14. [FAISS](https://github.com/facebookresearch/faiss): dense nearest-neighbor indexing; use CPU or suitable CUDA hosts, not an assumption of MPS support.
 15. [Official Colab CLI](https://github.com/googlecolab/google-colab-cli) and [Colab FAQ](https://research.google.com/colaboratory/faq.html).
 16. [AWS G6](https://aws.amazon.com/ec2/instance-types/g6/), [instance specifications](https://docs.aws.amazon.com/ec2/latest/instancetypes/ac.html), [EC2 pricing](https://aws.amazon.com/ec2/pricing/): hardware and region-specific cost verification before launch.
+
+## Phase4 sparse retrieval implementation research
+
+Primary source: https://github.com/ing-bank/sparse_dot_topn (v1.2.0 Apache2.0 license verified at tag). Fused sparse multiplication/topN is a compute optimization, not a new matching hypothesis. Local bounded benchmark:2.59x name /3.42x address speedup, zero candidate-set differences across1,000 queries x25,000 targets; reference boundary-tie fallback required. Full-pool nested-sample parity remains a gate. See docs/PHASE4_RETRIEVAL_ENGINE.md. No outside identities or enrichment used.

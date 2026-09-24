@@ -23,6 +23,21 @@ def top_k(ids: np.ndarray, scores: np.ndarray, k: int) -> tuple[np.ndarray,np.nd
     return ids[keep][order],scores[keep][order]
 
 
+def fused_top_k_rows(queries, targets, ids, k, threads=2):
+    """Fused sparse top-K; reference fallback for ties/near-ties at the boundary."""
+    from sparse_dot_topn import sp_matmul_topn
+    transposed=targets.T.tocsr()
+    product=sp_matmul_topn(queries,transposed,top_n=min(k+1,len(ids)),threshold=0.,sort=True,n_threads=threads)
+    results=[]
+    for j in range(queries.shape[0]):
+        row=product.getrow(j)
+        if len(row.data)>k and abs(float(row.data[k-1])-float(row.data[k]))<=1e-6:
+            results.append(top_k(ids,(queries[j]@transposed).toarray().ravel(),k))
+        else:
+            results.append(top_k(ids[row.indices],row.data,k))
+    return results
+
+
 def retrieve(con, queries, field, ngram, config, output):
     start=time.perf_counter(); col={'name':'n','address':'a'}[field]
     table=config.get('target_table','targets_normalized')
@@ -53,9 +68,13 @@ def retrieve(con, queries, field, ngram, config, output):
             ids=np.array([r[0] for r in batch]); targets=vectorizer.transform([r[1] for r in batch])
             # Query blocks bound the dense working product; the full sparse index is never retained.
             for lo in range(0,len(qs),config['query_block_rows']):
-                scores=(matrix[lo:lo+config['query_block_rows']]@targets.T).toarray()
-                for j,values in enumerate(scores):
-                    ix=lo+j;new_ids,new_scores=top_k(ids,values,k)
+                block=matrix[lo:lo+config['query_block_rows']]
+                if config.get('kernel','reference')=='fused':
+                    selected=fused_top_k_rows(block,targets,ids,k,config.get('kernel_threads',2))
+                else:
+                    selected=[top_k(ids,values,k) for values in (block@targets.T).toarray()]
+                for j,(new_ids,new_scores) in enumerate(selected):
+                    ix=lo+j
                     best[ix]=top_k(np.concatenate((best[ix][0],new_ids)),np.concatenate((best[ix][1],new_scores)),k)
             rows_scored+=len(batch)
         for q,(ids,scores) in zip(qs,best):

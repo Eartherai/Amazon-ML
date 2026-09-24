@@ -10,10 +10,10 @@ from src.blocking.char_retrieval import retrieve
 from src.blocking.token_candidates import summarize_candidates
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--sample',default='A');p.add_argument('--output',required=True);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--sample',default='A');p.add_argument('--kernel',choices=['reference','fused'],default='reference');p.add_argument('--output',required=True);a=p.parse_args()
     out=Path(a.output);out.mkdir(parents=True,exist_ok=False);start=time.perf_counter()
     querypath=Path(f'artifacts/validation/phase4-v001/P4-SAMPLE-{a.sample}.parquet')
-    cfg={'queries_path':str(querypath),'fit_owner_folds':[-1,0],'max_features':200000,'chunk_rows':25000,'query_block_rows':50,'top_k_per_route':100,'route_runtime_cap_seconds':7200,'routes':[['name',3],['address',3]],'query_sha256':hashlib.sha256(querypath.read_bytes()).hexdigest(),'code_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'retriever_sha256':hashlib.sha256(Path('code/business_entity_resolution/src/blocking/char_retrieval.py').read_bytes()).hexdigest()}
+    cfg={'kernel':a.kernel,'kernel_threads':2,'queries_path':str(querypath),'fit_owner_folds':[-1,0],'max_features':200000,'chunk_rows':25000,'query_block_rows':50,'top_k_per_route':100,'route_runtime_cap_seconds':7200,'routes':[['name',3],['address',3]],'query_sha256':hashlib.sha256(querypath.read_bytes()).hexdigest(),'code_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'retriever_sha256':hashlib.sha256(Path('code/business_entity_resolution/src/blocking/char_retrieval.py').read_bytes()).hexdigest()}
     (out/'config.json').write_text(json.dumps(cfg,indent=2))
     frame=pl.read_parquet(querypath)
     assert set(frame['fold'])<= {1,2,3}
