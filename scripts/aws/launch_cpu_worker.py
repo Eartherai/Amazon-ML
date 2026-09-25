@@ -1,9 +1,9 @@
 """Launch the frozen bounded EC2 index benchmark; fail before launch if unready."""
-import argparse,hashlib,json,subprocess,shlex
+import argparse,base64,hashlib,json,subprocess,shlex
 from datetime import datetime,timezone
 from pathlib import Path
 from provision_worker import aws
-from upload_verified import upload
+from upload_verified import upload,sha
 root=Path('artifacts/cloud/phase5')
 
 def s3_keys(bucket:str,prefix:str)->list[str]:
@@ -53,7 +53,18 @@ cost_record=guard(cfg,price_cap)
 run=root/cfg['run_id'];run.mkdir(exist_ok=False)
 (run/'cost_guard.json').write_text(json.dumps(cost_record,indent=2))
 archive=run/'code.tar';subprocess.run(['git','archive','--format=tar','--output',str(archive),commit],check=True)
-key='amazon-ml-2026/phase5/code/'+commit+'.tar';receipt=upload(archive,infra['bucket'],key)
+key='amazon-ml-2026/phase5/code/'+commit+'.tar'
+try:
+ existing=aws('s3api','head-object','--bucket',infra['bucket'],'--key',key,'--checksum-mode','ENABLED')
+except subprocess.CalledProcessError:
+ existing=None
+if existing:
+ digest=sha(archive)
+ if existing.get('ChecksumSHA256')!=base64.b64encode(bytes.fromhex(digest)).decode() or existing['ContentLength']!=archive.stat().st_size:
+  raise RuntimeError('Existing committed code archive has different SHA256 or size')
+ receipt={'key':key,'sha256':digest,'bytes':existing['ContentLength'],'version_id':existing.get('VersionId')}
+else:
+ receipt=upload(archive,infra['bucket'],key)
 ami=aws('ssm','get-parameter','--name','/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64')['Parameter']['Value']
 offerings=aws('ec2','describe-instance-type-offerings','--location-type','availability-zone','--filters','Name=instance-type,Values='+cfg['instance_type'])['InstanceTypeOfferings']
 azs={x['Location'] for x in offerings};subnet=next(s for s in infra['subnets'] if s['az'] in azs and (not cfg.get('availability_zone') or s['az']==cfg['availability_zone']))
