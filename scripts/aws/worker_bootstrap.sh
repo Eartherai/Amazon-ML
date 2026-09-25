@@ -41,10 +41,15 @@ python3.12 -m venv .venv
 .venv/bin/pip install --disable-pip-version-check -r configs/aws/requirements-index.txt
 export PYTHONPATH=code/business_entity_resolution OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=8
 .venv/bin/pip freeze > environment.txt
-if [[ "$JOB_KIND" == sub001_inference || "$JOB_KIND" == sub001_validation ]]; then
-  if [[ "$JOB_KIND" == sub001_inference ]]; then
+if [[ "$JOB_KIND" == sub001_inference || "$JOB_KIND" == sub001_validation || "$JOB_KIND" == sub001_country ]]; then
+  if [[ "$JOB_KIND" == sub001_inference || "$JOB_KIND" == sub001_country ]]; then
     .venv/bin/pip install --disable-pip-version-check -r configs/aws/requirements-sub001.txt
-    .venv/bin/python -u scripts/submissions/run_sub001.py --inputs inputs --output results --threads 8 --upload-bucket "$BUCKET" --upload-prefix "$OUTPUT_PREFIX"
+    if [[ "$JOB_KIND" == sub001_country ]]; then
+      test -n "$COUNTRY"
+      .venv/bin/python -u scripts/submissions/run_sub001.py --inputs inputs --output results --threads 8 --country "$COUNTRY" --upload-bucket "$BUCKET" --upload-prefix "$OUTPUT_PREFIX"
+    else
+      .venv/bin/python -u scripts/submissions/run_sub001.py --inputs inputs --output results --threads 8 --upload-bucket "$BUCKET" --upload-prefix "$OUTPUT_PREFIX"
+    fi
   else
     mkdir -p results/shards
     aws s3 cp "s3://$BUCKET/$SHARD_PREFIX/" results/shards/ --recursive --only-show-errors
@@ -58,6 +63,15 @@ for p in files:
   while f.read(8*1024*1024):pass
 PY
     printf '{"source":"Mac SUB-001 full-test inference","shard_count":%s}\n' "$(find results/shards -name '*-matching.tsv.gz' | wc -l)" > results/COMPLETE.json
+  fi
+  if [[ "$JOB_KIND" == sub001_country ]]; then
+    mkdir -p summary
+    cp results/COMPLETE.json environment.txt summary/
+    python3 scripts/aws/upload_verified.py summary "$BUCKET" "$OUTPUT_PREFIX/results" results-receipt.json
+    mkdir -p upload-receipts
+    cp results-receipt.json upload-receipts/
+    python3 scripts/aws/upload_verified.py upload-receipts "$BUCKET" "$OUTPUT_PREFIX/receipts" /tmp/receipts.json
+    exit 0
   fi
   mkdir -p student_resource/dataset/test
   for source in test_source1 test_source2 test_source3; do

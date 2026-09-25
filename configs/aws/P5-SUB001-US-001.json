@@ -1,0 +1,21 @@
+{
+  "run_id": "P5-SUB001-US-001",
+  "experiment": "SUB-001",
+  "job_kind": "sub001_country",
+  "country": "US",
+  "instance_type": "r8i.4xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 720,
+  "compute_usd_per_hour": 1.11136,
+  "total_cost_ceiling_usd": 15.0,
+  "ebs_gib": 100,
+  "purpose": "Accelerate the frozen SUB-001 US test portion while the Mac finishes India; use identical frozen retrieval, 51 features, model and threshold",
+  "fold4": "CLOSED",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/sub001-v002",
+  "input_receipt": "sub001-input-v002-upload.json",
+  "estimate_basis": "Mac France completed 259452 queries in 7096 seconds; India 4/64 shards took 3520 seconds including index build. US has 663106 queries. Eight EC2 threads target completion inside 12 hours, with the Mac remaining a fallback.",
+  "expected_gain": "Reduce wall time to first validated submission by computing US concurrently with Mac India; model score is unchanged",
+  "checkpoint": "Every US matching and candidate shard is SHA256-uploaded to S3 as it completes",
+  "cleanup": "720-minute independent OS shutdown, terminate-on-shutdown EC2, encrypted DeleteOnTermination EBS"
+}

@@ -38,7 +38,7 @@ def retrieve(matrix,parts,k,threads):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--inputs',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--shards',type=int,default=64);p.add_argument('--batch-size',type=int,default=200);p.add_argument('--threads',type=int,default=8);p.add_argument('--max-queries-per-country',type=int);p.add_argument('--upload-bucket');p.add_argument('--upload-prefix');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--inputs',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--shards',type=int,default=64);p.add_argument('--batch-size',type=int,default=200);p.add_argument('--threads',type=int,default=8);p.add_argument('--max-queries-per-country',type=int);p.add_argument('--country');p.add_argument('--upload-bucket');p.add_argument('--upload-prefix');a=p.parse_args()
     if a.output.exists():raise FileExistsError(a.output)
     if a.shards<1 or a.batch_size<1 or a.threads<1:raise ValueError('Positive sizes required')
     cfg=json.loads((a.inputs/'submission-config.json').read_text());train=json.loads((a.inputs/'train-manifest.json').read_text())
@@ -54,7 +54,11 @@ def main():
     if queries['entity_id'].n_unique()!=len(queries):raise ValueError('Duplicate test S1')
     query_total=len(queries)
     queries=queries.with_columns(pl.Series('shard',[shard_id(x,a.shards)for x in queries['entity_id']],dtype=pl.UInt16))
-    countries=sorted(queries['country'].unique().to_list());report={'config':cfg,'model_sha256':train['model_sha256'],'query_total':query_total,'processed_query_count':0,'countries':countries,'fold4':'CLOSED','country_progress':[],'started_seconds':start}
+    countries=sorted(queries['country'].unique().to_list())
+    if a.country:
+        if a.country not in countries:raise ValueError(f'Unknown query country: {a.country}')
+        countries=[a.country]
+    report={'config':cfg,'model_sha256':train['model_sha256'],'query_total':query_total,'processed_query_count':0,'countries':countries,'fold4':'CLOSED','country_progress':[],'started_seconds':start}
     for country in countries:
         cq=queries.filter(pl.col('country')==country)
         if a.max_queries_per_country:cq=cq.sort('entity_id').head(a.max_queries_per_country)

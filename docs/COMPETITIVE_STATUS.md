@@ -4,8 +4,8 @@ Leaderboard values below are reported by the user and have not been independentl
 
 | Field | Current value |
 |---|---|
-| Current leaderboard top | 0.964733 (user report) |
-| Third-place reference | 0.957920 (user report) |
+| Current leaderboard top | 0.976808 (user report, 25 Sep) |
+| Third-place reference | 0.972446 (user report, 25 Sep) |
 | Our public score | Pending; SUB-001 not submitted |
 | Our rank | Pending |
 | Delta to first | Pending our public score |
@@ -18,6 +18,8 @@ Leaderboard values below are reported by the user and have not been independentl
 | Submissions left today | Up to 5 based on recorded history; confirm portal counter before upload |
 
 SUB-001 is an explicitly authorized early calibration submission. Frozen model and threshold 0.83 are unchanged. The active detached Mac run is `aml-sub001-v005`, writing to `outputs/submissions/SUB-001/local-full-v005/inference`. Official validation and SHA256 hashes are pending. If the healthy run stalls, use approved SageMaker ml.r5.2xlarge Processing for only unfinished deterministic shards, with a hard runtime and cost ceiling. The separate full-training retrieval remains active on EC2.
+
+The 25 September user snapshot also reports second 0.976407 and ranks 4–9 around 0.971, 0.968, 0.965, 0.963, 0.962 and 0.958. These values must not be compared directly with the different-distribution local OOF score. Our public score and rank remain unknown until the user uploads the validated files. Do not use portal submissions to probe thresholds.
 
 | Learning-curve size | Numeric-v2 result |
 |---:|---|
