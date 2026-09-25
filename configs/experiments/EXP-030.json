@@ -1,0 +1,14 @@
+{
+  "experiment_id": "EXP-030",
+  "purpose": "Measure marginal India link recovery from name char3 top200 versus frozen top100 name+address union",
+  "population": "First 1000 India S1 entities by deterministic sample_hash in P4-SAMPLE-B; folds1-3; Fold4 CLOSED",
+  "index": "P4-INDEX-PROBE-001 full 4,133,346 India S2/S3 target rows",
+  "idf": "P4-B-002 name_char3_idf.npz; verified byte-identical to P4-A-001 index IDF",
+  "routes": "Only name char3 expands from 100 to 200; address char3 stays top100",
+  "positive_labels": "Read only after retrieval to measure marginal recovery",
+  "runtime_cap_seconds": 900,
+  "compute": "Mac M5 CPU one thread; no AWS cost",
+  "expected_gain": "Unknown; top100 cap may miss high-rank matches, but broad expansion may add many low-value candidates",
+  "decision_gate": "Report top100 parity, new candidates per recovered link, candidate recall and per-entity oracle; do not change frozen SUB-001",
+  "output": "outputs/experiments/EXP-030-v001"
+}
