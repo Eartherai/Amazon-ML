@@ -5,6 +5,19 @@ from pathlib import Path
 from provision_worker import aws
 from upload_verified import upload
 root=Path('artifacts/cloud/phase5')
+
+def s3_keys(bucket:str,prefix:str)->list[str]:
+ """List every object page explicitly before checking a completed run."""
+ keys=[];token=None
+ while True:
+  command=['s3api','list-objects-v2','--no-paginate','--bucket',bucket,'--prefix',prefix]
+  if token:command.extend(['--continuation-token',token])
+  page=aws(*command)
+  keys.extend(row['Key'] for row in page.get('Contents',[]))
+  if not page.get('IsTruncated'):return keys
+  token=page.get('NextContinuationToken')
+  if not token:raise RuntimeError('S3 inventory truncated without continuation token')
+
 parser=argparse.ArgumentParser();parser.add_argument('--config',type=Path,default=Path('configs/aws/P5-INDEX-001.json'));args=parser.parse_args()
 cfg=json.loads(args.config.read_text());infra=json.loads((root/'infrastructure.json').read_text())
 from cost_guard import guard
@@ -24,9 +37,8 @@ if cfg.get('job_kind')=='sample_features':
  complete=root/'P5-LEARNING-200K-001/results-COMPLETE.json'
  if not complete.exists() or json.loads(complete.read_text()).get('query_count')!=200000:raise RuntimeError('Missing complete 200k retrieval summary')
  archive_prefix=cfg['shard_prefix'].rstrip('/')+'/shards/'
- listing=aws('s3api','list-objects-v2','--bucket',infra['bucket'],'--prefix',archive_prefix)
- archives=[row['Key'] for row in listing.get('Contents',[]) if row['Key'].endswith('.tar')]
- if len(archives)!=256 or listing.get('IsTruncated'):raise RuntimeError('Incomplete 256-archive retrieval checkpoint')
+ archives=[key for key in s3_keys(infra['bucket'],archive_prefix) if key.endswith('.tar')]
+ if len(archives)!=256:raise RuntimeError('Incomplete 256-archive retrieval checkpoint')
 if cfg.get('job_kind')=='learning_curve':
  features=json.loads((root/'P5-FEATURE-200K-001/ledger.json').read_text())
  if features.get('exit_code')!=0 or features.get('instance_state')!='terminated':raise RuntimeError('Complete 200k feature job must terminate successfully first')
@@ -34,9 +46,8 @@ if cfg.get('job_kind')=='learning_curve':
  if not complete.exists():raise RuntimeError('Missing complete feature summary')
  expected_parts=json.loads(complete.read_text())['feature_parts']
  feature_prefix=cfg['shard_prefix'].rstrip('/')+'/results/'
- listing=aws('s3api','list-objects-v2','--bucket',infra['bucket'],'--prefix',feature_prefix)
- feature_parts=[row['Key'] for row in listing.get('Contents',[]) if row['Key'].split('/')[-1].startswith('features-') and row['Key'].endswith('.parquet')]
- if len(feature_parts)!=expected_parts or listing.get('IsTruncated'):raise RuntimeError('Incomplete feature part checkpoint')
+ feature_parts=[key for key in s3_keys(infra['bucket'],feature_prefix) if key.split('/')[-1].startswith('features-') and key.endswith('.parquet')]
+ if len(feature_parts)!=expected_parts:raise RuntimeError('Incomplete feature part checkpoint')
 price_cap=str(cfg.get('spot_max_price',cfg['compute_usd_per_hour']))
 cost_record=guard(cfg,price_cap)
 run=root/cfg['run_id'];run.mkdir(exist_ok=False)
