@@ -69,3 +69,15 @@ EXP-029 kept the candidate set, 51 features and frozen outer models fixed, selec
 ## Phase5 — do not universally expand India's name route to top200
 
 EXP-030 reused the complete 4.13M-record India target index and byte-identical frozen IDF on a deterministic 1,000-entity India development sample. The top100 route reproduced frozen candidates exactly. Raising only name topK to200 added 99,873 candidates for 11 recovered true links (9,079 candidates/link), with link recall0.945977→0.949172 and candidate oracle macro0.981488→0.982530. This is an upper bound before matcher errors and increases candidate volume about50% for the slice. Do not apply a universal top200 expansion to SUB-001 or a later model without a selective observable trigger and nested end-to-end score gain. Focus on complementary retrieval mechanisms and larger training data.
+
+## Phase5 — measure data-scale slope before adding classical complexity
+
+Run the dependency-gated EXP-031 retrieval, EXP-032 owner-safe 51-feature store
+and EXP-033 20k/50k/100k LightGBM comparison on one new fixed 15k OOF
+population. The prior 20k thresholds were frozen before choosing the new
+evaluation entities; do not claim separately nested threshold selection at each
+training size or compare its new 20k point directly to the older 0.9318965293
+OOF population. No 50k/100k result exists yet. If the slope is meaningfully
+positive across folds/countries, prioritize 250k/500k/1M scaling; if it
+flattens, shift compute to retrieval, feature and model diversity. Preserve
+Fold4 CLOSED and the frozen SUB-001 path regardless of this outcome.
