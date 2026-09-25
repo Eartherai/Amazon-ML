@@ -97,3 +97,7 @@ SUB-001 frozen Mac inference remains healthy in screen `aml-sub001-v005`, PID865
 ## 2026-09-25T01:35:00+00:00 — Error slice priority
 
 EXP-028 on the existing 20k known-country OOF population found 2,315 retrieval misses and 7,678 retrieved-but-rejected true links. India/S3 alone contributes 982 retrieval misses; non-ASCII target names have 89.13% candidate recall. When either address is missing, only 684/3,045 true links are predicted and current predicted-pair precision is 684/873 (78.35%), so a blanket lower threshold is unsafe. See `docs/PHASE5_ERROR_SLICES.md`. Next experiments should test targeted retrieval and nested calibrated missing-address decisions while SUB-001 remains frozen. No Fold4 or test labels were used.
+
+## 2026-09-25T01:45:00+00:00 — EXP-029 rejected
+
+Separate missing-address threshold selected within inner OOF fell on all three outer folds: pooled 0.930533 versus frozen baseline 0.931897, paired delta -0.001363, 95% CI [-0.002074, -0.000677]. Frozen SUB-001 stays best and unchanged. SageMaker validator role, launch gate and verified-result downloader are ready; no validator job or portal submission yet. Mac inference and full-training retrieval remain active. 71 tests pass.
