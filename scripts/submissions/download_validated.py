@@ -75,7 +75,9 @@ def main() -> None:
     validation = json.loads((args.output / "validation.json").read_text())
     if validation["rows"] != 1732544 or validation["matching_sha256"] != manifest["matching_sha256"] or validation["candidate_sha256"] != manifest["candidate_sha256"]:
         raise ValueError("Validator metadata disagrees")
-    if any(item != {"exit_code": 0, "pass": True} for item in validation["validation"].values()):
+    if set(validation["validation"]) != {"official", "official_check_ids"} or any(
+        item != {"exit_code": 0, "pass": True} for item in validation["validation"].values()
+    ):
         raise ValueError("Official validator did not pass")
     for name in ("official.log", "official_check_ids.log"):
         log = (args.output / name).read_text()
