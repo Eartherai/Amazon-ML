@@ -1,11 +1,11 @@
 # 2026-09-25T23:55:14+00:00 — 12h sprint: final candidates SUB005-B and SUB006-A built and validated
 
-Fold-3 (~64k S1, labels, fold4 CLOSED): stage-2 alone 0.964662; + e5-base cross-encoder stack 0.973788 (4 epochs; 2 epochs 0.973764, tie); + ownership + dense e5-small top-10 rescue (text-only p>=0.8) **0.98049** (India 0.97786, US 0.98225). Same recipe applied to test from saved artifacts: 10,558,786 CE band logits (P5-CE-E5BASE-4EP-001), 7,432,606 dense pairs (P5-BIENC-E5S-TEST-T003), bundled on SageMaker (P5-BUNDLE-003) and downloaded with size match. Assembly  is deterministic (seeded LightGBM, sorted rescue tie-break).
+Fold-3 (~64k S1, labels, fold4 CLOSED): stage-2 alone 0.964662; + e5-base cross-encoder stack 0.973788 (4 epochs; 2 epochs 0.973764, tie); + ownership + dense e5-small top-10 rescue (text-only p>=0.8) **0.98049** (India 0.97786, US 0.98225). Same recipe applied to test from saved artifacts: 10,558,786 CE band logits (P5-CE-E5BASE-4EP-001), 7,432,606 dense pairs (P5-BIENC-E5S-TEST-T003), bundled on SageMaker (P5-BUNDLE-003) and downloaded with size match. Assembly `scripts/classical/assemble_final_v2.py` is deterministic (seeded LightGBM, sorted rescue tie-break).
 
--  SHA256 : India/US new, France rows byte-identical to VSAFE (public 0.947). Recommended first upload.
--  SHA256 : identical India/US; France from the pipeline (+67,293/-23,283 links in 72,774 rows vs VSAFE). France is unmeasured; the A-minus-B public delta isolates the France policy.
+- `outputs/submissions/UPLOAD_SUB005_B_CL025/UPLOAD_SUB005_B_CL025_matching_results.tsv` SHA256 `7ae6f63580a24bdd330bef212ea6be6ffb2a3264bb29286da1ff55a7cd1a68dd`: India/US new, France rows byte-identical to VSAFE (public 0.947). Recommended first upload.
+- `outputs/submissions/UPLOAD_SUB006_A_CL025/UPLOAD_SUB006_A_CL025_matching_results.tsv` SHA256 `6d8f2492ef163f91d899e625142cbf7496f7ecf846b71fa0cb4475e7c5db0519`: identical India/US; France from the pipeline (+67,293/-23,283 links in 72,774 rows vs VSAFE). France is unmeasured; the A-minus-B public delta isolates the France policy.
 
-Both: official default + --check-ids + strict PASS, copy hash verified. Not uploaded (user uploads). The first nondeterministic build is kept in . e5-large CE (P5-CE-E5LARGE-F3-001) still training, held only. AWS CLI token expired; MCP session used. Fold4 CLOSED.
+Both: official default + --check-ids + strict PASS, copy hash verified. Not uploaded (user uploads). The first nondeterministic build is kept in `outputs/submissions/_nondeterministic_v0/`. e5-large CE (P5-CE-E5LARGE-F3-001) still training, held only. AWS CLI token expired; MCP session used. Fold4 CLOSED.
 
 # 2026-09-25T17:45:00+00:00 — public 0.944 and France retrieval diagnosis
 
