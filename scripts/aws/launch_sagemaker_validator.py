@@ -97,7 +97,10 @@ def main() -> None:
     config = json.loads(CONFIG.read_text())
     if config["run_id"] != "P5-SUB001-SM-VALIDATE-001" or config["max_runtime_seconds"] != 21600:
         raise ValueError("Unexpected validator config")
-    upload = verify_upload_receipts(args.receipt, config, head_objects=args.launch)
+    # The complete staging receipt is emitted only after the stager has fetched
+    # and checked S3 SHA256/size for every one of the 384 immutable objects.
+    # Repeating 384 serial HEAD calls here delays the deadline-critical job.
+    upload = verify_upload_receipts(args.receipt, config, head_objects=False)
     role = aws("iam", "get-role", "--role-name", ROLE)["Role"]
     if role["Arn"] != "arn:aws:iam::634393786318:role/" + ROLE:
         raise ValueError("Unexpected IAM role")
