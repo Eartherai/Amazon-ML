@@ -32,3 +32,6 @@ Profile amamzon_01_a1_0, account ending6318, us-east-1, R8i.2xlarge on-demand, i
 
 ## 2026-09-24T23:22:32.013520+00:00 — SUB-001 cost controls and capacity
 Estimated Cost Explorer gross month-to-date at prelaunch: $0.0099310264 (billing lag; not final). Active full-retrieval worker maximum planned commitment $18. Four attempted SUB-001 Spot launches were rejected for insufficient capacity before creation and did not start billable instances. Proposed SUB-001 job had 36h OS cutoff, max Spot price $0.30/h, $1 storage/transfer allowance, $11.80 computed maximum and $12 planning ceiling. Alerts at gross $25/$50/$75/$100/$125. Soft cap $120; hard planning cap $150; target reserve at least $50 from user-reported ~$200, balance not verified.
+
+## 2026-09-25T01:25:00+00:00 — SageMaker validation contingency, no job yet
+P5-SUB001-SM-VALIDATE-001 is prepared only. `ml.r5.2xlarge` Processing official price $0.605/hour, 6h maximum $3.63 compute plus $1 noncompute allowance = $4.63, under $5 ceiling. Dedicated role and validated API request exist; no billable processing job has launched. Launch guard rechecks gross billing, all active EC2 project ledgers, active processing jobs and completed 384-shard SHA256 receipt. Managed job stops on completion or at MaxRuntimeInSeconds=21600; no endpoint or persistent compute.

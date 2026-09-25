@@ -89,3 +89,7 @@ SageMaker ml.r5.2xlarge processing quota is confirmed 2, newly propagated. SUB-0
 ## 2026-09-25 — priority override
 
 SUB-001 is now explicitly authorized for early calibration once its complete test files pass independent checks and the unchanged official validator. Active detached screen job aml-sub001-v005: France 8/64 shards, 6,411,934 scored candidate pairs at last check; no public score. Fold4 CLOSED. Full-training retrieval continues. Latest user-provided leaderboard top0.964733/third0.957920; local0.9318965293 is not directly comparable. See docs/COMPETITIVE_STATUS.md.
+
+## 2026-09-25T01:25:00+00:00 — Validator prepared; learning curve complete
+
+SUB-001 frozen Mac inference remains healthy in screen `aml-sub001-v005`, PID86583, at France19/64 shards at last check. Final TSVs, official PASS and public score are pending. The full-training retrieval EC2 worker remains active and has reached the India/name shard50 checkpoint. SageMaker `ml.r5.2xlarge` Processing validator is prepared with a dedicated least-privilege execution role, SHA-verified immutable code bundle, AWS-CLI-schema-checked request, 6h cutoff and $5 ceiling; **no processing job is running**. Launch requires complete 384-shard S3 receipt. EXP-027 fixed-heldout diagnostic completed: training 2k→5k→10k→~13.3k entities yielded weighted macro F0.5 0.924221→0.929379→0.930829→0.932231. It does not establish a full-scale or France gain; best promoted model stays frozen NUMERIC-V2 0.9318965293. Fold4 CLOSED. 69 tests pass.
