@@ -1,5 +1,8 @@
 # Latest Phase5 status
 
+2026-09-25T07:26:45+00:00: **SUB-001 matching TSV ready for user upload.** Official default and strict `--check-ids` validator PASS, zero strict warnings, 1,732,544 data rows. Matching SHA256 `610478ebca0deb910a67d440edce299ab66ebc0ec55e285da8d0b7c20a24d6a3` verified locally. Upload only `outputs/submissions/SUB-001/validated-v001/matching_results.tsv`; ZIP format was withdrawn by user. No portal upload by Codex. Public score/rank pending. Fold4 CLOSED.
+
+
 2026-09-25T06:31:56+00:00: Portal format changed by user: upload only `matching_results.tsv`; no ZIP generation or upload. Existing eight AWS inference workers continue and direct S3 staging is active. The SageMaker validator will still consume both matching and candidate shards internally and must pass default plus strict `--check-ids`; the local downloader now retrieves only the validated matching TSV and evidence logs/hashes. No new fallback, duplicate, local inference, or optional experiment is authorized. Most recent exact snapshot: France64/64, India49/64, US63/64, 1,532,370/1,732,544 unique test S1. The finalization monitor waits for the384-shard receipt and will launch only the required validator, then produce the matching TSV. Fold4 CLOSED.
 
 

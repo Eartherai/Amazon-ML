@@ -1,1 +1,2 @@
 submission_id,timestamp,experiment_id,git_commit,matching_file_hash,candidate_file_hash,local_cv_f0_5,public_lb_score,notes,selected_for_final
+SUB-001,2026-09-25T07:26:45+00:00,SUB-001,c94523a,610478ebca0deb910a67d440edce299ab66ebc0ec55e285da8d0b7c20a24d6a3,89e95ad2f4cb0b0c4f082f9975c6549e8f073ceb71cbcb3ac1860247a590f4b6,0.9318965293021522,,Official default and strict --check-ids PASS; 1732544 rows; matching-only portal upload; no ZIP,true

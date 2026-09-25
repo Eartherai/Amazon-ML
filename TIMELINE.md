@@ -261,3 +261,7 @@ EC2 console reports India/name shard0 completed:1,380,300routepairs in182.8521se
 ## 2026-09-25T06:31:56+00:00 — Codex — portal matching-only override
 
 - User reported the portal now accepts only `matching_results.tsv`. Stopped the waiting ZIP finalizer before any package was built; changed the required finalization path to SageMaker official default and strict validation, SHA256-verified matching-only download, and one TSV hash. Candidate pairs remain mandatory internal validator input. Existing AWS inference workers and S3 staging continue unchanged; no new fallback, duplicate or optional experiment was started.
+
+## 2026-09-25T07:26:45+00:00 — Codex — validated matching-only SUB-001 ready
+
+- SageMaker Processing job P5-SUB001-SM-VALIDATE-001 completed successfully. Both unchanged official validator modes passed; strict `--check-ids` had zero warnings. Final matching TSV has 1,732,544 data rows, 122,166 empty predictions, 1,610,378 non-empty; SHA256 `610478ebca0deb910a67d440edce299ab66ebc0ec55e285da8d0b7c20a24d6a3` matches the validator manifest and local full-file recomputation. Candidate file was consumed internally and passed official checks, SHA256 `89e95ad2f4cb0b0c4f082f9975c6549e8f073ceb71cbcb3ac1860247a590f4b6`. User will upload only `outputs/submissions/SUB-001/validated-v001/matching_results.tsv`; no ZIP was generated. Public leaderboard score/rank pending user upload.
