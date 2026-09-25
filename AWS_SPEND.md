@@ -50,3 +50,7 @@ Profile `amamzon_01_a1_0`, account ending 6318, us-east-1, on-demand r8i.4xlarge
 ## 2026-09-25T04:07:00+00:00 — India remainder partition, planned before launch
 
 `P5-SUB001-INDIA-001` proposes on-demand r8i.4xlarge for only deterministic India shards 8–63: 709,176 of 809,986 India S1 queries. Mac is assigned shards 0–7 and remains the fallback. Its 100-query smoke parity has zero TSV content differences against the frozen prior run for all 88 applicable files. A 12-hour OS shutdown at planning rate $1.11136/hour caps compute at $13.33632; plus $1 storage/network/request allowance gives $14.33632, within the $15 experiment ceiling. Per-shard SHA256 S3 checkpoints, encrypted DeleteOnTermination EBS and automatic EC2 termination are configured. Expected benefit is several hours earlier first complete validated submission, with no score change; final runtime and cost are unmeasured. A fresh cost guard is required immediately before launch; user-reported credit balance remains unverified.
+
+### 2026-09-25T04:07:36+00:00 — launch
+
+Launched on EC2 `i-0a29e371cccca1b99` under profile `amamzon_01_a1_0`, account ending 6318, code commit `4a1872ddcf9549286df75d3009ca11fc30af3c9e`. Prelaunch gross bill estimate $3.0928398446, active worst-case commitments $37.50, proposed maximum $14.33632 and projected project worst case $54.9291598446 below the $120 soft cap. Credit balance unverified. Stop, measured runtime and actual billed cost pending.

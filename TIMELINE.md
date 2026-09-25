@@ -201,3 +201,9 @@ EC2 console reports India/name shard0 completed:1,380,300routepairs in182.8521se
 - Cloud US `P5-SUB001-US-001` produced its first two of 64 verified shard pairs; first pair appeared about five minutes after launch including bootstrap and index build. Mac was healthy with at least India shards 0–4 complete. Its next three India shards remain assigned to Mac.
 - Prepared independent cloud India shards 8–63, exactly 709,176 queries, with the same frozen input, model, char3 candidate routes, 51 features and threshold 0.83. The 100-query India 8–63 smoke run matched all 88 corresponding prior frozen shard TSVs byte-for-byte after decompression. No previously completed Mac shard is assigned to the cloud partition.
 - Prepared SHA256 service-checksum downloader for both cloud partitions and a three-way assembler using Mac France/India 0–7, cloud India 8–63, cloud US 0–63. Synthetic four-query integration test verified query uniqueness, counts and partition provenance. The India worker has not launched at this entry; official validation and public score remain pending.
+
+## 2026-09-25T04:07:36+00:00 — Codex — India remainder worker launched
+
+- Fresh cost guard found estimated gross month-to-date $3.0928398446, active worst-case commitments $37.50 and proposed maximum $14.33632, total worst case $54.9291598446 below the $120 soft cap. Balance remains unverified.
+- Launched `P5-SUB001-INDIA-001` on `i-0a29e371cccca1b99`, r8i.4xlarge on-demand, code commit `4a1872ddcf9549286df75d3009ca11fc30af3c9e`. It processes only India shards 8–63, uses SHA256 S3 checkpoints, and terminates automatically at completion or 12-hour OS cap. No already completed Mac shard is restarted.
+- Three-way merge, official validation, ZIP packaging and public-score classification are pending both cloud partitions and Mac India shards 0–7. The Mac remains a fallback; Fold4 CLOSED.
