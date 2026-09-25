@@ -151,11 +151,15 @@ def main() -> None:
             receipt = upload_file(model_path, args.upload_bucket, args.upload_prefix)
             if receipt:
                 checkpoint_receipts.append(receipt)
+            predict_start = time.perf_counter()
             probabilities = model.predict_proba(validation_x)[:, 1]
+            predict_seconds = time.perf_counter() - predict_start
             predicted = predict_sets(evaluated, probabilities, THRESHOLDS[held_fold], eval_ids)
             fold_result = {"size": size, "held_fold": held_fold, "fit_entities": size,
                            "fit_pairs": len(fit), "fit_positives": int(fit_y.sum()),
                            "threshold": THRESHOLDS[held_fold], "fit_seconds": fit_seconds,
+                           "predict_seconds": predict_seconds,
+                           "peak_rss_gib_through_fit": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024**2,
                            "validation_entities": len(eval_ids), "validation_pairs": len(evaluated),
                            "overall": evaluate(truth, predicted),
                            "by_country": {country: evaluate({qid: truth[qid] for qid in outer_eval.filter(pl.col("country") == country)["entity_id"]},
@@ -172,7 +176,9 @@ def main() -> None:
             results[size]["predicted"].update(predicted)
             results[size]["folds"].append(fold_result)
             print(json.dumps({"size": size, "held_fold": held_fold, "macro_f0_5": fold_result["overall"]["macro_f0_5"],
-                              "fit_seconds": fit_seconds, "elapsed": time.perf_counter() - started}), flush=True)
+                              "fit_seconds": fit_seconds, "predict_seconds": predict_seconds,
+                              "peak_rss_gib": fold_result["peak_rss_gib_through_fit"],
+                              "elapsed": time.perf_counter() - started}), flush=True)
             del fit_x, fit_y, fit, model, probabilities, predicted
         del validation_x, evaluated
     summary = {"experiment": "EXP-033", "scope": "Fixed 15k new entity OOF; Fold4 CLOSED",
@@ -186,6 +192,9 @@ def main() -> None:
         if len(truth) != 15_000:
             raise ValueError("Incomplete pooled evaluation")
         summary["sizes"][str(size)] = {"overall": evaluate(truth, predicted),
+                                       "fit_seconds": sum(fold["fit_seconds"] for fold in results[size]["folds"]),
+                                       "predict_seconds": sum(fold["predict_seconds"] for fold in results[size]["folds"]),
+                                       "peak_rss_gib_through_size": max(fold["peak_rss_gib_through_fit"] for fold in results[size]["folds"]),
                                        "by_country": {country: evaluate({qid: truth[qid] for qid in eval_frame.filter(pl.col("country") == country)["entity_id"]},
                                                                        {qid: predicted[qid] for qid in eval_frame.filter(pl.col("country") == country)["entity_id"]})
                                                       for country in sorted(eval_frame["country"].unique().to_list())},
