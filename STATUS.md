@@ -101,3 +101,7 @@ EXP-028 on the existing 20k known-country OOF population found 2,315 retrieval m
 ## 2026-09-25T01:45:00+00:00 — EXP-029 rejected
 
 Separate missing-address threshold selected within inner OOF fell on all three outer folds: pooled 0.930533 versus frozen baseline 0.931897, paired delta -0.001363, 95% CI [-0.002074, -0.000677]. Frozen SUB-001 stays best and unchanged. SageMaker validator role, launch gate and verified-result downloader are ready; no validator job or portal submission yet. Mac inference and full-training retrieval remain active. 71 tests pass.
+
+## 2026-09-25T01:50:00+00:00 — EXP-030 candidate-cost result
+
+On a fixed 1,000-entity India development sample, top100 name retrieval reproduced frozen candidates exactly. Expanding only the name route to top200 recovered 11 additional true links but added 99,873 candidates (9,079 per recovered link); candidate oracle macro rose0.981488→0.982530 before any matcher. Universal top200 is not promoted; SUB-001 remains frozen. Full-scale retrieval and Mac test inference continue. Next: prioritize full-data training materialization after retrieval and complementary India/S3 or cross-script retrieval with better marginal cost.

@@ -65,3 +65,7 @@ The newly approved `ml.r5.2xlarge` Processing quota (2) permits a validator-only
 ## Phase5 — reject a separate missing-address threshold
 
 EXP-029 kept the candidate set, 51 features and frozen outer models fixed, selected only the missing-address threshold on inner OOF, and evaluated on outer folds1–3. Every inner fold selected 0.90. Macro F0.5 declined from 0.931897 to 0.930533 (paired delta -0.001363; 95% CI [-0.002074, -0.000677]). The increased precision did not compensate for lost recall. Do not promote the threshold split; keep SUB-001 untouched. Future missing-address work requires a different evidence source and nested validation, not another blanket score cutoff.
+
+## Phase5 — do not universally expand India's name route to top200
+
+EXP-030 reused the complete 4.13M-record India target index and byte-identical frozen IDF on a deterministic 1,000-entity India development sample. The top100 route reproduced frozen candidates exactly. Raising only name topK to200 added 99,873 candidates for 11 recovered true links (9,079 candidates/link), with link recall0.945977→0.949172 and candidate oracle macro0.981488→0.982530. This is an upper bound before matcher errors and increases candidate volume about50% for the slice. Do not apply a universal top200 expansion to SUB-001 or a later model without a selective observable trigger and nested end-to-end score gain. Focus on complementary retrieval mechanisms and larger training data.
