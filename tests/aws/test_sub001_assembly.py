@@ -6,6 +6,7 @@ import sys
 from pathlib import Path
 
 import pytest
+import polars as pl
 
 
 SPEC = importlib.util.spec_from_file_location(
@@ -162,8 +163,12 @@ def test_country_assembly_combines_verified_india_split(tmp_path, monkeypatch):
                  "query_count": 1, "pairs": last-first, "model_sha256": "model",
                  "partial_worker_terminated": name == "lower"}
         (roots[name] / filename).write_text(json.dumps(ready))
+    universe = tmp_path / "queries.parquet"
+    pl.DataFrame({"entity_id": [query for queries in ids.values() for query in queries],
+                  "country": [country for country, queries in ids.items() for _ in queries]}).write_parquet(universe)
     args = ["assemble", "--mac", str(roots["mac"]), "--us", str(roots["us"]),
             "--india", str(roots["lower"]), "--india-upper", str(roots["upper"]),
+            "--query-universe", str(universe),
             "--output", str(tmp_path / "assembled")]
     monkeypatch.setattr(sys, "argv", args)
     assembly.main()

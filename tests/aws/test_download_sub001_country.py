@@ -2,6 +2,8 @@ import base64
 import gzip
 import hashlib
 import importlib.util
+import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -56,3 +58,17 @@ def test_smoke_parity_checks_exact_rows(tmp_path):
             output.write(f"S1-{index:05d}\t" + ("S2-2" if index == 99 else "S2-1") + "\n")
     with pytest.raises(ValueError, match="content mismatch"):
         downloader.smoke_parity(downloaded, smoke, "US", 0, 1)
+
+
+def test_partial_india_download_requires_verified_boundary_stop(tmp_path, monkeypatch):
+    boundary = tmp_path / "boundary-stop.json"
+    boundary.write_text(json.dumps({"termination_requested": False,
+                                    "lower_complete_pairs": 28,
+                                    "upper_first_pair_verified": True,
+                                    "lower": {"run_id": "P5-SUB001-INDIA-001"},
+                                    "upper": {"run_id": "P5-SUB001-INDIA-HIGH-001"}}))
+    monkeypatch.setattr(sys, "argv", ["download", "--run-id", "P5-SUB001-INDIA-001",
+        "--partial-lower", "--output", str(tmp_path / "download"),
+        "--smoke", str(tmp_path / "smoke"), "--boundary-stop", str(boundary)])
+    with pytest.raises(ValueError, match="not safely stopped"):
+        downloader.main()
