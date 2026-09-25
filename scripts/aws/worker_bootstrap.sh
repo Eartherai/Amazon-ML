@@ -69,7 +69,7 @@ PY
   gzip -c output/candidate_pairs.tsv > summary/candidate_pairs.tsv.gz
   cp output/validation.json output/official.log output/official_check_ids.log results/COMPLETE.json environment.txt summary/
   python3 scripts/aws/upload_verified.py summary "$BUCKET" "$OUTPUT_PREFIX/results" results-receipt.json
-elif [[ "$JOB_KIND" == full_retrieval ]]; then
+elif [[ "$JOB_KIND" == full_retrieval || "$JOB_KIND" == sample_retrieval ]]; then
   aws s3 cp "s3://$BUCKET/$INDEX_PREFIX/results/" indexes/ --recursive --only-show-errors
   aws s3 cp "s3://$BUCKET/$INDEX_PREFIX/receipts/results-receipt.json" index-receipt.json --only-show-errors
   python3 - <<'VERIFY'
@@ -83,17 +83,21 @@ for row in json.loads(Path('index-receipt.json').read_text()):
  assert p.stat().st_size==row['bytes'] and h.hexdigest()==row['sha256'],str(p)
 VERIFY
   .venv/bin/python -u scripts/aws/retrieve_cached.py --indexes indexes --idf inputs --queries inputs/queries.parquet --output results --upload-bucket "$BUCKET" --upload-prefix "$OUTPUT_PREFIX/shards"
-  aws s3 cp "s3://$BUCKET/amazon-ml-2026/phase5/inputs/retrieval-eval-v001/" evaluation-labels/ --recursive --only-show-errors
-  python3 - <<'VERIFY_LABELS'
+  if [[ "$JOB_KIND" == full_retrieval ]]; then
+    aws s3 cp "s3://$BUCKET/amazon-ml-2026/phase5/inputs/retrieval-eval-v001/" evaluation-labels/ --recursive --only-show-errors
+    python3 - <<'VERIFY_LABELS'
 import hashlib,json
 from pathlib import Path
 for row in json.loads(Path('evaluation-labels/manifest.json').read_text())['files']:
  p=Path('evaluation-labels')/row['name']
  assert hashlib.sha256(p.read_bytes()).hexdigest()==row['sha256'],row['name']
 VERIFY_LABELS
-  .venv/bin/python -u scripts/aws/evaluate_retrieval.py --candidates results --labels evaluation-labels --output evaluation
+    .venv/bin/python -u scripts/aws/evaluate_retrieval.py --candidates results --labels evaluation-labels --output evaluation
+  fi
   mkdir -p summary
-  cp evaluation/metrics.json summary/retrieval-metrics-unlocked.json
+  if [[ "$JOB_KIND" == full_retrieval ]]; then
+    cp evaluation/metrics.json summary/retrieval-metrics-unlocked.json
+  fi
   cp results/*.json results/query_coverage.parquet environment.txt summary/
   python3 scripts/aws/upload_verified.py summary "$BUCKET" "$OUTPUT_PREFIX/results" results-receipt.json
 else

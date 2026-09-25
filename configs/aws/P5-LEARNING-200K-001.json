@@ -1,0 +1,22 @@
+{
+  "run_id": "P5-LEARNING-200K-001",
+  "experiment": "EXP-031",
+  "job_kind": "sample_retrieval",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 360,
+  "compute_usd_per_hour": 0.55568,
+  "total_cost_ceiling_usd": 4.5,
+  "ebs_gib": 100,
+  "purpose": "Retrieve 200,000 unlocked S1 queries, including the frozen 20k, against all 10,320,219 training targets to enable owner-safe 50k and 100k classical learning curves",
+  "fold4": "CLOSED; no labels on worker",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/learning-200k-v001",
+  "input_receipt": "learning-200k-upload.json",
+  "index_prefix": "amazon-ml-2026/phase5/runs/P5-INDEX-001",
+  "estimated_query_hours": 1.61,
+  "estimate_basis": "200k / 2,206,821 times 17.76-hour frozen full-query benchmark; add index download, bootstrap and upload overhead",
+  "checkpoint": "64 deterministic SHA256 S1 shards per country and route, each uploaded with SHA256 verification",
+  "expected_gain": "Measure whether 50k and 100k LightGBM training substantially improves macro entity F0.5 before investing in exotic classical features",
+  "cleanup": "Independent 360-minute OS shutdown watchdog, terminate-on-shutdown EC2, encrypted DeleteOnTermination EBS, verified S3 checkpoints"
+}
