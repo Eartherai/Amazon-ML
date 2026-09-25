@@ -1,6 +1,7 @@
 """Download and SHA256-verify a finished frozen SUB-001 country partition."""
 import argparse
 import base64
+import gzip
 import hashlib
 import json
 import os
@@ -42,10 +43,42 @@ def verified_get(key: str, path: Path) -> dict:
             "version_id": metadata.get("VersionId")}
 
 
+def smoke_parity(downloaded: Path, smoke: Path, country: str, first: int, last: int) -> dict:
+    """Require exact cloud/Mac candidate and matching rows on frozen 100-query smoke IDs."""
+    counts = {}
+    for kind in ("candidates", "matching"):
+        checked = 0
+        for number in range(first, last):
+            name = f"{country}-s{number:03d}-{kind}.tsv.gz"
+            reference = smoke / name
+            if not reference.exists():
+                continue
+            with gzip.open(reference, "rt", encoding="utf-8") as source:
+                header = source.readline()
+                expected = dict(line.rstrip("\n").split("\t", 1) for line in source)
+            found = {}
+            with gzip.open(downloaded / name, "rt", encoding="utf-8") as source:
+                if source.readline() != header:
+                    raise ValueError(f"Cloud/smoke header mismatch: {name}")
+                for line in source:
+                    query = line.split("\t", 1)[0]
+                    if query in expected:
+                        found[query] = line.rstrip("\n").split("\t", 1)[1]
+            if found != expected:
+                raise ValueError(f"Cloud/smoke content mismatch: {name}")
+            checked += len(expected)
+        counts[kind] = checked
+    target = 100 if country == "US" else 87
+    if counts != {"candidates": target, "matching": target}:
+        raise ValueError(f"Incomplete cloud/smoke parity coverage: {counts}")
+    return counts
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run-id", choices=PARTITIONS, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--smoke", type=Path, required=True)
     args = parser.parse_args()
     country, first, last, expected = PARTITIONS[args.run_id]
     prefix = f"amazon-ml-2026/phase5/runs/{args.run_id}/"
@@ -69,9 +102,10 @@ def main() -> None:
         (shard_dir / f"{base}-receipts.json").write_text(json.dumps(receipts, indent=2) + "\n")
         print(json.dumps({"verified_country_shard": number - first + 1, "total": last - first,
                           "country": country}), flush=True)
+    parity = smoke_parity(shard_dir, args.smoke, country, first, last)
     (args.output / "DOWNLOAD_READY.json").write_text(json.dumps({
         "query_count": expected, "pairs": last - first, "model_sha256": MODEL_SHA256,
-        "complete_receipt": complete_receipt}, indent=2) + "\n")
+        "complete_receipt": complete_receipt, "smoke_parity_rows": parity}, indent=2) + "\n")
 
 
 if __name__ == "__main__":
