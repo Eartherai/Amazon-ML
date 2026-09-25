@@ -112,3 +112,6 @@ On-demand r8i.2xlarge i-099f8bb45c6dc80ef, independent 90-minute shutdown/termin
 ## 2026-09-25T12:25:00+00:00 — bounded concurrent validation and neural training
 
 Only authenticated profile `amamzon_01_a1_0` was used. Two SUB-002 `ml.r5.2xlarge` official validation jobs (`P5-SUB002-SM-VALIDATE-001`, `-002`) are in progress under their separate six-hour/$5 caps; their CloudWatch logs already show the base merge official default and strict PASS. India neural G5 job `P5-SUB002-NGPU-85c999e8-INDI-001` continues under its two-hour/$7 cap while the France+US job has completed. EXP-050 18k-query E5 inputs (420,347 owner-safe pairs; ten S3 objects with SHA256 receipts) were staged; its three-hour/$10 G5 job has **not** launched while the India G5 occupies capacity. Actual billed cost and credits remain unverified. Do not sum simultaneous maximum caps as actual spend.
+
+## 2026-09-25T14:15:22Z — Claude sprint jobs
+P5-SUB002-SM-NEURAL-002/003 ml.r5.2xlarge validator reruns (4h/$3.42 caps). P5-STAGE2-OOF-001 r8i.2xlarge 2m10s run, ~$0.02 compute. P5-SUB003-T12-{FR0,FR1,IN0-7,US0-4}-001: 15 x r8i.4xlarge on-demand, 150-min OS cap, $4 planning ceiling each ($60 max); expected ~$20. Estimated gross project spend before these ~$50 (Cost Explorer lags; only Sep 24 $5.19 posted). Project worst case ~$125 < $150.

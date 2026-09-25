@@ -21,8 +21,12 @@ import numpy as np
 import polars as pl
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-import stage2_features as F  # noqa: E402
+import os  # noqa: E402
+import importlib  # noqa: E402
+FEATV = os.environ.get("FEATV", "v1")
+F = importlib.import_module("stage2_features_v2" if FEATV == "v2" else "stage2_features")
 import pilot_stage2_exp044 as P  # noqa: E402
+P.F = F
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "outputs/experiments/CL-003"
@@ -77,9 +81,15 @@ def main():
     G["s1"], G["t"] = P.load_texts(s1_ids, t_ids)
     G["idf"] = P.s1_idf(ROOT / "outputs/experiments/CL-001/train_s1_idf.json", P.TRAIN / "train_source1.tsv")
     print(json.dumps({"train_s1": len(groups), "train_pairs": len(labels), "load_s": round(time.time() - t0, 1)}), flush=True)
-    keys, X = featurize(groups)
+    cache = OUT / f"trainmat-{args.scope}-{FEATV}.npz"
+    if cache.exists():
+        zc = np.load(cache, allow_pickle=True)
+        keys, X, ekeys, EX = [tuple(k) for k in zc["keys"]], zc["X"], [tuple(k) for k in zc["ekeys"]], zc["EX"]
+    else:
+        keys, X = featurize(groups)
+        ekeys, EX = F.build_matrix(evg, G["s1"], G["t"], *G["idf"])
+        np.savez(cache, keys=np.array(keys), X=X, ekeys=np.array(ekeys), EX=EX)
     y = np.array([labels[k] for k in keys])
-    ekeys, EX = F.build_matrix(evg, G["s1"], G["t"], *G["idf"])
     print(json.dumps({"features_s": round(time.time() - t0, 1), "pos_rate": float(y.mean())}), flush=True)
     # threshold via grouped 3-fold OOF inside training S1 (sample 60k S1 for speed of the F0.5 sweep)
     part = {s: int(hashlib.sha256(s.encode()).hexdigest(), 16) % 3 for s in groups}
@@ -100,7 +110,7 @@ def main():
     sk = [(k, p) for k, p in zip(keys, oof) if k[0] in samp]
     thr, tr_macro = P.choose_threshold([k for k, _ in sk], np.array([p for _, p in sk]), full_truth, sample)
     model = lgb.LGBMClassifier(**PARAMS).fit(X, y)
-    path = OUT / f"stage2-200k-{args.scope}.txt"
+    path = OUT / f"stage2-200k-{args.scope}{'' if FEATV == 'v1' else '-' + FEATV}.txt"
     model.booster_.save_model(str(path))
     eprob = model.predict_proba(EX)[:, 1]
     country = {p["q"]: p["country"] for p in ev_pairs}
@@ -111,13 +121,13 @@ def main():
     evres, per = P.evaluate(sorted(ev_truth), preds, ev_truth, country)
     # best-threshold diagnostic on eval (not used for selection)
     best_thr, best_macro = P.choose_threshold(ekeys, eprob, ev_truth, sorted(ev_truth))
-    np.savez_compressed(OUT / f"eval6k-{args.scope}.npz", q=np.array([k[0] for k in ekeys]), t=np.array([k[1] for k in ekeys]), p=eprob, X=EX)
+    np.savez_compressed(OUT / f"eval6k-{args.scope}{'' if FEATV == 'v1' else '-' + FEATV}.npz", q=np.array([k[0] for k in ekeys]), t=np.array([k[1] for k in ekeys]), p=eprob, X=EX)
     meta = {"scope": args.scope, "threshold": thr, "train_inner_macro_60k": tr_macro, "eval_6k": evres,
             "eval_oracle_threshold_diag": [best_thr, best_macro], "train_s1": len(groups), "train_pairs": len(keys),
-            "features": F.NAMES, "params": PARAMS, "model_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+            "features": F.NAMES, "feature_version": FEATV, "params": PARAMS, "model_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
             "seconds": time.time() - t0, "fold4": "CLOSED",
             "leakage": "6k eval S1 removed; training pairs with eval-owned targets removed; base scores held-fold OOF"}
-    (OUT / f"stage2-200k-{args.scope}.json").write_text(json.dumps(meta, indent=2))
+    (OUT / f"stage2-200k-{args.scope}{'' if FEATV == 'v1' else '-' + FEATV}.json").write_text(json.dumps(meta, indent=2))
     print(json.dumps({k: meta[k] for k in ("scope", "threshold", "train_inner_macro_60k", "eval_6k", "eval_oracle_threshold_diag", "train_pairs", "seconds")}, indent=1))
 
 
