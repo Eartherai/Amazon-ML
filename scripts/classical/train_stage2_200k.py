@@ -37,14 +37,16 @@ G: dict = {}
 
 def chunk_features(items):
     groups = dict(items)
-    return F.build_matrix(groups, G["s1"], G["t"], *G["idf"])
+    s1r = {q: F.Record(*G["s1"][q]) for q in groups}
+    tr = {t: F.Record(*G["t"][t]) for g in groups.values() for t, _ in g}
+    return F.build_matrix(groups, s1r, tr, *G["idf"])
 
 
 def featurize(groups: dict, procs: int = 9):
     items = list(groups.items())
     chunks = [items[i::procs * 8] for i in range(procs * 8)]
     keys, mats = [], []
-    with mp.get_context("fork").Pool(procs) as pool:
+    with mp.get_context("fork").Pool(procs, maxtasksperchild=4) as pool:
         for k, X in pool.imap(chunk_features, chunks):
             keys += k
             mats.append(X)
@@ -78,7 +80,7 @@ def main():
             evg[s] = [x for i, x in enumerate(g) if x[1] >= 0.4 or i < 2]
     s1_ids = sorted(set(groups) | set(evg))
     t_ids = sorted({t for g in groups.values() for t, _ in g} | {t for g in evg.values() for t, _ in g})
-    G["s1"], G["t"] = P.load_texts(s1_ids, t_ids)
+    G["s1"], G["t"] = P.load_texts(s1_ids, t_ids, raw=True)
     G["idf"] = P.s1_idf(ROOT / "outputs/experiments/CL-001/train_s1_idf.json", P.TRAIN / "train_source1.tsv")
     print(json.dumps({"train_s1": len(groups), "train_pairs": len(labels), "load_s": round(time.time() - t0, 1)}), flush=True)
     cache = OUT / f"trainmat-{args.scope}-{FEATV}.npz"
@@ -87,7 +89,7 @@ def main():
         keys, X, ekeys, EX = [tuple(k) for k in zc["keys"]], zc["X"], [tuple(k) for k in zc["ekeys"]], zc["EX"]
     else:
         keys, X = featurize(groups)
-        ekeys, EX = F.build_matrix(evg, G["s1"], G["t"], *G["idf"])
+        ekeys, EX = chunk_features(list(evg.items()))
         np.savez(cache, keys=np.array(keys), X=X, ekeys=np.array(ekeys), EX=EX)
     y = np.array([labels[k] for k in keys])
     print(json.dumps({"features_s": round(time.time() - t0, 1), "pos_rate": float(y.mean())}), flush=True)

@@ -55,7 +55,7 @@ def evaluate(s1s, preds, truth, country):
     return out, per
 
 
-def load_texts(ids_s1, ids_t):
+def load_texts(ids_s1, ids_t, raw=False):
     con = duckdb.connect()
     con.execute("CREATE TABLE want_s1(id VARCHAR)")
     con.executemany("INSERT INTO want_s1 VALUES (?)", [(x,) for x in ids_s1])
@@ -66,6 +66,8 @@ def load_texts(ids_s1, ids_t):
     t = con.execute(f"""SELECT entity_id, business_name, business_address FROM (
         SELECT * FROM read_csv('{TRAIN}/train_source2.tsv',{opts}) UNION ALL SELECT * FROM read_csv('{TRAIN}/train_source3.tsv',{opts}))
         JOIN want_t ON id=entity_id""").fetchall()
+    if raw:
+        return {r[0]: (r[1] or "", r[2] or "") for r in s1}, {r[0]: (r[1] or "", r[2] or "") for r in t}
     return {r[0]: F.Record(r[1], r[2]) for r in s1}, {r[0]: F.Record(r[1], r[2]) for r in t}
 
 
