@@ -171,3 +171,9 @@ EC2 console reports India/name shard0 completed:1,380,300routepairs in182.8521se
 
 - Read the latest user handoff. Kept frozen SUB-001 unchanged, Fold4 CLOSED and both existing retrieval workers running. At this check SUB-001 had 67 matching and 67 candidate gzip shards, India active 2/64, no COMPLETE.json. EXP-025 had 81/256 route archives and EXP-031 had 125/256. EXP-032/033 remained unlaunched.
 - Added `docs/LEARNING_CURVE.md` with a pending-only 20k/50k/100k table, exact fixed-15k OOF scope, prior-threshold caveat and a decision gate for larger training sizes. Added `scripts/analysis/plot_learning_curve.py` for overall/India macro F0.5; a synthetic three-size report generated a valid PNG, then the temporary file was removed. No synthetic score entered the project report. Commit `446ca38`.
+
+## 2026-09-25T03:35:36+00:00 — Codex — EXP-031 parity gate and EXP-033 timing prepared
+
+- EXP-031 continued to 140/256 S3 route archives; SUB-001 Mac inference remained healthy at India 3/64 progress shards, 68 matching and 68 candidate shard files, no COMPLETE.json. No new job launched.
+- Added `scripts/aws/verify_sample_retrieval_parity.py` at commit `f516e1e21145769aa8b175bf6c6dd5e1a325c7af`: after EXP-031 completion it validates all 256 archive SHA256 receipts and exact IDs/ranks for every one of the frozen old-20k query routes against P4-B-002, with score tolerance 1e-5. Runbook commands download the archived output and require a PASS before EXP-032. Synthetic archive corruption and candidate mismatch tests passed; full suite 80 passed. Actual 200k result parity remains pending.
+- EXP-033 worker now records fit time, prediction time and peak RSS by fold/size (commit `875e459a1376e864bcf1caed36b710b0f0ecdfdd`). This is instrumentation only; no 20k/50k/100k scores yet.
