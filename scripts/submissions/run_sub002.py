@@ -38,7 +38,7 @@ def retrieve(matrix,parts,k,threads):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--inputs',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--shards',type=int,default=64);p.add_argument('--batch-size',type=int,default=200);p.add_argument('--threads',type=int,default=8);p.add_argument('--max-queries-per-country',type=int);p.add_argument('--country');p.add_argument('--first-shard',type=int,default=0);p.add_argument('--last-shard',type=int);p.add_argument('--upload-bucket');p.add_argument('--upload-prefix');p.add_argument('--score-floor',type=float,default=0.4);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--inputs',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--shards',type=int,default=64);p.add_argument('--batch-size',type=int,default=200);p.add_argument('--threads',type=int,default=8);p.add_argument('--max-queries-per-country',type=int);p.add_argument('--country');p.add_argument('--first-shard',type=int,default=0);p.add_argument('--last-shard',type=int);p.add_argument('--upload-bucket');p.add_argument('--upload-prefix');p.add_argument('--score-floor',type=float,default=0.4);p.add_argument('--top-k',type=int,default=2,help='sidecar keeps score>=floor or top-k (SUB-002 used 2)');a=p.parse_args()
     if a.output.exists():raise FileExistsError(a.output)
     if a.shards<1 or a.batch_size<1 or a.threads<1 or not 0<=a.score_floor<=1:raise ValueError('Invalid sizes or score floor')
     if a.last_shard is None:a.last_shard=a.shards
@@ -98,7 +98,7 @@ def main():
                         if score>=cfg['threshold']:selected[qid].append(tid)
                     for qid,allids in candidates:
                         chosen=sorted(set(selected[qid]));assert set(chosen)<=set(allids)
-                        top_two={tid for tid,_ in sorted(ranked[qid],key=lambda item:(-item[1],item[0]))[:2]}
+                        top_two={tid for tid,_ in sorted(ranked[qid],key=lambda item:(-item[1],item[0]))[:a.top_k]}
                         for tid,score in ranked[qid]:
                             if score>=a.score_floor or tid in top_two:score_file.write(qid+'\t'+tid+'\t'+format(score,'.9g')+'\n')
                         candidate_file.write(qid+'\t'+','.join(allids)+'\n');matching_file.write(qid+'\t'+','.join(chosen)+'\n')
