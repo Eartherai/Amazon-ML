@@ -92,7 +92,7 @@ def main():
     t0 = time.time()
     (EXP / f"features-{FEATV}").mkdir(parents=True, exist_ok=True)
     shards = sorted((EXP / "test_scores").glob("*-scores.tsv.gz"))
-    if len(shards) != 192:
+    if len(shards) != 192 and os.environ.get("PARTIAL") != "1":
         raise ValueError(f"expected 192 shards, found {len(shards)}")
     receipts = json.loads((EXP / "score_receipts.json").read_text())
     for s in shards:
@@ -103,7 +103,7 @@ def main():
     opts = "delim='\t',header=true,quote='',escape='',all_varchar=true"
     joined = EXP / "joined"
     joined.mkdir(exist_ok=True)
-    if len(list(joined.glob("*.parquet"))) != 192:
+    if len(list(joined.glob("*.parquet"))) != len(shards):
         con.execute(f"CREATE TABLE s1 AS SELECT entity_id, business_name qn, business_address qa FROM read_csv('{TEST}/test_source1.tsv',{opts})")
         con.execute(f"""CREATE TABLE tg AS SELECT entity_id, business_name tn, business_address ta FROM read_csv('{TEST}/test_source2.tsv',{opts})
                         UNION ALL SELECT entity_id, business_name, business_address FROM read_csv('{TEST}/test_source3.tsv',{opts})""")

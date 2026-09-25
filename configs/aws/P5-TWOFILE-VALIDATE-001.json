@@ -1,0 +1,20 @@
+{
+  "run_id": "P5-TWOFILE-VALIDATE-001",
+  "experiment": "SUB-002-CL003-VALIDATION",
+  "job_kind": "two_file_validation",
+  "bootstrap_script": "scripts/aws/two_file_validate_bootstrap.sh",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 60,
+  "compute_usd_per_hour": 0.55568,
+  "total_cost_ceiling_usd": 1.6,
+  "ebs_gib": 100,
+  "purpose": "Official two-file (matching + candidate) validation plus strict checks for the upload-ready CL-003 file",
+  "fold4": "CLOSED",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/two-file-validate-v001",
+  "input_receipt": "two-file-validate-v001-upload.json",
+  "estimate_basis": "merge 192 candidate shards + 2 validator passes ~15 min",
+  "checkpoint": "results uploaded with SHA256 receipts",
+  "cleanup": "60-minute OS shutdown, terminate-on-shutdown"
+}
