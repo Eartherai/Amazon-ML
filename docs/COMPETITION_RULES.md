@@ -30,3 +30,11 @@ The earlier user-authored Phase5 request asked for an immediate early calibratio
 The latest user request explicitly authorizes SUB-001 as an early calibration portal submission after the exact official validator passes. It expressly says not to wait for full retrieval, Fold4 or final architecture. This resolves the earlier project-doc submission-gate conflict for SUB-001 only. Fold4 remains CLOSED; later submissions still require measured improvements and all official format/rule checks.
 
 The subsequent 25 September request says the user will upload both files themselves. Prepare and validate the matching TSV and official ZIP, then provide their local paths; do not operate the portal. The official README requires the ZIP to contain `output/matching_results.tsv`, `output/candidate_pairs.tsv`, runnable `code/business_entity_resolution/`, and the filled `Documentation_template.md`.
+
+## 2026-09-26 organizer Q&A rulings (from the official query-form responses spreadsheet)
+
+- Computing unsupervised statistics on the provided test files (TF-IDF, token frequencies, a blocking index) is explicitly allowed. So are self-training and generating synthetic pairs from the provided records. Test-fitted retrieval (CL-012) and France self-training are therefore within the rules.
+- Pretrained open-weight models are allowed if MIT/Apache-2.0, at most 8B parameters each, run offline, and fine-tuned only on the provided data. Hosted LLM APIs are prohibited. AWS Entity Resolution is prohibited.
+- Content-identical S2/S3 records: include every ID believed to be the same business (supports duplicate expansion).
+- Row order may change; `candidate_pairs.tsv` = final candidate set fed to the first scoring model; every matched ID must be in it.
+- External data (geocoders, postal/gazetteer packages, business registries) is prohibited; small hand-written normalization dictionaries are allowed.

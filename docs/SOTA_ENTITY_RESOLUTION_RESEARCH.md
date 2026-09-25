@@ -986,3 +986,116 @@ LLM-based matching (reference only):
 - [Match, Compare, or Select? (COLING 2025)](https://aclanthology.org/2025.coling-main.8/); [tshu-w/ComEM](https://github.com/tshu-w/ComEM)
 
 License metadata endpoints read on 2026-09-26: `https://api.github.com/repos/{owner}/{repo}/license` and `https://huggingface.co/api/models/{id}`. Repositories with no declared license: ruc-datalab/Unicorn, chu-data-lab/AutomaticFuzzyJoin, tshu-w/ComEM.
+
+## Critic addendum
+
+Added 2026-09-26 by a completeness review. Append-only: sections 1-5 above are unchanged and this addendum takes precedence where they conflict. Reading, arithmetic and generic web research only (papers, model cards, package metadata). No job was run, no model was trained, and no competition record was searched. Every number marked "estimate" is arithmetic from the measurements cited, not a new measurement.
+
+### C1. Internal evidence the survey did not use
+
+The survey's priors were set without several local results that are already recorded in docs/FIRST_PRINCIPLES_12H_REVIEW.md and outputs/experiments. They lower several expected gains.
+
+| Survey item | Recorded local evidence | Consequence |
+|---|---|---|
+| R1 "+0.0024 measured" (CL-013) | outputs/experiments/CL-013 holds only SCORE_REPORT.json (throughput) and 72,000 logits. No stack result file exists. scripts/classical/stack_e5_6k.py compares against a re-stacked stage-2-only LightGBM trained on about 3k S1 per cross-fit fold, not against the CL-006 production path (0.9631106). CL-004 stacked the EXP-045 CE logit on CL-003 and measured -0.000119, CI [-0.00160, +0.00144]. | Confidence H becomes M. Before any test GPU spend, rerun the stack script, save its JSON (macro, delta, paired-bootstrap CI, per-country) under outputs/experiments/CL-013, and confirm the gain against the production stage-2 threshold path. |
+| R2 expected-F decision, +0.001 to +0.004 | EXP-008: Platt/isotonic calibration gave no gain (within noise). EXP-038: 29 entity set rules, best +0.000896 with the threshold searched on the same OOF. EXP-046: cardinality rules on the neural blend, -0.0000125. | Revised prior +0 to +0.002. Still the cheapest CPU item, but promote only on a nested CI above 0. |
+| E7 / rank 9 S1-context features | EXP-017: query-context features (max, gap, relative) gave -0.0011927 on N5k. CL-001 stage 2 already contains competitor and sibling context. | Revised prior about 0. Drop from the sprint unless the lambdarank score itself is tested. |
+| F2 / R3 step 3 / rank 7 reverse competitor search | FULL-OWNER-002: full 2.2M-S1 lexical top-20 competitor search with a fuzzy veto gave +0.0000375, although its oracle veto ceiling was +0.007258. | Revised prior +0 to +0.001 for soft ownership features. The unsolved problem is separating owners, not finding competitors. |
+| "SUB-004 isolates the France hypothesis" | VSAFE (39,470 France-only rescue links, India/US rows identical to SUB-003) scored 0.947 public versus 0.944. | The France retrieval hypothesis is already confirmed (+0.003 public). R3 should compete against VSAFE as the baseline. |
+| C4/D-series and neural CE value in general | EXP-045 +0.0149 and EXP-044 +0.0106 were against the 51-feature first stage; after stage 2 existed, CL-004 showed no added value. | Any CE gain must be measured on top of stage 2, never on top of the first stage. |
+
+**France arithmetic correction.** Section 4 says 0.944 public "implies France near 0.85". Test France share is 259,452 / 1,732,544 = 0.1498. If the public subset has the test country mix and India/US score at most their local value (0.9635), then France = (0.944 - 0.8502 x 0.9635) / 0.1498 = 0.833 is a lower bound, not a point estimate. The same algebra gives France >= 0.853 for VSAFE (0.947) and >= 0.806 for SUB-001 (0.912967 against local 0.9318965). F6k selection optimism makes the India/US local value an overstatement, which pushes the true France value higher, so the France gap may be smaller than the survey assumes.
+
+**Section 1.1 correction.** Under calibrated probabilities the marginal acceptance threshold F_current / 1.25 never exceeds 0.8. So a global threshold of 0.8-0.9 is never expected-F optimal, even for an S1 whose current set is already perfect. The production thresholds (0.83 in SUB-001, 0.67 in SUB-003) apply to uncalibrated LightGBM scores, so they cannot be compared directly with this bound. The derivation also holds |T| fixed. When |T| is uncertain, the empty-versus-non-empty switch dominates, which is why R2 needs the S1-empty model.
+
+### C2. Recipes that do not fit one A10G, L4 or L40S in under 1 hour
+
+**Measured anchor.** outputs/experiments/CL-013/SCORE_REPORT.json records EXP-050 (E5-small CE, 117.65M) on one A10G, bf16, over 72,000 fixed-6k pairs with a mean of 53.7 non-pad tokens per pair:
+
+- length-sorted, batch 512: 4,989 pairs/s wall and 7,609 pairs/s GPU-only;
+- natural order: 3,415 pairs/s wall;
+- sorted and natural logits identical (max abs diff 0.0);
+- fp32 check: 1,892 pairs/s, max abs logit diff 0.030 versus half precision.
+
+The survey used the older 3,350 pairs/s EXP-045 figure.
+
+**Scaling rule (estimate).** For pairs of about 54 tokens, cost scales with non-embedding (transformer) parameters, not total parameters. The large multilingual vocabulary sits in the embedding matrix, which costs almost nothing per token.
+
+- mE5-small: 12 layers at hidden 384, about 21M non-embedding.
+- mE5-base, XLM-R base, LaBSE and mDeBERTa-base: 12 layers at hidden 768, about 85M, so about 4.0x small's compute.
+- bge-reranker-v2-m3 and XLM-R large: 24 layers at hidden 1024, about 302M, so about 14x small's compute.
+- Qwen3-Reranker-0.6B: about 0.44B non-embedding plus an instruction template, so 20x or more per pair.
+
+**Corrections to section 3.** D2's "2.4 times the parameters, 2-3 times slower" should read about 4x slower. D9's "568M models need about 4-5 times the inference of mE5-small" should read about 14x.
+
+| Recipe | Single-GPU work (estimate from the anchor) | Fits one A10G in <1 h? | Fix that makes it fit |
+|---|---|---|---|
+| R1: E5-small over 20.8M test pairs | 69 min wall; 46 min GPU-only | No as written; yes with fixes | Pre-tokenize on the CPU fleet and store token ids; length-sort shards; overlap host-to-device copies; deduplicate identical (S1 text, target text) pairs; or restrict scoring to the stage-2 band where the CE can change a decision (measure the fraction first). |
+| R4 training: mE5-base, 1.05M pairs | about 28 min GPU-only with length-grouped dynamic padding; the survey's 45-75 min assumes padding toward 128 | Yes, only with length grouping | Sort or bucket pairs by length (custom sampler or pre-sorted shards; verify that the sentence-transformers CrossEncoderTrainer keeps the order); cap at 1 epoch; evaluate every 4,000 steps, not 2,000. |
+| R4 inference: mE5-base, 20.8M pairs | about 1,900 pairs/s GPU-only, so about 3.0 GPU-h (4.6 h at wall efficiency) | No | Band-gate to at most about 6.5M pairs per GPU-hour, or shard 3-4 ways. On L40S, benchmark first; its bf16 tensor throughput is roughly 2-3x A10G on paper, which is not measured here. |
+| R4 L40S option: bge-reranker-v2-m3 | about 535 pairs/s A10G-equivalent, so 10.8 GPU-h over 20.8M pairs; training 1M pairs about 35-60 min on L40S | No for inference | Keep it out of the sprint. |
+| R5: E5-small bi-encoder train, encode and search | training about 5-15 min; encoding 11.7M texts of about 25 tokens (half a pair, estimate) about 13 min GPU-only; exact fp16 FAISS per country takes minutes | Yes, if tokenization is precomputed | Store token ids. Use FAISS GPU flat IP with fp16 storage per country. The faiss-gpu wheel and CUDA build must be tested in the container before the run. |
+| G1 LLM band routing, D6 CANINE, D7 ByT5 | several GPU-hours | No | Already excluded from the sprint. |
+| E5 Margin-MSE distillation | teacher scoring of about 1M training triplets with the R4 CE is about 9 min on A10G; student training is R5-sized | Yes, after R4 exists | None. |
+
+**Missing inference methods.**
+
+- ONNX Runtime (MIT, PyPI 1.30.0) and Hugging Face Optimum (Apache-2.0) export with fp16 and IO binding. Estimated 1.2-2x over eager PyTorch for small encoders; measure on the 72k CL-013 pairs and require logit parity (max abs diff <= 0.05) before use.
+- torch SDPA or `torch.compile` in the existing driver (scripts/gpu_ce/ce_driver.py, not reviewed in depth here).
+- INT8 dynamic quantization for CPU-fleet scoring as a GPU-quota fallback. Estimated 3-4x speedup over fp32 CPU; the accuracy change must be measured.
+- Test-time pair deduplication by text hash, reusing the duplicate-expansion logic.
+
+### C3. Methods missing from the catalog
+
+| Id | Method | Source | License | Single GPU/CPU <1 h | Relevance and prior (hypothesis) | Verdict |
+|---|---|---|---|---|---|---|
+| H1 | Non-independent GFM: estimate P(y_i = 1, \|T\| = s) with a count-conditioned or multinomial S1-level model instead of a Poisson-binomial under independence | Dembczynski, Jachnik, Kotlowski, Waegeman and Hullermeier, ICML 2013 (plug-in rule versus structured loss) | own code | CPU, minutes | Handles sibling correlation directly instead of R2's temperature hack; same bucket as R2, not additive | Variant inside R2 |
+| H2 | Label-shift and prior estimation without labels: EM prior adjustment; black-box shift estimation (BBSE) | Saerens, Latinne and Decaestecker, Neural Computation 2002; Lipton, Wang and Smola, ICML 2018 | own code | CPU, seconds | Estimates France's match prior and empty-S1 rate from unlabeled score distributions, to feed R2's q0 and mu_out. Uses unlabeled test outputs, so it falls under the same open rules question as test-fitted IDF. | Diagnostic only until the rule is settled |
+| H3 | Shift-robust GBDT: LightGBM `monotone_constraints` (increasing in similarity, decreasing in edit distance) plus removal of country-identity features; judged by the leave-one-country-out gate | LightGBM documentation | MIT | CPU, under 1 h on the 194k OOF | Directly targets the US->India 0.767 transfer failure and France. Expected local cost 0 to -0.001; possible public gain | Add to rank 8 |
+| H4 | France-like perturbation augmentation from training data only: random diacritic injection and removal on Latin text, elision tokens (l', d'), street-type/name order swaps, abbreviation swaps from a hand-written generic table | Rotom/Ditto augmentation family (C2) | own code | Free inside R4/R5 training | Trains the CE and bi-encoder to be invariant to French-style variation without touching test text. Measure on India/US that nothing regresses. scripts/classical/country_transfer_sim.py (untracked, not reviewed) may already simulate part of this. | Add to R4/R5 |
+| H5 | Classical token-alignment name metrics: Monge-Elkan (JW inner), Soft TF-IDF, phonetic keys (Double Metaphone, NYSIIS) | Monge and Elkan, 1996; Cohen, Ravikumar and Fienberg, IJCAI-03 IIWeb workshop 2003; jellyfish library | jellyfish MIT; rapidfuzz MIT | CPU | Not in the current stage-2 code: rapidfuzz ratio, token_set, token_sort, partial, JW and Levenshtein only. Phonetic keys are English-centric, so value on romanized Indian and French names is uncertain. Prior +0 to +0.001 | Backlog feature batch |
+| H6 | False-negative-aware in-batch contrastive loss (GISTEmbedLoss / CachedGISTEmbedLoss): a guide model masks in-batch negatives that look more similar than the positive | Solatorio, arXiv 2402.16829 (2024); sentence-transformers | Apache-2.0 | Inside R5 | Our duplicate-text targets owned by other S1 are exactly such false negatives. Guide: the untuned mE5-small. Alternative to E3 filtering for R5 | Ablation in R5 |
+| H7 | Learned sparse retrieval (SPLADE family) | Formal et al., 2021-2024 | naver/splade-v3 and splade-cocondenser are CC-BY-NC-SA-4.0, so **excluded**. opensearch-neural-sparse-encoding-multilingual-v1 is Apache-2.0 (167.46M) but was trained on MIRACL (rules caveat) | GPU, about R5-sized | Word-piece expansion adds little to char3 on short names | Skip |
+| H8 | Approximate kNN on CPU (HNSW) as an alternative to exact GPU FAISS | Malkov and Yashunin, TPAMI 2020; hnswlib | Apache-2.0 (repository license; PyPI metadata is blank, so verify) | CPU fleet | Lets R5 search run without GPU quota. Recall versus exact search must be reported | Fallback for R5 |
+| H9 | Confident learning for label-noise audit of hard negatives | Northcutt, Jiang and Chuang, JAIR 2021; cleanlab | Apache-2.0 (PyPI 2.9.0; earlier releases were AGPL, so pin the version) | CPU | Principled version of E3 denoising: flag negatives with high out-of-fold match probability. Audit only; never delete labels | Optional inside E3 |
+
+### C4. License and rules gaps
+
+- **multilingual-E5 carries the same rules caveat as the D9 rerankers.** Its technical report (arXiv 2402.05672) describes contrastive pre-training followed by fine-tuning on a combination of labeled datasets. The survey flags only the rerankers. R1, R4 and R5 all depend on mE5, so the "fine-tuned only on provided data" question applies to the currently used EXP-050 base as well. The cleanest bases are MLM-only encoders: XLM-R (MIT), mDeBERTa-v3 (MIT), mmBERT (MIT), CANINE and ByT5 (Apache-2.0). Record the question in docs/MODEL_LICENSES.md and keep an XLM-R-base CE as the fallback if the organizers read the rule strictly.
+- **EXP-045 lineage (cross-encoder/mmarco-mMiniLMv2-L12-H384-v1).** The checkpoint is tagged Apache-2.0. Its base model, nreimers/mMiniLMv2-L12-H384-distilled-from-XLMR-Large, has **no license tag** in Hugging Face metadata (read 2026-09-26). Its fine-tuning dataset unicamp-dl/mmarco also has no license tag and derives from MS MARCO, whose usage terms must be checked for non-commercial restrictions. Treat EXP-045 as ineligible for the final solution unless both are resolved.
+- **DADER (C8).** The GitHub license endpoint for ruc-datalab/DADER returned 404 on 2026-09-26, meaning no declared license. Treat the code as unavailable; the idea only.
+- **Libraries** (library licenses, not model licenses; recorded for the provenance file):
+  - anyascii is ISC (PyPI classifier). It is permissive, and it is already imported by scripts/classical/stage2_features*.py and rescue_skeleton_key.py.
+  - Unidecode is GPL-2.0-or-later. Do not add it.
+  - rapidfuzz, jellyfish, onnxruntime, faiss-cpu and splink are MIT.
+  - Optimum, cleanlab 2.9.0, XGBoost and CatBoost are Apache-2.0.
+  - LightGBM is MIT.
+  - Pin versions, because licenses can change between releases (cleanlab did).
+- **Unseen-country handling inside R2.** Per-country isotonic calibration, a `country` feature in the S1-empty model, and per-country mu_out all have no France value. LightGBM sends an unseen category down the "other" branch, which is an arbitrary behavior. Use a pooled, country-free calibrator and S1-empty model for France, and set France's mu_out to the larger of the India and US values, because France retrieval is known to be weaker. Report France-applied versions as unvalidated.
+
+### C5. Evaluation-protocol gaps
+
+- **The 0.0005 promotion gate is below F6k noise.** CL-004's paired 95% CI on F6k had a half-width of about 0.0015. Require a paired-bootstrap CI over S1 with a lower bound above 0. If F6k cannot resolve the difference, confirm on a second owner-safe population: I194k grouped inner OOF, or a fresh fold-2/3 sample disjoint from F6k.
+- **F6k has been reused for CL-001 to CL-006 choices**, so its absolute level is optimistic. Report deltas, not levels, and prefer a fresh population for the final comparison between R1, R2 and R4.
+- **Gate every France-affecting change on the VSAFE baseline (0.947)**, not SUB-003.
+- **Record negative results in EXPERIMENTS.csv**, including any R-item that fails its gate, so that later surveys do not re-propose EXP-017 or FULL-OWNER-002-type ideas.
+
+### C6. Revised top of the ranking (hypotheses; replaces the section 4 priors where they conflict)
+
+1. **R2 with H1 and the C4 France handling.** CPU only. Prior +0 to +0.002, confidence M.
+2. **R1.** Only after the CL-013 stack result is recorded against the production path. Scoring time is 46-69 min on one A10G, so it fits under 1 h only with pre-tokenization, or with band gating. Prior +0 to +0.0025, confidence M.
+3. **R3 against the VSAFE baseline.** Add H3 monotone and country-free stage-2 variants to the leave-one-country-out gate. Public prior +0 to +0.005, confidence L.
+4. **R5 with H6 and H4.** Fits one A10G in under 1 h if tokens are precomputed. Prior +0 to +0.003, confidence L-M.
+5. **R4.** Training fits in under 1 h only with length grouping. Inference needs band gating or several GPUs. Prior +0 to +0.003 over R1, confidence L. Needs the mE5 rules question settled, or an XLM-R-base fallback.
+
+Demoted: E7 (EXP-017) and hard-veto F2 (FULL-OWNER-002). Excluded: EXP-045 lineage (license), SPLADE naver checkpoints (CC-BY-NC-SA) and Unidecode (GPL).
+
+Sources added by this addendum:
+
+- [Optimizing F-measures: A Tale of Two Approaches (arXiv 1206.4625)](https://arxiv.org/abs/1206.4625). The abstract confirms that the decision-theoretic approach suits rare classes and a domain-adaptation scenario when the model is accurate, while EUM is more robust to misspecification.
+- [Multilingual E5 Text Embeddings: A Technical Report (arXiv 2402.05672)](https://arxiv.org/abs/2402.05672)
+- [GISTEmbed (arXiv 2402.16829)](https://arxiv.org/abs/2402.16829); [sentence-transformers batch samplers](https://sbert.net/docs/package_reference/sentence_transformer/sampler.html). Multi-dataset ROUND_ROBIN and PROPORTIONAL samplers draw each batch from a single dataset, so a DatasetDict keyed by country gives country-homogeneous batches for E4/R5 without a custom sampler. NO_DUPLICATES enforces unique values across all columns in a batch.
+- [DADER repository](https://github.com/ruc-datalab/DADER) (no declared license)
+- Hugging Face model API: cross-encoder/mmarco-mMiniLMv2-L12-H384-v1, nreimers/mMiniLMv2-L12-H384-distilled-from-XLMR-Large, naver/splade-v3, naver/splade-cocondenser-ensembledistil, opensearch-project/opensearch-neural-sparse-encoding-multilingual-v1; dataset API unicamp-dl/mmarco.
+- PyPI JSON metadata (license classifiers): anyascii, Unidecode, rapidfuzz, jellyfish, onnxruntime, faiss-cpu, splink, optimum, cleanlab, hnswlib.
+- Saerens, Latinne and Decaestecker, "Adjusting the outputs of a classifier to new a priori probabilities", Neural Computation 14(1), 2002. Lipton, Wang and Smola, "Detecting and correcting for label shift with black box predictors", ICML 2018 (arXiv 1802.03916). Dembczynski et al., "Optimizing the F-measure in multi-label classification: plug-in rule approach versus structured loss minimization", ICML 2013. Cohen, Ravikumar and Fienberg, "A comparison of string distance metrics for name-matching tasks", IIWeb 2003. Northcutt, Jiang and Chuang, "Confident learning", JAIR 2021.
