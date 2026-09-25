@@ -74,3 +74,7 @@ P5-SUB001-INDIA-HIGH-001 was launched on on-demand r8i.4xlarge `i-01462cbfe56b61
 ## 2026-09-25T05:13:32+00:00 — local disk archive storage
 
 The 2,327,511,818-byte reproducible processed-data/index archive was uploaded to encrypted S3 and fully read back once for SHA256 verification before local cleanup. S3 storage and transfer/request costs are expected to be small but have not yet appeared in billing; receipt and restore command are `artifacts/cloud/phase5/backups/prep-and-index-20260925.json`. No EC2 or SageMaker job was started for this operation.
+
+## 2026-09-25T05:27:58+00:00 — EXP-032 completion and EXP-033 launch
+
+EXP-032 / P5-FEATURE-200K-001 exited zero and terminated at 05:25:15 UTC, 2,598.52 s wall, estimated EC2 compute $0.401096; actual billed amount pending. EXP-033 / P5-LEARNING-FIT-001 launched on on-demand r8i.2xlarge `i-004e4dcc31fc9b130`, account ending6318, code commit `fd56a5e`, six-hour independent OS cutoff and automatic terminate-on-shutdown. Maximum compute $3.33408 plus $1 allowance = $4.33408 under its $4.50 planning ceiling. Fresh guard's project worst case was $70.42692 below the $120 soft cap. Credit balance and final bill unverified.
