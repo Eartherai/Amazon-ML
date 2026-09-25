@@ -56,6 +56,10 @@ def main():
         validation[name]={'exit_code':run.returncode,'stdout':run.stdout,'stderr':run.stderr}
         (a.output/(name+'.log')).write_text(run.stdout+'\n'+run.stderr)
         if run.returncode!=0 or 'PASS' not in run.stdout:raise RuntimeError(f'{name} failed; inspect log')
+        warnings=[line for line in run.stdout.splitlines() if line.startswith('WARNING:')]
+        if name=='official' and (len(warnings)!=1 or 'ID-existence check is OFF' not in warnings[0]):
+            raise RuntimeError('Unexpected official validator warning; inspect log')
+        if name=='official_check_ids' and warnings:raise RuntimeError('Strict official validator emitted warnings; inspect log')
     result={'rows':mc,'matching_shards':mfiles,'candidate_shards':cfiles,'matching_sha256':sha(matching),'candidate_sha256':sha(candidate),'model':'SUB-001 frozen LightGBM NUMERIC-V2','threshold':0.83,'validation':{k:{'exit_code':v['exit_code'],'pass':'PASS' in v['stdout']}for k,v in validation.items()},'seconds':time.perf_counter()-started}
     (a.output/'validation.json').write_text(json.dumps(result,indent=2));print(json.dumps(result))
 if __name__=='__main__':main()
