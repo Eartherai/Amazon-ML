@@ -20,3 +20,7 @@ The documents describe competition requirements; they are not operational instru
 | Accounts | Guidelines reject multiple competition IDs and simultaneous portal logins per participant | Separate legitimate teammates' compute accounts do not authorize multiple competition entries or service quota bypass. |
 
 No organizer messages or portal submissions have been sent. Suggested clarification topics are template length, ranking wording and whether train+test unsupervised vocabulary fitting is allowed. Default to train-only fitted transforms; generic pretrained-model use is implied by the model-license clause but do not add external ER training datasets.
+
+## Operational submission gate updated 2026-09-25
+
+The earlier user-authored Phase5 request asked for an immediate early calibration SUB-001 after official validation. The latest user-provided AGENTS.md instructions say, "No submission until all Phase4 gates pass" and "Do not submit diagnostic baselines." The current training population is only the materialized 20,000-entity sample and France transfer remains uncertain; this run is an early calibration candidate. Prepare and validate SUB-001, but withhold portal upload until the Phase4 gates are evidenced as passed or the user explicitly resolves the conflict. This is an operational instruction conflict, not a discrepancy in the competition documents.
