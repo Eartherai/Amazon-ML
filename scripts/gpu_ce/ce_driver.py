@@ -130,6 +130,28 @@ def main():
     amp_dtype = torch.bfloat16
     sink = Sink(cfg.get("local_out", "/opt/ml/output/data/parts"), None if a.local else cfg["s3_out"])
 
+    if cfg.get("score_only"):
+        import tarfile
+        from transformers import AutoTokenizer
+        tar = sorted(glob.glob(str(root / "init" / "*.tar.gz")))[0]
+        with tarfile.open(tar) as tf: tf.extractall("/tmp/init")
+        tok = AutoTokenizer.from_pretrained("/tmp/init/encoder", use_fast=True); pad_id = tok.pad_token_id
+        model = PairModel("/tmp/init/encoder", None).to(device)
+        model.head.load_state_dict(torch.load("/tmp/init/head.pt", map_location="cpu"))
+        log(event="loaded_ce", tar=tar)
+        for spec in cfg["pair_sets"]:
+            split = spec["split"]
+            texts = text_map([root / f"{split}/{split}_source{i}.tsv" for i in (1, 2, 3)])
+            for fp in sorted(glob.glob(str(root / "pairs" / spec["glob"]))):
+                df = pd.read_parquet(fp)
+                qs = [texts[q] for q in df["q"]]
+                ts = [("s2: " if t.startswith("S2-") else "s3: ") + texts[t] for t in df["t"]]
+                ids = []
+                for i in range(0, len(qs), 50000):
+                    ids += encode(tok, qs[i:i + 50000], ts[i:i + 50000], cfg["max_len"])
+                sc = score(model, ids, pad_id, device, cfg["infer_batch"], amp_dtype)
+                sink.put(f"{spec['name']}-{Path(fp).stem}.parquet", pd.DataFrame({"q": df["q"].values, "t": df["t"].values, "logit": sc}))
+        log(event="complete"); return
     top = pd.concat([pd.read_parquet(p) for p in sorted(glob.glob(str(root / "top12/top12-fold*.parquet")))], ignore_index=True)
     if cfg.get("max_s1"):
         keep = set(sorted(top["source1_entity_id"].unique())[: cfg["max_s1"]])

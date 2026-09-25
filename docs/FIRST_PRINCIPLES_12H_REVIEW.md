@@ -112,3 +112,29 @@ The file does not record what the `safe` flag in VSAFE means. It has 42,728 rows
 - **Fold4 lock-box.** It was never evaluated.
 
 <!-- analysis sections appended below -->
+
+## 2. First-principles findings (measured 2026-09-26 00:00–01:05 IST)
+
+Validation populations are stated for every number. "194k OOF" = 194,000 held-fold OOF S1 (folds 1-3 of the 200k store, fixed-6k removed); "fold-3" = ~65k fold-3 S1 of that set; Fold4 CLOSED.
+
+### 2.1 Loss decomposition (194k OOF, stage-2 top-12 v2, threshold 0.67): macro 0.9652
+| Component | Loss mass |
+|---|---:|
+| True links outside top-12 (almost all retrieval misses) | 0.0123 |
+| Rejected true links inside top-12 | 0.0130 |
+| False-positive links on non-singletons | 0.0078 |
+| Singleton false merges | 0.0018 |
+Oracles: top-12 0.9877, full candidates ~0.9885, per-S1 decision oracle 0.9853. India 0.9530 vs US 0.9734; India S3 retrieval miss rate 7.0%.
+
+### 2.2 Decision rules are not the bottleneck
+Expected-F0.5 per-S1 set selection with isotonic calibration: 0.96523 vs global threshold 0.96521 (+0.00002). Ownership variants: best +0.00035 in-sample (larger on test where all S1 compete). Conclusion: gains must come from better pair probabilities and better candidates.
+
+### 2.3 Public/local gap is a domain-transfer problem
+Two independent pipelines (ours and the friend's CE pipeline) both lose 0.016-0.019 local->public. Unseen-country simulation with text-only stage-2: US->India 0.868 vs in-country 0.946; India->US 0.919 vs 0.968. Self-training on the unlabeled target country recovers only +0.0065/+0.0076. With India/US at local level, public 0.947 implies France ~0.855. A per-country public decomposition (France-empty / India-empty diagnostic files, built and validated) would confirm the split; awaiting user approval of 2 portal slots.
+
+### 2.4 Two measured step changes
+1. **Scaled cross-encoder** (multilingual-e5-base, MIT, trained on 739,590 owner-safe fold 1-2 band pairs, 1 epoch): stacked with stage-2 on fold-3 (~65k S1) macro 0.96466 -> **0.96927 (+0.0046, CI +0.0040..+0.0053)**; India +0.0111.
+2. **Dense bi-encoder retrieval** (multilingual-e5-small, InfoNCE on fold 1-2 positives): India fold-3 dense link recall **99.77%**; of 5,554 India true links outside the sparse top-12, top-10 dense recovers 5,095 with 4.9 new candidates/S1. Adding dense pairs scored by text-only stage-2 at p>=0.7 (only unclaimed targets): India fold-3 macro 0.9526 -> **0.9663 (+0.0137)**, added-link precision 0.917.
+
+### 2.5 Implication for 0.98 / 0.99
+Retrieval is no longer the hard ceiling for India once dense rescue is used. Remaining path: CE-scored union of sparse top-12 and dense top-10, stacked, plus ownership; then France robustness (dense retrieval is vocabulary-free, which should also help France). 0.99 still requires near-perfect matching of the remaining ~2% hard pairs and is not supported by current evidence.
