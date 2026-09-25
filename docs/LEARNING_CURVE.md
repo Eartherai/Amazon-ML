@@ -9,6 +9,14 @@ Each size will be evaluated on the same newly selected 15,000 Source-1 entities
 sample. Target ownership masks prevent held-out positive targets from becoming
 fit negatives. Fold 4 remains closed.
 
+EXP-031 completed with all 256 route archives SHA256-verified. Its old20k
+candidate comparison passed the documented numerical-tie audit, not byte-exact
+rank parity: name has no changed candidate IDs and 16 near-tie rank changes;
+address has 57 rank changes and one rank-100 exchange of two known negatives.
+Shared-pair score deltas are at most 2.384e-7. See
+`outputs/analysis/P5-LEARNING-PARITY-001/report.json`. EXP-032 and EXP-033
+must cite this retrieval provenance when comparing with older 20k evidence.
+
 The thresholds 0.83, 0.79 and 0.83 were selected on the earlier 20,000-entity
 development sample, before selecting this new evaluation set. EXP-033 is a
 fixed-threshold learning-curve diagnostic; these sizes do not have separately
@@ -41,6 +49,6 @@ Planning priority before results: EXP-031/032/033 have high expected
 information gain because the prior fixed-holdout 2k→13.3k diagnostic rose from
 0.924221 to 0.932231. An improvement of at least 0.002 by 100k is plausible
 but unmeasured. Confidence is moderate, sequential wall time is bounded by
-three six-hour worker caps (EXP-031 already running), and combined EXP-031–033
+three six-hour worker caps (EXP-031 is complete), and combined EXP-031–033
 planning ceilings are $13.50 before the separate full-retrieval job. Do not
 interpret this estimate as a result or an AWS bill.

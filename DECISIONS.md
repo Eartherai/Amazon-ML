@@ -81,3 +81,7 @@ OOF population. No 50k/100k result exists yet. If the slope is meaningfully
 positive across folds/countries, prioritize 250k/500k/1M scaling; if it
 flattens, shift compute to retrieval, feature and model diversity. Preserve
 Fold4 CLOSED and the frozen SUB-001 path regardless of this outcome.
+
+## Phase5 — accept only audited float32 near ties for EXP-031 handoff
+
+The initial exact old20k parity gate for EXP-031 failed: among 2,000,000 route pairs per field, name had zero changed candidate IDs but 16 changed ranks in seven queries; address had 57 rank changes in 24 queries and one rank-100 candidate exchange for S1-428740130. Both exchanged target IDs are absent from that entity's known ground truth. Same-pair scores differ by at most 2.384e-7; changed-rank score spans are below 9e-8. All 256 route archives passed SHA256 verification, every old20k query has 100 pairs per route, and no known positive is lost by the one boundary exchange. These are float32 near-tie ordering effects, not evidence of a different blocking configuration. Preserve the failed strict result and report `exact_id_rank_parity: false`. Permit EXP-032 only under the new `NUMERIC_TIE_PASS` audit, whose code rejects more than one boundary candidate exchange, a positive exchange, wider score/rank drift, incomplete coverage, or a changed archive hash. The full candidate sets and old20k route rank features are nearly, but not byte-for-byte, identical to P4-B-002; any later score comparison must cite this difference. Fold4 remains CLOSED.
