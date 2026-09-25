@@ -3,11 +3,14 @@
   "Statement": [
     {
       "Effect": "Allow",
-      "Principal": {"Service": "sagemaker.amazonaws.com"},
+      "Principal": {
+        "Service": "sagemaker.amazonaws.com"
+      },
       "Action": "sts:AssumeRole",
       "Condition": {
-        "StringEquals": {"aws:SourceAccount": "634393786318"},
-        "ArnEquals": {"aws:SourceArn": "arn:aws:sagemaker:us-east-1:634393786318:processing-job/P5-SUB001-SM-VALIDATE-001"}
+        "StringEquals": {
+          "aws:SourceAccount": "634393786318"
+        }
       }
     }
   ]
