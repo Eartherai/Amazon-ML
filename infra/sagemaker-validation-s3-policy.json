@@ -39,6 +39,16 @@
       "Effect": "Allow",
       "Action": ["ecr:BatchCheckLayerAvailability", "ecr:BatchGetImage", "ecr:GetDownloadUrlForLayer"],
       "Resource": "arn:aws:ecr:us-east-1:683313688378:repository/sagemaker-scikit-learn"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["logs:CreateLogGroup"],
+      "Resource": "arn:aws:logs:us-east-1:634393786318:log-group:/aws/sagemaker/ProcessingJobs"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["logs:CreateLogStream", "logs:PutLogEvents", "logs:DescribeLogStreams"],
+      "Resource": "arn:aws:logs:us-east-1:634393786318:log-group:/aws/sagemaker/ProcessingJobs:*"
     }
   ]
 }
