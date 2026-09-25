@@ -18,7 +18,15 @@ BUCKET = "aml2026-ber-08be19ac500747"
 def aws(*args: str) -> dict:
     command = ["aws", "--profile", os.environ.get("AWS_PROFILE", "amamzon_01_a1_0"),
                "--region", "us-east-1", "--no-cli-pager", *args, "--output", "json"]
-    result = subprocess.run(command, capture_output=True, text=True, check=True)
+    for attempt in range(6):
+        result = subprocess.run(command, capture_output=True, text=True)
+        if result.returncode == 0:
+            break
+        retryable = any(text in result.stderr for text in
+                        ("Rate exceeded", "Throttling", "TooManyRequests", "RequestTimeout", "Service Unavailable"))
+        if not retryable or attempt == 5:
+            raise RuntimeError(f"AWS boundary monitor call failed: {result.stderr}")
+        time.sleep(min(2 ** (attempt + 1), 30))
     return json.loads(result.stdout) if result.stdout.strip() else {}
 
 
