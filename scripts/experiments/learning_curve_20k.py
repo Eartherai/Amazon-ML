@@ -86,8 +86,9 @@ def main() -> None:
         for count in [2000, 5000, 10000, len(available)]:
             begin = time.perf_counter()
             selected = set(available.head(count)["entity_id"])
-            mask = fitting_mask(fold, owner, allowed) & np.isin(ids, list(selected))
-            if np.any((y == 1) & np.isin(fold, allowed) & np.isin(ids, list(selected)) & ~mask):
+            selected_rows = np.fromiter((entity_id in selected for entity_id in ids), dtype=np.bool_, count=len(ids))
+            mask = fitting_mask(fold, owner, allowed) & selected_rows
+            if np.any((y == 1) & np.isin(fold, allowed) & selected_rows & ~mask):
                 raise AssertionError("Positive excluded by ownership filter")
             model = lgb.LGBMClassifier(**params)
             model.fit(x[mask], y[mask], feature_name=names)
