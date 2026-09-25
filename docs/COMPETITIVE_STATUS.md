@@ -30,4 +30,6 @@ SUB-001 is an explicitly authorized early calibration submission. Frozen model a
 
 EXP-027 is a separate diagnostic on fixed outer folds 1–3, with the same held-out entities for every training size: 2k fit entities scored 0.924221; 5k 0.929379; 10k 0.930829; and the available ~13.3k per fold scored 0.932231. Scores are entity-count-weighted across the three held-out folds. This supports further training-data work on the known countries, but does not estimate the gain from 50k+ examples or predict France/public leaderboard performance. Its thresholds came from the prior 20k nested procedure and were not independently tuned for each size. Full results: `outputs/experiments/EXP-027-v002/metrics.json`.
 
+![Fixed-heldout Phase5 learning curve](figures/phase5_learning_curve.png)
+
 India priority: use known missed-link categories (weak address, non-ASCII target name and transliteration) to test targeted retrieval rescue with marginal recall and candidate cost. France priority: analyze only unlabeled test covariates, candidate densities and frozen model score/predicted-singleton distributions; no external identity lookups or hidden-label inference. No new public-score-driven threshold sweep.

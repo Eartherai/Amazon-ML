@@ -14,6 +14,8 @@ Scope: the already-inspected 20,000 natural development entities in folds 1–3,
 | Non-ASCII target name | 9,409 | 1,023 | 990 | 7,396 |
 | ASCII target name | 59,957 | 1,292 | 6,688 | 51,977 |
 
+![Phase5 country/source and address-missing error rates](figures/phase5_error_slices.png)
+
 India/S3 accounts for 982 of the 2,315 retrieval misses. The observed link-level recall is 93.24% for that country/source slice versus 98.26% for US/S3. The non-ASCII target-name slice has 89.13% candidate recall versus 97.85% for ASCII target names. These slices overlap; totals must not be added across rows.
 
 Address-missing links are especially difficult: only 684/3,045 (22.46%) are predicted. Of the 2,361 missed links, 501 were never candidates and 1,860 were retrieved but rejected. The current model's predicted-pair precision on this slice is 684/873 (78.35%), compared with 58,689/59,614 (98.45%) when both addresses are present. Lowering a blanket threshold for missing addresses would likely create costly false merges. This is a priority for controlled, nested experiments using stronger independent name or source evidence, not a rule to apply directly.
