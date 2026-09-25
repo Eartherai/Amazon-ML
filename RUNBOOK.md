@@ -51,7 +51,7 @@ Authoritative results already present: AUDIT-004, PAIR-002, supplement-001, memo
 
 ## Cloud setup status
 
-`colab version` reports 0.7.2; `colab usage` and `colab sessions` verified user login, 0 compute units and no active sessions. Run these again before any cloud experiment. AWS authentication is expired; see docs/COMPUTE_SETUP.md. Account balances/quota/price remain unverified. No paid launch commands have been executed.
+`colab version` reports 0.7.2; `colab usage` and `colab sessions` verified user login, 0 compute units and no active sessions. The AWS profile `amamzon_01_a1_0` has refreshed credentials and accesses account ending 6318. Cost Explorer reports gross billed estimates, but credit balance remains unverified. The capped full-training retrieval EC2 worker `P5-FULL-RETRIEVAL-001` is active; see `AWS_SPEND.md`. SageMaker `ml.r5.2xlarge` Processing quota is 2; no SageMaker job has launched.
 
 ## Phase 2 reproduction
 
@@ -84,3 +84,21 @@ Active profile: `amamzon_01_a1_0`. Benchmark command: `scripts/aws/launch_cpu_wo
 Collect status: `AWS_PROFILE=amamzon_01_a1_0 .venv/bin/python scripts/aws/collect_run.py RUN_ID`. Emergency terminate only tagged project workers: `scripts/aws/terminate_workers.sh`. Full-run shards are immutable `.tar` files under its S3 `shards/` prefix; every upload is SHA256verified before proceeding. Work is bounded by24h scheduled OS shutdown, terminate behavior, encrypted delete-on-terminationEBS. Do not launch duplicate full jobs. See cloud ledger for exact instance ID and commit.
 
 Full label metrics intentionally excludeFold4; evaluator rejects locked labels. `results/retrieval-metrics-unlocked.json` will hold exact unlocked-fold metrics after completion. Full candidate coverage counts use allS1without labels. Fullquery outputs do not constitute OOF model predictions or final submission files.
+
+## Frozen early-calibration SUB-001
+
+User explicitly authorized a single early portal submission after the complete test output passes the unchanged official validator, without waiting for full training retrieval or Fold4. The frozen model is NUMERIC-V2 51-feature LightGBM, threshold 0.83, model SHA256 `d84957742e05f5cd790d7dfc8c14ca05d3b5a2dc941a5094b8874d623b35117b`; all final name/address char3 top100 union candidates are scored. The live detached Mac screen is `aml-sub001-v005`, Python PID86583, with output `outputs/submissions/SUB-001/local-full-v005/inference`. Do not restart completed shards or alter the model, thresholds, candidate routes or input bundle.
+
+Check `progress.json`, `screen -ls`, process state and `df -h .` before action. On successful completion require `COMPLETE.json` with 1,732,544 processed queries and exactly 192 matching plus 192 candidate gzip shard files. Upload with:
+
+```sh
+AWS_PROFILE=amamzon_01_a1_0 .venv/bin/python scripts/submissions/upload_local_shards.py \
+  --inference outputs/submissions/SUB-001/local-full-v005/inference \
+  --bucket aml2026-ber-08be19ac500747 \
+  --prefix amazon-ml-2026/phase5/sub001-mac-shards-v001 \
+  --receipt artifacts/cloud/phase5/sub001-mac-shards-upload.json
+```
+
+The uploader resumes by SHA256 verification and writes `.complete.json` only after all 384 objects pass. The 64 GiB SageMaker validator is prepared as a contingency for the official `--check-ids` pass, which can require several GiB of Python sets. It has a 6-hour hard stop and $5 planning ceiling. After the upload receipt exists, inspect the dry-run plan with `AWS_SDK_UA_APP_ID=AWSSkill-SageMaker AWS_PROFILE=amamzon_01_a1_0 .venv/bin/python scripts/aws/launch_sagemaker_validator.py`; then launch with the same command plus `--launch` only if budget and role checks pass. It creates no endpoint or persistent compute. The separate EC2 validator is an alternative after the full-retrieval worker frees EC2 quota.
+
+Download the completed validator result, verify its manifest and full TSV SHA256s, and inspect `official.log` and `official_check_ids.log`. Both official runs must exit 0 and say PASS; the `--check-ids` run must have zero warnings. Record matching/candidate hashes, experiment and Git commit in `SUBMISSIONS.csv` before uploading **only** `matching_results.tsv` via the registered team portal. Record observed public score and rank after portal confirmation. The final package also needs `candidate_pairs.tsv`, code and methodology; see `docs/COMPETITION_RULES.md`.
