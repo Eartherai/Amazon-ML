@@ -1,5 +1,7 @@
 # Runbook
 
+**Current portal format override (25 September): only the validated `matching_results.tsv` is uploaded. Do not run `build_final_package.py` or create a ZIP. Candidate shards/TSV remain mandatory internally for official validation. `scripts/submissions/finish_sub001.sh` launches the required AWS validator after its full checksum receipt and downloads only the matching TSV. Use AWS profile `amamzon_01_a1_0`; no new fallback or optional inference pipeline. Historical ZIP instructions below are superseded.**
+
 Use the workspace .venv. All dataset reads use an explicit tab separator and preserve empty text. Commands below are updated as implementations become available.
 
 ```sh
