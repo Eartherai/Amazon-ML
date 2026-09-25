@@ -224,3 +224,13 @@ EC2 console reports India/name shard0 completed:1,380,300routepairs in182.8521se
 
 - With EXP-031 exit0/terminated and all 256 archives verified under documented `NUMERIC_TIE_PASS`, launched EXP-032 / P5-FEATURE-200K-001 on r8i.2xlarge `i-08a2580f13957ad44`, immutable code commit `3381e311a4bff91cb750bf4166bf555c04ae440b`. Six-hour independent OS shutdown, automatic termination, SHA256 checkpointed feature parts and $4.50 ceiling. Outputs and scores remain pending; this job materializes features but does not train a model.
 - Fresh cost guard estimated gross month-to-date plus all active worker maximum commitments and this proposed job at $55.4269198446 versus $120 soft cap. Actual credits unverified. Mac SUB-001 completed India shards0–7; France128 gzip files were SHA256-prefilled to the validator S3 prefix and India0–7 prefill began, with original shard bytes unchanged.
+
+## 2026-09-25T04:45:13+00:00 — Codex — bounded upper India SUB-001 worker launched
+
+- Fresh cost guard accepted P5-SUB001-INDIA-HIGH-001: projected worst-case project $69.93 below $120 soft cap, estimated new worker maximum $14.34 under $15 ceiling. Started on-demand r8i.4xlarge `i-01462cbfe56b611fb`, code commit `145d132`, exact frozen model/features/routes/threshold/input and only untouched India shards36–63. Automatic 12-hour shutdown/termination and per-shard S3 SHA256 checkpoints remain in force. This worker does not use labels or open Fold4.
+- A separate local `aml-india-boundary` monitor observes lower India shard8–35 completion and upper shard36, verifies boundary object checksums and EC2 identities, then terminates only lower worker. It had not reached the boundary at 04:52 UTC.
+
+## 2026-09-25T04:53:27+00:00 — Codex — split SUB-001 completion path prepared
+
+- Implemented partial lower India and completed upper India download with service SHA256, exact frozen smoke parity (41/46 S1 respectively), explicit lower termination evidence, and immutable per-shard receipts. Extended country assembler to merge Mac France/India0–7, stopped lower India8–35, complete upper India36–63 and complete US; require exact frozen test S1 ID/country set, segment query totals and 384 shard files. Five focused tests passed. No frozen model, feature, candidate or threshold code changed. The full Mac run stays active as a fallback.
+- Prefilled all Mac India0–7 and France shard files to final validator S3 prefix with checksum receipts. At this point US had 17/64 cloud shard pairs and lower India 5/28 required pairs. No final full-test TSV or official validator PASS exists.
