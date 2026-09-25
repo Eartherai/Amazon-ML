@@ -1,10 +1,12 @@
 # Latest Phase5 status
 
+25 September 2026, 07:34 IST: The user will upload the two portal files themselves. The frozen SUB-001 full-test inference is running and healthy in detached screen `aml-sub001-v005`; its last confirmed progress was France shard 39/64, so neither final TSV nor code ZIP is ready. Do not offer partial shards as portal files. The end-to-end code-package reproduction path has been added; regenerated Parquet inputs match all 11,702,133 frozen test rows exactly. After all 192 candidate and 192 matching shards finish, upload them for the bounded 64 GB SageMaker official validator, download SHA256-verified outputs, then build and CRC-check the final ZIP with both TSVs, code, frozen artifacts, and the methodology. Notify the user with local links only; do not upload to the portal.
+
 Full-training retrieval is **RUNNING** on EC2: `P5-FULL-RETRIEVAL-001`, instance `i-0609d158c38e96160`, frozen code `5ac0845`. It covers all **2,206,821 S1 queries** against **10,320,219 targets**, using 64 deterministic query shards per country and route. Projected query time is 17.76 hours plus overhead, with a 24-hour shutdown cap and an $18 total planning allowance. Actual cost is unknown. Each completed shard is checksum-verified in S3. Do not launch a duplicate job. Read its ledger and use `scripts/aws/collect_run.py` to collect progress.
 
 Current best remains the 20k NUMERIC-V2 model: macro F0.5 **0.9318965293**, precision **0.98158282**, recall **0.85593807**, singleton F0.5 **0.92131747**. Country-balanced EXP-026 scored **0.93171205**: India improved while US declined, so it was not promoted. Full-data retrieval and larger OOF scores remain pending.
 
-**Fold 4 is CLOSED.** Test inference has not started; final validator, submission, and package are not ready. The active AWS profile is `amamzon_01_a1_0`, which accesses the same account ending 6318 as `default`. CPU 64-vCPU, GPU 8-vCPU, and SageMaker G5 quota requests await AWS approval. Remaining credits are unverified.
+**Fold 4 is CLOSED.** SUB-001 full-test inference is running, while final validation, portal submission, and package are not ready. The active AWS profile is `amamzon_01_a1_0`, which accesses the same account ending 6318 as `default`. The ml.r5.2xlarge SageMaker Processing quota is approved at 2 in us-east-1; other quotas and remaining credits require fresh checks.
 
 Next five steps: collect full retrieval metrics; materialize the larger OOF feature store; measure targeted lexical rescue; test country robustness at larger scale; benchmark licensed dense rescue when GPU quota and miss evidence are available. Current full retrieval evaluates labels only for the 1,765,649 entities outside Fold 4. No leaderboard submission exists.
 

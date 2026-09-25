@@ -101,4 +101,12 @@ AWS_PROFILE=amamzon_01_a1_0 .venv/bin/python scripts/submissions/upload_local_sh
 
 The uploader resumes by SHA256 verification and writes `.complete.json` only after all 384 objects pass. The 64 GiB SageMaker validator is prepared as a contingency for the official `--check-ids` pass, which can require several GiB of Python sets. It has a 6-hour hard stop and $5 planning ceiling. After the upload receipt exists, inspect the dry-run plan with `AWS_SDK_UA_APP_ID=AWSSkill-SageMaker AWS_PROFILE=amamzon_01_a1_0 .venv/bin/python scripts/aws/launch_sagemaker_validator.py`; then launch with the same command plus `--launch` only if budget and role checks pass. It creates no endpoint or persistent compute. The separate EC2 validator is an alternative after the full-retrieval worker frees EC2 quota.
 
-Download the completed validator result, verify its manifest and full TSV SHA256s, and inspect `official.log` and `official_check_ids.log`. Both official runs must exit 0 and say PASS; the `--check-ids` run must have zero warnings. Record matching/candidate hashes, experiment and Git commit in `SUBMISSIONS.csv` before uploading **only** `matching_results.tsv` via the registered team portal. Record observed public score and rank after portal confirmation. The final package also needs `candidate_pairs.tsv`, code and methodology; see `docs/COMPETITION_RULES.md`.
+Download the completed validator result, verify its manifest and full TSV SHA256s, and inspect `official.log` and `official_check_ids.log`. Both official runs must exit 0 and say PASS; the `--check-ids` run must have zero warnings. A `READY.json` receipt must exist before packaging. Build the official ZIP with:
+
+```sh
+.venv/bin/python scripts/submissions/build_final_package.py \
+  --validated-dir outputs/submissions/SUB-001/validated-v001 \
+  --output outputs/submissions/SUB-001/amazon_ml_2026_submission.zip
+```
+
+The packager requires the verified matching and candidate hashes, includes both TSVs, runnable `code/business_entity_resolution/` with frozen artifacts and filled `Documentation_template.md`, then CRC-checks the ZIP and writes a SHA256 sidecar. Record matching/candidate/ZIP hashes, experiment and Git commit in `SUBMISSIONS.csv`. **The user will upload both files themselves:** provide the validated `matching_results.tsv` and final ZIP paths. Do not upload to the portal. Record observed public score and rank only if the user later provides them. See `docs/COMPETITION_RULES.md`.

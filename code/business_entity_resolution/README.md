@@ -1,21 +1,69 @@
-# Business entity resolution research pipeline
+# Amazon ML Challenge 2026: SUB-001 business entity resolution
 
-Current implementation: full data audit, positive-pair and near-neighbor diagnostics, deterministic validation/ownership manifests, exact metric, strict TSV helpers, and an exact-match diagnostic baseline. Learned training, high-recall retrieval and final test inference are **not yet implemented**. This is research infrastructure, not the final submission solution.
+This folder reproduces the two TSVs in `output/` from the official unlabeled test
+sources. It contains the exact frozen LightGBM model, character-trigram IDF
+vocabularies, generic transliteration map, threshold, source code, and pinned
+Python dependencies. No outside business data or identity service is used.
 
-Python 3.12. Install pinned requirements in a virtual environment. From this directory use `python -m src.<module>`; from the workspace root set `PYTHONPATH=code/business_entity_resolution` and use `.venv/bin/python`. Every input TSV uses an explicit tab separator. Original dataset remains in student_resource/dataset.
+## Reproduce both TSVs
 
-See the root RUNBOOK.md for exact commands and docs/RESEARCH.md for the ranked implementation plan. No external data lookup is part of any module. The original validator remains under student_resource/utils and is exercised by a synthetic test; final real-output validation has not occurred because final predictions do not exist yet.
+Use Python 3.12 on a machine with enough disk for the raw test data, derived
+Parquet inputs, compressed shards, and the two uncompressed TSVs. The supplied
+run used macOS M5 24 GB for sharded inference and a 64 GB validation machine
+for the official full ID check. From this directory:
 
-## Source modules
+```bash
+python3.12 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+PYTHONPATH=. .venv/bin/python -m src.submission.reproduce \
+  --test-dir /path/to/student_resource/dataset/test \
+  --work-dir /path/to/new-sub001-work \
+  --output-dir /path/to/new-sub001-output \
+  --official-validator utils/validate_submission.py \
+  --threads 8
+```
 
-- `audit_data`: full TSV integrity, distribution, duplicates, hashes and truth topology.
-- `audit_pairs`: all labeled pair similarities; deterministic bounded hard-negative and adjacent-neighbor diagnostics.
-- `audit_supplement`: Unicode script counts and sampled generic transliteration (macOS probe executable required).
-- `audit_memory`: sequential per-file Polars buffer sizes and token-boundary suffix frequencies.
-- `build_validation`: S1 folds plus target ownership and forbidden-training-target guard.
-- `evaluation`: exact set/count macro F0.5.
-- `normalization`: preserves Unicode combining marks, separate compatibility/accent views.
-- `io_utils`: strict lists, deterministic shards/merge, coverage and membership checks.
-- `exact_baseline`: development-only exact diagnostic against all training targets; no fitting.
+`--test-dir` must contain the original `test_source1.tsv`,
+`test_source2.tsv`, and `test_source3.tsv`. `--work-dir` and `--output-dir`
+must not already exist. The command:
 
-Audit modules use a 6 GB DuckDB memory cap and four CPU threads. Reserve disk space for the derived database. Output directories are versioned; reuse a fresh database for a new data version. Source files are immutable. Parameterized data/output paths allow use outside this workspace; the final packaging wrapper is still future work.
+1. Parses all three TSVs with every field as text, preserving empty strings;
+   makes the frozen NFC/lowercase/punctuation-to-space view and checks record
+   counts and ID uniqueness.
+2. Retrieves up to 100 same-country targets per source entity through each of
+   name and address character-trigram TF-IDF; the union is the final scored
+   candidate set. Country labels are arbitrary strings.
+3. Computes the frozen 51 comparison features, scores every candidate with the
+   bundled LightGBM model, and predicts scores at or above 0.83.
+4. Merges all 192 candidate and 192 matching shards, verifies complete S1
+   coverage and match-to-candidate membership, and runs the unmodified official
+   validator with and without `--check-ids` if supplied.
+
+The resulting files are `matching_results.tsv` and `candidate_pairs.tsv` in
+`--output-dir`. The full run is large; do not use a partial query cap for a
+portal file. The run is deterministic for the pinned environment and frozen
+artifacts. ZIP `output/` contains the separately validated final run; its
+SHA256 values appear in `PACKAGE_MANIFEST.json`.
+
+## Provenance and training
+
+`artifacts/model.txt` was fitted using 2,713,116 owner-safe candidate pairs
+from 20,000 Source-1 entities in development folds 1–3. Locked fold 4 was not
+used. The exact model SHA256, feature order, hyperparameters, and threshold
+rule are in `artifacts/train-manifest.json` and
+`artifacts/submission-config.json`. The two IDF vocabularies were fitted only
+on permitted training text. `artifacts/name_map.parquet` is a deterministic,
+unlabeled transliteration cache from official test strings using the generic
+Apple Foundation `Any-Latin; Latin-ASCII` transform; source is in
+`src/submission/transliterate_probe.swift`. The raw test TSVs are not included.
+
+`src/` also contains the normalization, retrieval, feature, validation, and
+training research modules. `src/submission/run_sub001.py` is byte-identical to
+the script used for the frozen full test inference. The included `tests/`
+cover critical metric, parsing, blocking, and feature behavior. The frozen
+model is included so reproducing the portal outputs does not depend on
+recreating development caches or retraining.
+
+The local development score for this architecture was macro per-Source-1
+F0.5 = 0.9318965293 on 20,000 naturally sampled development entities with
+nested threshold selection. This is not a leaderboard or hidden-test score.

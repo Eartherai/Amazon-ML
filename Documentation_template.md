@@ -1,7 +1,7 @@
 # ML Challenge 2026: Business Entity Resolution Solution
 
 **Team name / members:** pending team details.  
-**Status:** Phase5 development methodology,25September2026. Final architecture is not frozen; Fold4 is closed. No leaderboard submission.
+**Status:** Frozen early-calibration SUB-001 candidate, 25 September 2026. Fold 4 is closed. Full test inference is in progress; no leaderboard submission has been made.
 
 ## 1. Executive summary
 
@@ -11,7 +11,7 @@ The current best uses two character-trigram retrieval routes and a51-feature Lig
 
 All24,229,173 provided source records and7,638,365 labeled training links were audited. Training has2,206,821 S1 and10,320,219 target records. Test has1,732,544 S1, including259,452France records. Training S1 singleton prevalence is5.585%. S1 may have many targets; no target has multiple labeled S1 owners.
 
-Raw fields are preserved. Materialized Unicode views include light NFC casefold, compatibility/accent variants, token sorting and numeric representations. The measured lexical pipeline uses the frozen legacy NFC/lowercase/punctuation-to-space representation from the audit DB; it is not silently replaced by newer casefold views. Generic transliteration supplies six additional baseline features together with first-number equality/conflict. Training target transliteration is a frozen Apple Foundation Any-Latin/Latin-ASCII map. Linux ICU equivalence and symmetric non-ASCII test-query handling must be verified before final inference.
+Raw fields are preserved. Materialized Unicode views include light NFC casefold, compatibility/accent variants, token sorting and numeric representations. The measured lexical pipeline uses the frozen legacy NFC/lowercase/punctuation-to-space representation from the audit DB; it is not silently replaced by newer casefold views. Generic transliteration supplies four additional name features together with first-number equality/conflict. Training target transliteration is a frozen Apple Foundation Any-Latin/Latin-ASCII map. Full test inference applies the same transform symmetrically to non-ASCII query and target names with a versioned unlabeled cache; ASCII names pass through unchanged.
 
 NUMERIC-V2 adds six features: canonical digit overlap/Jaccard/conflict, leading-zero rescue, first-number canonical equality/conflict. Unicode decimal digits convert to ASCII and leading zeros normalize for comparisons while originals remain available. Numeric agreement neither automatically accepts nor rejects a pair.
 
@@ -25,7 +25,7 @@ Frozen IDF fits only sampled unowned/fold0 targets, separate from OOF folds1–3
 
 Name and address char3 TF-IDF independently retrieve up to100 same-country targets, then union. Countries are arbitrary strings. Full targets from S2 and S3 are searched. Frozen IDF uses float32 L2 TF-IDF with at most200k features. Deterministic ID tie-breaking includes boundary ties. Current20k run yields3,943,627 candidates, average197.18135/S1; p95/p99=200. Link recall0.96662630, complete-entity recall0.90305178, oracle macroF0.5=0.98853146. India link recall0.94192378 versusUS0.98344844 indicates retrieval headroom.
 
-Phase5 builds persistent country/source sparse shards and benchmarks reuse on EC2. Full-training metrics are pending, and Fold4 label metrics remain withheld until freeze. A targeted exact-name fanout rescue recovered5 links for830 extra candidates on5k; it is not yet part of the selected matcher. Dense retrieval is not implemented or selected.
+Phase 5 builds persistent country/source sparse shards and benchmarks reuse on EC2. Full-training metrics are pending, and Fold 4 label metrics remain withheld until freeze. A targeted exact-name fanout rescue recovered 5 links for 830 extra candidates on 5k; it is not part of SUB-001. Dense retrieval is not implemented or selected. SUB-001 full test inference uses all 1,732,544 S1 and 9,969,589 target records, with 64 deterministic shards per country. Every final union candidate is scored and retained in the candidate TSV.
 
 ## 5. Matcher and decision procedure
 
@@ -39,6 +39,6 @@ Numeric-v2 country label-transfer: India→US0.89280089,US→India0.78192088. Th
 
 ## 7. Compute and reproducibility
 
-Local development: M5MacBookAir24GB,Python3.12.13; pinned dependencies and git/config/data manifests. Phase5 launches a finite8vCPU/64GiBR8i.2xlarge index benchmark. Inputs/code use SHA256 checks, encrypted storage, scoped instance role, no inbound ports and90min automatic shutdown with terminate behavior. CPU/GPU quota increases are pending; SageMaker/GPU jobs have not run. Exact costs are tracked separately from estimates in AWS_SPEND.md.
+Local development: M5 MacBook Air 24 GB, Python 3.12.13; pinned dependencies and git/config/data manifests. Phase 5 full-training retrieval runs on a finite EC2 CPU job, while frozen SUB-001 full-test inference runs locally. AWS inputs and code use SHA256 checks, encrypted storage, a scoped instance role, no inbound ports and automatic shutdown. The ml.r5.2xlarge SageMaker Processing quota was approved for validation; no validator job has run yet. Exact costs are tracked separately from estimates in AWS_SPEND.md.
 
-See RUNBOOK.md,EXPERIMENTS.csv,configs/phase4/CURRENT-BEST.json and docs/NUMERIC_CONFIRMATION.md for current reproduction/provenance. End-to-end full-data training/test commands are not yet complete. Final candidate TSV must contain the actual scored candidates and all matches must be members. Both strict ID checks and the unchanged official validator must pass after final file placement. Final hashes, package, team details and leaderboard scores remain pending.
+See RUNBOOK.md, EXPERIMENTS.csv, configs/phase4/CURRENT-BEST.json and docs/NUMERIC_CONFIRMATION.md for current reproduction/provenance. The code package includes the frozen model, IDF vocabularies, unlabeled transliteration cache and a CLI to regenerate both outputs from the official test TSVs. Full-data retraining remains a separate experiment and is not the SUB-001 model. The final candidate TSV must contain the actual scored candidates and all matches must be members. Both strict ID checks and the unchanged official validator must pass after final file placement. Final hashes, package, team details and leaderboard scores remain pending.

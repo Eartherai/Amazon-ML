@@ -28,3 +28,5 @@ The earlier user-authored Phase5 request asked for an immediate early calibratio
 ## 2026-09-25 explicit user override for SUB-001
 
 The latest user request explicitly authorizes SUB-001 as an early calibration portal submission after the exact official validator passes. It expressly says not to wait for full retrieval, Fold4 or final architecture. This resolves the earlier project-doc submission-gate conflict for SUB-001 only. Fold4 remains CLOSED; later submissions still require measured improvements and all official format/rule checks.
+
+The subsequent 25 September request says the user will upload both files themselves. Prepare and validate the matching TSV and official ZIP, then provide their local paths; do not operate the portal. The official README requires the ZIP to contain `output/matching_results.tsv`, `output/candidate_pairs.tsv`, runnable `code/business_entity_resolution/`, and the filled `Documentation_template.md`.
