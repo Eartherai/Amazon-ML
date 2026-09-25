@@ -46,7 +46,7 @@ if [[ "$JOB_KIND" == sub001_inference || "$JOB_KIND" == sub001_validation || "$J
     .venv/bin/pip install --disable-pip-version-check -r configs/aws/requirements-sub001.txt
     if [[ "$JOB_KIND" == sub001_country ]]; then
       test -n "$COUNTRY"
-      .venv/bin/python -u scripts/submissions/run_sub001.py --inputs inputs --output results --threads 8 --country "$COUNTRY" --upload-bucket "$BUCKET" --upload-prefix "$OUTPUT_PREFIX"
+      .venv/bin/python -u scripts/submissions/run_sub001.py --inputs inputs --output results --threads 8 --country "$COUNTRY" --first-shard "$FIRST_SHARD" --last-shard "$LAST_SHARD" --upload-bucket "$BUCKET" --upload-prefix "$OUTPUT_PREFIX"
     else
       .venv/bin/python -u scripts/submissions/run_sub001.py --inputs inputs --output results --threads 8 --upload-bucket "$BUCKET" --upload-prefix "$OUTPUT_PREFIX"
     fi

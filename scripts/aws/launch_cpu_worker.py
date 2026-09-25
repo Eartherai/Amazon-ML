@@ -57,7 +57,7 @@ key='amazon-ml-2026/phase5/code/'+commit+'.tar';receipt=upload(archive,infra['bu
 ami=aws('ssm','get-parameter','--name','/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64')['Parameter']['Value']
 offerings=aws('ec2','describe-instance-type-offerings','--location-type','availability-zone','--filters','Name=instance-type,Values='+cfg['instance_type'])['InstanceTypeOfferings']
 azs={x['Location'] for x in offerings};subnet=next(s for s in infra['subnets'] if s['az'] in azs and (not cfg.get('availability_zone') or s['az']==cfg['availability_zone']))
-values={'JOB_KIND':cfg.get('job_kind','index_benchmark'),'COUNTRY':cfg.get('country',''),'SHUTDOWN_MINUTES':str(cfg['runtime_cap_minutes']),'INDEX_PREFIX':cfg.get('index_prefix',''),'SHARD_PREFIX':cfg.get('shard_prefix',''),'BUCKET':infra['bucket'],'CODE_KEY':key,'CODE_SHA256':receipt['sha256'],'INPUT_PREFIX':cfg['input_prefix'],'OUTPUT_PREFIX':'amazon-ml-2026/phase5/runs/'+cfg['run_id']}
+values={'JOB_KIND':cfg.get('job_kind','index_benchmark'),'COUNTRY':cfg.get('country',''),'FIRST_SHARD':str(cfg.get('first_shard',0)),'LAST_SHARD':str(cfg.get('last_shard',64)),'SHUTDOWN_MINUTES':str(cfg['runtime_cap_minutes']),'INDEX_PREFIX':cfg.get('index_prefix',''),'SHARD_PREFIX':cfg.get('shard_prefix',''),'BUCKET':infra['bucket'],'CODE_KEY':key,'CODE_SHA256':receipt['sha256'],'INPUT_PREFIX':cfg['input_prefix'],'OUTPUT_PREFIX':'amazon-ml-2026/phase5/runs/'+cfg['run_id']}
 script=Path('scripts/aws/worker_bootstrap.sh').read_text().splitlines()
 if cfg.get('bootstrap_script'):
  script=Path(cfg['bootstrap_script']).read_text().splitlines()

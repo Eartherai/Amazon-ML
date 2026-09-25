@@ -38,9 +38,11 @@ def retrieve(matrix,parts,k,threads):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--inputs',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--shards',type=int,default=64);p.add_argument('--batch-size',type=int,default=200);p.add_argument('--threads',type=int,default=8);p.add_argument('--max-queries-per-country',type=int);p.add_argument('--country');p.add_argument('--upload-bucket');p.add_argument('--upload-prefix');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--inputs',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--shards',type=int,default=64);p.add_argument('--batch-size',type=int,default=200);p.add_argument('--threads',type=int,default=8);p.add_argument('--max-queries-per-country',type=int);p.add_argument('--country');p.add_argument('--first-shard',type=int,default=0);p.add_argument('--last-shard',type=int);p.add_argument('--upload-bucket');p.add_argument('--upload-prefix');a=p.parse_args()
     if a.output.exists():raise FileExistsError(a.output)
     if a.shards<1 or a.batch_size<1 or a.threads<1:raise ValueError('Positive sizes required')
+    if a.last_shard is None:a.last_shard=a.shards
+    if not 0<=a.first_shard<a.last_shard<=a.shards:raise ValueError('Invalid shard interval')
     cfg=json.loads((a.inputs/'submission-config.json').read_text());train=json.loads((a.inputs/'train-manifest.json').read_text())
     if cfg['threshold']!=train['threshold'] or train['feature_names']!=NAMES or train['fold4']!='CLOSED':raise ValueError('Frozen model/config mismatch')
     a.output.mkdir(parents=True);(a.output/'shards').mkdir();start=time.perf_counter()
@@ -62,11 +64,12 @@ def main():
     for country in countries:
         cq=queries.filter(pl.col('country')==country)
         if a.max_queries_per_country:cq=cq.sort('entity_id').head(a.max_queries_per_country)
+        cq=cq.filter((pl.col('shard')>=a.first_shard)&(pl.col('shard')<a.last_shard))
         # Target metadata is kept once per country. None of these values is an external lookup.
         lookup={qid:(name,address)for qid,name,address in con.execute('SELECT entity_id,n,a FROM targets WHERE country=?',[country]).fetchall()}
         routes={field:indexes(con,country,col,vectors[field],250000)for field,col in [('name','n'),('address','a')]}
         country_stats={'country':country,'queries':len(cq),'targets':len(lookup),'pairs':0,'matches':0,'shards':0,'seconds':0};country_start=time.perf_counter()
-        for shard in range(a.shards):
+        for shard in range(a.first_shard,a.last_shard):
             group=cq.filter(pl.col('shard')==shard).sort('entity_id')
             if not len(group):continue
             base=f'{country.replace("/","_")}-s{shard:03d}';cp=a.output/'shards'/f'{base}-candidates.tsv.gz';mp=a.output/'shards'/f'{base}-matching.tsv.gz'

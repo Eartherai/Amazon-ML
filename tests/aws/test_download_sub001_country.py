@@ -7,7 +7,7 @@ import pytest
 
 
 SPEC = importlib.util.spec_from_file_location(
-    "download_us_country", Path(__file__).resolve().parents[2] / "scripts/submissions/download_us_country.py"
+    "download_sub001_country", Path(__file__).resolve().parents[2] / "scripts/submissions/download_sub001_country.py"
 )
 downloader = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(downloader)
