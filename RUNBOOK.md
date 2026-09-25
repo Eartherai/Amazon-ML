@@ -87,6 +87,24 @@ Full label metrics intentionally excludeFold4; evaluator rejects locked labels. 
 
 The classical 200k learning-size sequence is EXP-031 retrieval -> EXP-032 feature store -> EXP-033 fixed-holdout LightGBM. EXP-031 (`P5-LEARNING-200K-001`) is already running; do not launch another retrieval. After `collect_run.py P5-LEARNING-200K-001` shows exit 0, terminated, `results-COMPLETE.json` reports 200,000 S1 and 256 S3 route archives are present, the committed launcher has an explicit predecessor gate for EXP-032:
 
+First verify every archived route hash and exact old-20k candidate ID/rank parity. The final EXP-031 `results/` prefix contains `COMPLETE.json` and one receipt per route archive. Downloading these own-project objects is read-only; the verifier keeps the historical P4 routes untouched:
+
+```sh
+AWS_SDK_UA_APP_ID=AWSSkill-SageMaker AWS_PROFILE=amamzon_01_a1_0 aws s3 cp \
+  s3://aml2026-ber-08be19ac500747/amazon-ml-2026/phase5/runs/P5-LEARNING-200K-001/results/ \
+  artifacts/cloud/phase5/P5-LEARNING-200K-001/parity-summary/ \
+  --recursive --exclude '*' --include '*.json'
+AWS_SDK_UA_APP_ID=AWSSkill-SageMaker AWS_PROFILE=amamzon_01_a1_0 aws s3 cp \
+  s3://aml2026-ber-08be19ac500747/amazon-ml-2026/phase5/runs/P5-LEARNING-200K-001/shards/ \
+  artifacts/cloud/phase5/P5-LEARNING-200K-001/parity-archives/ --recursive
+.venv/bin/python scripts/aws/verify_sample_retrieval_parity.py \
+  --summary artifacts/cloud/phase5/P5-LEARNING-200K-001/parity-summary \
+  --archives artifacts/cloud/phase5/P5-LEARNING-200K-001/parity-archives \
+  --output outputs/analysis/P5-LEARNING-PARITY-001/report.json
+```
+
+Require `parity: PASS`, both 2-million-pair old-sample routes with zero ID/rank mismatches, every archive SHA256 verified, and a score difference at most 1e-5. Then use the launch command below; the EXP-032 worker repeats the archive checksum check on its own downloaded copies.
+
 ```sh
 AWS_SDK_UA_APP_ID=AWSSkill-SageMaker AWS_PROFILE=amamzon_01_a1_0 .venv/bin/python scripts/aws/launch_cpu_worker.py --config configs/aws/P5-FEATURE-200K-001.json
 ```
