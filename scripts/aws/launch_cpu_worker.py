@@ -27,8 +27,29 @@ azs={x['Location'] for x in offerings};subnet=next(s for s in infra['subnets'] i
 if cfg.get('job_kind') in {'full_retrieval','sample_retrieval'}:
  benchmark=json.loads((root/'P5-INDEX-001/ledger.json').read_text())
  if benchmark.get('exit_code')!=0 or benchmark.get('instance_state')!='terminated':raise RuntimeError('Benchmark must succeed and terminate first')
+if cfg.get('job_kind')=='sample_features':
+ retrieval=json.loads((root/'P5-LEARNING-200K-001/ledger.json').read_text())
+ if retrieval.get('exit_code')!=0 or retrieval.get('instance_state')!='terminated':raise RuntimeError('Complete 200k retrieval must terminate successfully first')
+ complete=root/'P5-LEARNING-200K-001/results-COMPLETE.json'
+ if not complete.exists() or json.loads(complete.read_text()).get('query_count')!=200000:raise RuntimeError('Missing complete 200k retrieval summary')
+ archive_prefix=cfg['shard_prefix'].rstrip('/')+'/shards/'
+ listing=aws('s3api','list-objects-v2','--bucket',infra['bucket'],'--prefix',archive_prefix)
+ archives=[row['Key'] for row in listing.get('Contents',[]) if row['Key'].endswith('.tar')]
+ if len(archives)!=256 or listing.get('IsTruncated'):raise RuntimeError('Incomplete 256-archive retrieval checkpoint')
+if cfg.get('job_kind')=='learning_curve':
+ features=json.loads((root/'P5-FEATURE-200K-001/ledger.json').read_text())
+ if features.get('exit_code')!=0 or features.get('instance_state')!='terminated':raise RuntimeError('Complete 200k feature job must terminate successfully first')
+ complete=root/'P5-FEATURE-200K-001/results-COMPLETE.json'
+ if not complete.exists():raise RuntimeError('Missing complete feature summary')
+ expected_parts=json.loads(complete.read_text())['feature_parts']
+ feature_prefix=cfg['shard_prefix'].rstrip('/')+'/results/'
+ listing=aws('s3api','list-objects-v2','--bucket',infra['bucket'],'--prefix',feature_prefix)
+ feature_parts=[row['Key'] for row in listing.get('Contents',[]) if row['Key'].split('/')[-1].startswith('features-') and row['Key'].endswith('.parquet')]
+ if len(feature_parts)!=expected_parts or listing.get('IsTruncated'):raise RuntimeError('Incomplete feature part checkpoint')
 values={'JOB_KIND':cfg.get('job_kind','index_benchmark'),'SHUTDOWN_MINUTES':str(cfg['runtime_cap_minutes']),'INDEX_PREFIX':cfg.get('index_prefix',''),'SHARD_PREFIX':cfg.get('shard_prefix',''),'BUCKET':infra['bucket'],'CODE_KEY':key,'CODE_SHA256':receipt['sha256'],'INPUT_PREFIX':cfg['input_prefix'],'OUTPUT_PREFIX':'amazon-ml-2026/phase5/runs/'+cfg['run_id']}
 script=Path('scripts/aws/worker_bootstrap.sh').read_text().splitlines()
+if cfg.get('bootstrap_script'):
+ script=Path(cfg['bootstrap_script']).read_text().splitlines()
 bootstrap='\n'.join([script[0],*[k+'='+shlex.quote(v) for k,v in values.items()],*script[1:]])+'\n'
 (run/'user-data.sh').write_text(bootstrap)
 request={'ImageId':ami,'InstanceType':cfg['instance_type'],'MinCount':1,'MaxCount':1,'ClientToken':cfg['run_id'], 'IamInstanceProfile':{'Name':infra['instance_profile']},'InstanceInitiatedShutdownBehavior':'terminate','MetadataOptions':{'HttpTokens':'required','HttpPutResponseHopLimit':1},'NetworkInterfaces':[{'DeviceIndex':0,'SubnetId':subnet['id'],'Groups':[infra['security_group']],'AssociatePublicIpAddress':True}],'BlockDeviceMappings':[{'DeviceName':'/dev/xvda','Ebs':{'VolumeSize':cfg['ebs_gib'],'VolumeType':'gp3','Encrypted':True,'DeleteOnTermination':True}}],'TagSpecifications':[{'ResourceType':t,'Tags':[{'Key':'Project','Value':'aml2026-phase5'},{'Key':'RunId','Value':cfg['run_id']}]} for t in ['instance','volume']]}

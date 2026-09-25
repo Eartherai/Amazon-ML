@@ -1,0 +1,23 @@
+{
+  "run_id": "P5-FEATURE-200K-001",
+  "experiment": "EXP-032",
+  "job_kind": "sample_features",
+  "bootstrap_script": "scripts/aws/feature_worker_bootstrap.sh",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 360,
+  "compute_usd_per_hour": 0.55568,
+  "total_cost_ceiling_usd": 4.5,
+  "ebs_gib": 100,
+  "purpose": "Generate 51 owner-safe classical pair features for all 200k unlocked S1 queries and the exact name/address char3 union from EXP-031",
+  "fold4": "CLOSED; only fold1-3 query labels are exported, owner_fold 4 is exclusion metadata",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/feature-200k-v001",
+  "input_receipt": "feature-200k-upload.json",
+  "shard_prefix": "amazon-ml-2026/phase5/runs/P5-LEARNING-200K-001",
+  "estimated_feature_hours": 0.51,
+  "estimate_basis": "10k measured pair_features calls at 22,130 pairs/s on M5 single core imply 40m in 0.5h; excludes joins, sorting, I/O, cloud bootstrap and S3 upload",
+  "checkpoint": "Input and all 256 retrieval archives SHA256-verified before feature work; feature parts are uploaded individually with service-side SHA256 and a final receipt",
+  "expected_gain": "Reusable full-pool 50k and 100k training-size comparisons with exact candidate and owner guards",
+  "cleanup": "Independent six-hour OS shutdown watchdog, terminate-on-shutdown EC2, encrypted DeleteOnTermination EBS, verified S3 outputs"
+}

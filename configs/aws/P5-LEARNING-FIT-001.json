@@ -1,0 +1,23 @@
+{
+  "run_id": "P5-LEARNING-FIT-001",
+  "experiment": "EXP-033",
+  "job_kind": "learning_curve",
+  "bootstrap_script": "scripts/aws/learning_worker_bootstrap.sh",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 360,
+  "compute_usd_per_hour": 0.55568,
+  "total_cost_ceiling_usd": 4.5,
+  "ebs_gib": 100,
+  "purpose": "Fit 51-feature LightGBM at 20k, 50k and 100k owner-safe training entities and evaluate on fixed 15k new S1 across folds1-3",
+  "fold4": "CLOSED; fixed validation entities are outside old20k and absent from outer fit folds",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/learning-eval-200k-v001",
+  "input_receipt": "learning-eval-200k-upload.json",
+  "shard_prefix": "amazon-ml-2026/phase5/runs/P5-FEATURE-200K-001",
+  "estimated_training_hours": 2.5,
+  "estimate_basis": "Nine 250-tree LightGBM fits over 20k/50k/100k candidate subsets; estimate to be revised after first fit, not a guarantee",
+  "checkpoint": "Each of nine models and fold metrics uploaded with SHA256 after fit; complete feature inputs checked against every S3 part receipt",
+  "expected_gain": "Measure training-size curve on new 15k entity holdout before allocating compute to complex classical features",
+  "cleanup": "Independent six-hour OS shutdown watchdog, terminate-on-shutdown EC2, encrypted DeleteOnTermination EBS, verified S3 outputs"
+}
