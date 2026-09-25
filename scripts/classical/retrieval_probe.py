@@ -42,7 +42,7 @@ IDF = (idf["name"], idf["name_default"], idf["addr"], idf["addr_default"])
 rows = [F.pair_vector(F.Record(*s1[q]), F.Record(*recs_t[t]), t.startswith("S2-"), *IDF) for q, t in new]
 p = model.predict(np.asarray(rows, dtype=np.float32)) if rows else np.array([])
 res = {"split": split, "country": country, "queries": len(qs), "new_pairs": len(new)}
-for th in (0.5, 0.7, 0.8, 0.9):
+for th in (0.8, 0.85, 0.9, 0.92, 0.94, 0.96, 0.98):
     sel = [(q, t) for (q, t), pp in zip(new, p) if pp >= th]
     res[f"new_ge_{th}_per_s1"] = round(len(sel) / len(qs), 4)
     if split == "train":
