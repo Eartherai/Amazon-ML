@@ -1,6 +1,6 @@
 # Compute ledger
 
-Task spend: $0. No AWS/Colab/Kaggle runtimes launched. Existing team charges and balances are unknown.
+Initial task spend was $0. EC2 workers and S3 storage have since been launched; current gross billing and credit balance must be read from the dated entries below.
 
 | Date IST | Owner/profile | Instance | Experiment | Start | Stop | Hours | Estimated cost | Actual cost | Artifacts |
 |---|---|---|---|---|---|---|---|---|---|
@@ -38,3 +38,7 @@ P5-SUB001-SM-VALIDATE-001 is prepared only. `ml.r5.2xlarge` Processing official 
 
 ## 2026-09-25T02:36:00+00:00 — EXP-031 / P5-LEARNING-200K-001 prelaunch
 The verified 200,000-query input includes the frozen 20,000 development entities plus deterministic fold1–3 extensions; no labels or Fold4 entities are present. Full-pool lexical index is reused from P5-INDEX-001. Projected query time is 1.61h by scaling the full-retrieval benchmark, excluding bootstrap and transfers; this is an estimate, not a measured run. Proposed r8i.2xlarge on-demand worker has an independent 6h OS shutdown and terminate-on-shutdown EBS cleanup. At $0.55568/h, maximum planned compute is $3.33408 plus $1.00 storage/network/request allowance, $4.33408 under the $4.50 experiment ceiling. Each of 256 country/route/query shards will be SHA256-verified in S3. No instance launched at this checkpoint; actual cost and credit balance unverified. Live quota checks showed 256 on-demand standard vCPUs, SageMaker ml.r5.2xlarge Processing quota 2, Training quota 1, and no active Processing job.
+
+## 2026-09-25T03:06:19+00:00 — EXP-031 launched; EXP-032/033 prepared
+
+P5-LEARNING-200K-001 launched at 02:39:53Z on r8i.2xlarge `i-014e9cdbb267db46d`, with six-hour independent OS shutdown and automatic EC2 termination. At 03:04:05Z it was running and had 71 output S3 objects totaling 74,096,640 bytes. EXP-025 full retrieval also remained running with 76 objects totaling 890,306,560 bytes at 03:04:41Z. The cloud code/input and shard uploads use SHA256 verification. Neither job has a final cost yet. Latest Cost Explorer gross month-to-date snapshot before EXP-031 was about $3.09 with billing lag; do not interpret that as credit balance. The two active jobs reserve $18 + $4.33408 planning exposure. The validator's separate $5 ceiling remains unspent. EXP-032 and EXP-033 are prepared but unlaunched, each with a six-hour hard stop and $4.50 planning ceiling; they will be launched sequentially after predecessor completion and fresh cost-guard checks. User-reported credit remains unverified.

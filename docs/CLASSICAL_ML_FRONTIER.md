@@ -23,10 +23,15 @@ not yet available. Unknown cells are pending measurements, not zero scores.
 2. Finish `P5-FULL-RETRIEVAL-001` on AWS and evaluate unlocked folds 0–3 only.
    Its 2,206,821 query records and full target pool allow larger owner-safe
    learning-curve samples; Fold 4 labels remain withheld.
-3. Build one reusable feature store for deterministic 50k then 100k samples.
-   Benchmark rows per second, memory and estimated cloud cost before larger
-   launches. Train the same 51-feature LightGBM first to isolate sample-size
-   effects. Use nested OOF thresholds and identical retrieval pools.
+3. Complete EXP-031 200k-query retrieval. EXP-032 is implemented and its
+   200k labeled-query, 10,320,219-target, ownership and truth inputs are
+   SHA256-uploaded. Launch its 51-feature store only after EXP-031 completes
+   and terminates. EXP-033 then fits the same LightGBM at 20k, 50k and 100k
+   entities per outer fold. Its 15k fixed OOF evaluation entities were selected
+   outside the previous 20k before model fitting. Thresholds 0.83/0.79/0.83
+   were frozen on that earlier sample; these are fixed-threshold diagnostics,
+   not new nested threshold optimization. Both jobs have six-hour/$4.50 caps,
+   per-artifact SHA256 checks and automatic termination. Neither is launched.
 4. If the size curve still rises, prioritize 250k/500k over broad feature
    experiments. If it flattens, compare targeted retrieval rescue, rare-token
    features, hard-negative specialists, GBDT diversity and entity-level
@@ -46,5 +51,9 @@ EXP-031 input is a 200,000-S1 deterministic fold1–3 sample, including all of
 the previous 20,000 entities. Each fold has about 66,667 queries, so the two
 training folds offer more than 100,000 entities per outer fit. Its cloud
 retrieval result will support 50k and 100k fit-size comparisons on a fixed
-held-out population. No result is claimed until the complete candidate routes,
-feature store, nested thresholds and metric checks finish.
+held-out population. The retrieval EC2 worker was launched at
+2026-09-25T02:39:53Z and remained healthy at the 03:04 UTC check. A sampled
+S3 route archive exactly reproduced 104 previous-development query route lists
+and ranks (10,400 pairs; maximum route-score difference 1.788e-7). That is a
+parity check, not a metric result. No 50k/100k score is claimed until the
+complete candidate routes, feature store and OOF metric checks finish.

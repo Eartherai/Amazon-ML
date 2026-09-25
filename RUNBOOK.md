@@ -85,6 +85,14 @@ Collect status: `AWS_PROFILE=amamzon_01_a1_0 .venv/bin/python scripts/aws/collec
 
 Full label metrics intentionally excludeFold4; evaluator rejects locked labels. `results/retrieval-metrics-unlocked.json` will hold exact unlocked-fold metrics after completion. Full candidate coverage counts use allS1without labels. Fullquery outputs do not constitute OOF model predictions or final submission files.
 
+The classical 200k learning-size sequence is EXP-031 retrieval -> EXP-032 feature store -> EXP-033 fixed-holdout LightGBM. EXP-031 (`P5-LEARNING-200K-001`) is already running; do not launch another retrieval. After `collect_run.py P5-LEARNING-200K-001` shows exit 0, terminated, `results-COMPLETE.json` reports 200,000 S1 and 256 S3 route archives are present, the committed launcher has an explicit predecessor gate for EXP-032:
+
+```sh
+AWS_SDK_UA_APP_ID=AWSSkill-SageMaker AWS_PROFILE=amamzon_01_a1_0 .venv/bin/python scripts/aws/launch_cpu_worker.py --config configs/aws/P5-FEATURE-200K-001.json
+```
+
+EXP-032 consumes SHA256-verified `feature-200k-v001` inputs (200k fold1–3 labels, 10,320,219 full targets and owner folds), verifies all retrieval archive hashes, and uploads every feature part with SHA256. After `collect_run.py P5-FEATURE-200K-001` shows exit 0, terminated, complete part inventory and `results-COMPLETE.json`, launch EXP-033 with the analogous `--config configs/aws/P5-LEARNING-FIT-001.json`. Its worker rechecks every feature part receipt, fits 20k/50k/100k entities per outer fold against a fixed 15k new OOF set and uploads each model/metric checkpoint. Both workers have six-hour OS cutoffs, $4.50 planning ceilings and fresh cost guards; do not report scores before completion. Fold4 remains CLOSED. On this Mac, fresh LightGBM imports may require `DYLD_LIBRARY_PATH=/Users/earther/Library/Python/3.9/lib/python/site-packages/torch/lib`; the running SUB-001 process is unaffected.
+
 ## Frozen early-calibration SUB-001
 
 User explicitly authorized a single early portal submission after the complete test output passes the unchanged official validator, without waiting for full training retrieval or Fold4. The frozen model is NUMERIC-V2 51-feature LightGBM, threshold 0.83, model SHA256 `d84957742e05f5cd790d7dfc8c14ca05d3b5a2dc941a5094b8874d623b35117b`; all final name/address char3 top100 union candidates are scored. The live detached Mac screen is `aml-sub001-v005`, Python PID86583, with output `outputs/submissions/SUB-001/local-full-v005/inference`. Do not restart completed shards or alter the model, thresholds, candidate routes or input bundle.
