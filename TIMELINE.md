@@ -177,3 +177,8 @@ EC2 console reports India/name shard0 completed:1,380,300routepairs in182.8521se
 - EXP-031 continued to 140/256 S3 route archives; SUB-001 Mac inference remained healthy at India 3/64 progress shards, 68 matching and 68 candidate shard files, no COMPLETE.json. No new job launched.
 - Added `scripts/aws/verify_sample_retrieval_parity.py` at commit `f516e1e21145769aa8b175bf6c6dd5e1a325c7af`: after EXP-031 completion it validates all 256 archive SHA256 receipts and exact IDs/ranks for every one of the frozen old-20k query routes against P4-B-002, with score tolerance 1e-5. Runbook commands download the archived output and require a PASS before EXP-032. Synthetic archive corruption and candidate mismatch tests passed; full suite 80 passed. Actual 200k result parity remains pending.
 - EXP-033 worker now records fit time, prediction time and peak RSS by fold/size (commit `875e459a1376e864bcf1caed36b710b0f0ecdfdd`). This is instrumentation only; no 20k/50k/100k scores yet.
+
+## 2026-09-25T03:38:53+00:00 — Codex — full retrieval report scaffold and AWS poll backoff
+
+- Added `docs/FULL_RETRIEVAL_ANALYSIS.md` with pending-only full-population metrics, explicit positive-pair versus Source-1-entity slice denominators and Fold4 exclusion. No full retrieval metric was claimed before EXP-025 completion.
+- Two concurrent read-only AWS CLI polls caused one transient HTTP 429 on `CreateOAuth2Token`; a subsequent single sequential S3 poll succeeded and found EXP-031 at 147/256 route archives. This is an auth-service throttle, not a worker failure. Runbook now calls for sequential polling and backoff. Frozen SUB-001 Mac process remained healthy at India 3/64; no new compute launched.

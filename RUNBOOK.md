@@ -83,6 +83,8 @@ Active profile: `amamzon_01_a1_0`. Benchmark command: `scripts/aws/launch_cpu_wo
 
 Collect status: `AWS_PROFILE=amamzon_01_a1_0 .venv/bin/python scripts/aws/collect_run.py RUN_ID`. Emergency terminate only tagged project workers: `scripts/aws/terminate_workers.sh`. Full-run shards are immutable `.tar` files under its S3 `shards/` prefix; every upload is SHA256verified before proceeding. Work is bounded by24h scheduled OS shutdown, terminate behavior, encrypted delete-on-terminationEBS. Do not launch duplicate full jobs. See cloud ledger for exact instance ID and commit.
 
+Poll AWS read-only status sequentially. Multiple simultaneous CLI invocations against the login profile briefly received HTTP 429 `CreateOAuth2Token Rate exceeded` on 2026-09-25; this was an authentication-service throttle, not evidence of a worker failure. Back off and retry one call after a short interval rather than issuing concurrent polls or relaunching a job.
+
 Full label metrics intentionally excludeFold4; evaluator rejects locked labels. `results/retrieval-metrics-unlocked.json` will hold exact unlocked-fold metrics after completion. Full candidate coverage counts use allS1without labels. Fullquery outputs do not constitute OOF model predictions or final submission files.
 
 The classical 200k learning-size sequence is EXP-031 retrieval -> EXP-032 feature store -> EXP-033 fixed-holdout LightGBM. EXP-031 (`P5-LEARNING-200K-001`) is already running; do not launch another retrieval. After `collect_run.py P5-LEARNING-200K-001` shows exit 0, terminated, `results-COMPLETE.json` reports 200,000 S1 and 256 S3 route archives are present, the committed launcher has an explicit predecessor gate for EXP-032:
