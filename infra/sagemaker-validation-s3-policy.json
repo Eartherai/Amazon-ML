@@ -1,0 +1,44 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": [
+        "arn:aws:s3:::aml2026-ber-08be19ac500747/amazon-ml-2026/phase5/sub001-mac-shards-v001/*",
+        "arn:aws:s3:::aml2026-ber-08be19ac500747/amazon-ml-2026/phase5/validation-code-v001/*",
+        "arn:aws:s3:::aml2026-ber-08be19ac500747/amazon-ml-2026/raw/test/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:PutObject", "s3:GetObject"],
+      "Resource": "arn:aws:s3:::aml2026-ber-08be19ac500747/amazon-ml-2026/phase5/runs/P5-SUB001-SM-VALIDATE-001/results/*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["s3:ListBucket"],
+      "Resource": "arn:aws:s3:::aml2026-ber-08be19ac500747",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "amazon-ml-2026/phase5/sub001-mac-shards-v001/*",
+            "amazon-ml-2026/phase5/validation-code-v001/*",
+            "amazon-ml-2026/raw/test/*",
+            "amazon-ml-2026/phase5/runs/P5-SUB001-SM-VALIDATE-001/results/*"
+          ]
+        }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ecr:GetAuthorizationToken"],
+      "Resource": "*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["ecr:BatchCheckLayerAvailability", "ecr:BatchGetImage", "ecr:GetDownloadUrlForLayer"],
+      "Resource": "arn:aws:ecr:us-east-1:683313688378:repository/sagemaker-scikit-learn"
+    }
+  ]
+}

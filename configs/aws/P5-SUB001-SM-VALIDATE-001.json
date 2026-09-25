@@ -1,0 +1,22 @@
+{
+  "run_id": "P5-SUB001-SM-VALIDATE-001",
+  "experiment": "SUB-001",
+  "job_kind": "sagemaker_validation",
+  "region": "us-east-1",
+  "instance_type": "ml.r5.2xlarge",
+  "instance_count": 1,
+  "volume_gib": 100,
+  "max_runtime_seconds": 21600,
+  "price_usd_per_hour": 0.605,
+  "noncompute_allowance_usd": 1.0,
+  "total_cost_ceiling_usd": 5.0,
+  "image_uri": "683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-scikit-learn@sha256:2ce4d4b8f312608308eeb9c9a89efb3a329eafcf399ea7c199bace80fceacee6",
+  "verified_image_tag": "1.4-2-py312-cpu-py3",
+  "shard_input_prefix": "amazon-ml-2026/phase5/sub001-mac-shards-v001/",
+  "raw_test_prefix": "amazon-ml-2026/raw/test/",
+  "code_input_prefix": "amazon-ml-2026/phase5/validation-code-v001/",
+  "output_prefix": "amazon-ml-2026/phase5/runs/P5-SUB001-SM-VALIDATE-001/results/",
+  "launch_gate": "Full 1,732,544-query Mac inference complete and all 384 gzip shard files SHA256-verified in S3; Fold4 remains closed",
+  "expected_gain": "Earlier official validation and portal calibration if full-retrieval EC2 still occupies the 8-vCPU on-demand quota",
+  "cleanup": "Managed SageMaker Processing job stops at completion or MaxRuntimeInSeconds; no endpoint or persistent compute"
+}
