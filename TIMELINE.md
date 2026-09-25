@@ -123,3 +123,8 @@ EC2 console reports India/name shard0 completed:1,380,300routepairs in182.8521se
 - Verified SageMaker ml.r5.2xlarge processing quota now 2 in us-east-1; no processing job launched. On-demand EC2 full retrieval remains active; new SageMaker capacity is optional and has its own capped-job gate.
 - The prior foreground Mac inference ended at 5 completed France shards when its tool session ended. Preserved that output unchanged. A nohup retry and launchctl retries also ended; preserved their versioned directories. Relaunched the same frozen input/model in a detached screen session aml-sub001-v005 under caffeinate; separate process check showed Python PID86583 active. New output is outputs/submissions/SUB-001/local-full-v005/inference. No final candidate count, validator, hashes or submission yet.
 - Updated continuation automation to inspect v005 and obey the latest AGENTS.md Phase4 submission gates. Fold4 CLOSED.
+
+## 2026-09-25T01:05:07.486323+00:00 — Codex — SUB-001 prioritized by explicit user override
+- Read latest user request and official output-format excerpt. User explicitly authorized early SUB-001 submission after official PASS without waiting for full retrieval/Fold4; Fold4 remains CLOSED. Frozen model/threshold/candidate routes unchanged.
+- Detached screen aml-sub001-v005 healthy at France shard8/64,6,411,934 candidate pairs scored. 1,732,544 test S1 total. No final output, hashes, validator or public score yet.
+- Created docs/COMPETITIVE_STATUS.md with user-reported leaderboard references and pending public gap. Updated automation and documentation to obey this single early-calibration override.
