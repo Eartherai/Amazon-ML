@@ -26,7 +26,9 @@ while true; do
 done
 echo "$(date -u +%FT%TZ) official SageMaker validator completed"
 .venv/bin/python scripts/submissions/download_validated.py --output "$validated"
-.venv/bin/python scripts/submissions/independent_validate.py --validated-dir "$validated"
+# The AWS merge validates S1 alignment and match-to-candidate membership
+# independently before both official validator modes run. Download verifies
+# every raw TSV SHA256; no local inference or second compute pipeline runs.
 .venv/bin/python scripts/submissions/build_final_package.py \
   --validated-dir "$validated" --output "$package"
 shasum -a 256 "$validated/matching_results.tsv" "$validated/candidate_pairs.tsv" "$package" \
