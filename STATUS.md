@@ -85,3 +85,7 @@ SUB-001 RUNNING on Mac against complete test set; frozen 51-feature LightGBM, th
 
 ## 2026-09-25T00:51:06.664498+00:00 — Phase5 operational correction
 SageMaker ml.r5.2xlarge processing quota is confirmed 2, newly propagated. SUB-001 current full-test run is the detached screen job aml-sub001-v005, output outputs/submissions/SUB-001/local-full-v005/inference; former local-full and v002 partial outputs are preserved. No portal submission. Current AGENTS.md requires all Phase4 gates before submission, so a completed validated early-calibration file will be held until that gate is satisfied or user explicitly resolves the conflict. Fold4 CLOSED; full retrieval EC2 unchanged.
+
+## 2026-09-25 — priority override
+
+SUB-001 is now explicitly authorized for early calibration once its complete test files pass independent checks and the unchanged official validator. Active detached screen job aml-sub001-v005: France 8/64 shards, 6,411,934 scored candidate pairs at last check; no public score. Fold4 CLOSED. Full-training retrieval continues. Latest user-provided leaderboard top0.964733/third0.957920; local0.9318965293 is not directly comparable. See docs/COMPETITIVE_STATUS.md.

@@ -24,3 +24,7 @@ No organizer messages or portal submissions have been sent. Suggested clarificat
 ## Operational submission gate updated 2026-09-25
 
 The earlier user-authored Phase5 request asked for an immediate early calibration SUB-001 after official validation. The latest user-provided AGENTS.md instructions say, "No submission until all Phase4 gates pass" and "Do not submit diagnostic baselines." The current training population is only the materialized 20,000-entity sample and France transfer remains uncertain; this run is an early calibration candidate. Prepare and validate SUB-001, but withhold portal upload until the Phase4 gates are evidenced as passed or the user explicitly resolves the conflict. This is an operational instruction conflict, not a discrepancy in the competition documents.
+
+## 2026-09-25 explicit user override for SUB-001
+
+The latest user request explicitly authorizes SUB-001 as an early calibration portal submission after the exact official validator passes. It expressly says not to wait for full retrieval, Fold4 or final architecture. This resolves the earlier project-doc submission-gate conflict for SUB-001 only. Fold4 remains CLOSED; later submissions still require measured improvements and all official format/rule checks.
