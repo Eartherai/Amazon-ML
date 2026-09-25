@@ -70,3 +70,7 @@ Observed first cloud India shards at about 7–8 minutes each made its 56-shard 
 ## 2026-09-25T04:45:13+00:00 — India upper-half worker launched
 
 P5-SUB001-INDIA-HIGH-001 was launched on on-demand r8i.4xlarge `i-01462cbfe56b611fb`, account ending6318, code commit `145d132`, 12-hour OS shutdown/terminate-on-shutdown and encrypted DeleteOnTermination EBS. Its fresh cost guard reported estimated gross month-to-date $3.0928398446 plus all active maximum commitments $52.50 and this job maximum $14.33632, project worst case $69.9291598446 under the $120 soft cap. Credit balance and final billed cost remain unverified. Lower India is scheduled for intentional termination at verified shard35 boundary. No duplicate completed shard was started by upper worker.
+
+## 2026-09-25T05:13:32+00:00 — local disk archive storage
+
+The 2,327,511,818-byte reproducible processed-data/index archive was uploaded to encrypted S3 and fully read back once for SHA256 verification before local cleanup. S3 storage and transfer/request costs are expected to be small but have not yet appeared in billing; receipt and restore command are `artifacts/cloud/phase5/backups/prep-and-index-20260925.json`. No EC2 or SageMaker job was started for this operation.
