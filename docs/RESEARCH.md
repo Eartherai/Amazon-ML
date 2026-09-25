@@ -1,5 +1,11 @@
 # Research and ranked experiment plan
 
+Current branch scope (25 September 2026): **classical ML only**. Neural and
+embedding ideas below are preserved as historical Phase-1 research and are
+`DEFER_TO_ALT_ARCHITECTURE_AGENT`; do not implement them in this branch. The
+current measured priorities and pending learning-curve gates are maintained in
+`CLASSICAL_ML_FRONTIER.md` and `LEARNING_CURVE.md`.
+
 Research date: 25 September 2026 IST. This is a dataset-specific working plan, not a claim that a method will win. Generic methods and primary project/paper sources only; no competition business was searched, uploaded to a research service, or enriched. Empirical facts below come from this workspace. No learned model has been trained in phase one.
 
 ## What changes the strategy
