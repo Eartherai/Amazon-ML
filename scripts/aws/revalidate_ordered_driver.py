@@ -45,7 +45,9 @@ def main() -> None:
     base = [sys.executable, "utils/validate_submission.py", "--matching", "output/matching_results.tsv",
             "--candidate", "output/candidate_pairs.tsv", "--test-dir", "dataset/test"]
     reports = {}
-    for name, cmd in (("official", base), ("official_check_ids", [*base, "--check-ids"])):
+    # The organizer's default two-file command already printed PASS in job v002.
+    # It always emits an expected warning that the optional ID check is off.
+    for name, cmd in (("official_check_ids", [*base, "--check-ids"]),):
         result = subprocess.run(cmd, cwd=work, text=True, stdout=subprocess.PIPE,
                                 stderr=subprocess.STDOUT)
         log = ROOT / "result" / (name + ".log")
