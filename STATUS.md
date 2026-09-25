@@ -105,3 +105,7 @@ Separate missing-address threshold selected within inner OOF fell on all three o
 ## 2026-09-25T01:50:00+00:00 — EXP-030 candidate-cost result
 
 On a fixed 1,000-entity India development sample, top100 name retrieval reproduced frozen candidates exactly. Expanding only the name route to top200 recovered 11 additional true links but added 99,873 candidates (9,079 per recovered link); candidate oracle macro rose0.981488→0.982530 before any matcher. Universal top200 is not promoted; SUB-001 remains frozen. Full-scale retrieval and Mac test inference continue. Next: prioritize full-data training materialization after retrieval and complementary India/S3 or cross-script retrieval with better marginal cost.
+
+## 2026-09-25T01:53:00+00:00 — Live handoff checkpoint
+
+SUB-001 detached Mac PID86583 is healthy at France34/64 shards; full query count, final TSVs and official PASS remain pending. Free local disk is about17GiB, above the8GiB reserve. EC2 full-training retrieval has uploaded through India/name shard59/64 and remains active. No SageMaker validator job or portal submission has occurred. Its role, 384-shard upload gate, six-hour/$5 launcher and verified-output downloader are ready. The continuation heartbeat now checks every30 minutes and remains quiet while work is merely progressing; registered-team Unstop sign-in was requested asynchronously because the Codex browser is not signed in.

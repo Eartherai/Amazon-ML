@@ -144,3 +144,7 @@ EC2 console reports India/name shard0 completed:1,380,300routepairs in182.8521se
 
 ## 2026-09-25T01:50:00+00:00 — Codex — EXP-030 India name top200 probe
 - Fixed first1,000 India S1 by hash within natural20k folds1–3; full4,133,346-target local index, byte-identical Phase4-B IDF. Top100 candidate parity0 mismatches. Top200 added99,873 candidates and recovered11 true links; link recall0.945977→0.949172, oracle macro0.981488→0.982530, runtime105.63s and peak RSS1.94GiB. Universal expansion rejected on candidate cost; no model or SUB-001 modification. Labels were read only for evaluation after retrieval. Fold4 CLOSED.
+
+## 2026-09-25T01:53:00+00:00 — Codex — live job and continuation checkpoint
+- Verified detached Mac SUB-001 PID86583 healthy at France34/64 shards, with about17GiB free disk. Full-training EC2 retrieval uploaded India/name shard59/64. Neither job has completed; no SageMaker validator or portal submission has launched.
+- Updated existing `amazon-ml-phase-5-continuation` heartbeat to check every30 minutes, perform checksum upload, budget-gated strict validation and portal submission once ready, and stay quiet while unchanged. Requested registered-team Unstop sign-in asynchronously; current Codex portal tab is not authenticated.
