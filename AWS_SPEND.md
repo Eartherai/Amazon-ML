@@ -58,3 +58,11 @@ Launched on EC2 `i-0a29e371cccca1b99` under profile `amamzon_01_a1_0`, account e
 ## 2026-09-25T04:32:00+00:00 — audit artifact disk backup
 
 The generated 3,444,322,304-byte `artifacts/audit.duckdb` was stored in the same private S3 project bucket under `amazon-ml-2026/phase5/backups/audit-20260925.duckdb`, SSE-AES256, then streamed back and SHA256-verified before removing the idle local copy. S3 Standard storage at the previously verified $0.023/GiB-month rate is approximately $0.074/month while retained; actual request and data-transfer charges are not yet billed. This is a reversible disk reserve action, not paid compute. The backup version, hash and restore command are in `artifacts/cloud/phase5/audit-backup-v001.json`.
+
+## 2026-09-25T04:42:00+00:00 — EXP-032 feature materialization launched
+
+P5-FEATURE-200K-001, on-demand r8i.2xlarge `i-08a2580f13957ad44`, account ending6318, immutable code commit `3381e311a4bff91cb750bf4166bf555c04ae440b`, six-hour OS shutdown/terminate-on-shutdown and encrypted DeleteOnTermination EBS. Estimated maximum compute $3.33408 plus $1 noncompute allowance, total $4.33408 under its $4.50 ceiling. Fresh gross month-to-date billing estimate plus active worst-case commitments and this job was $55.4269198446 under the $120 soft cap. EXP-031 compute estimate $1.0194973778438667, final bill and credit balance pending. EXP-032 stop/runtime/actual cost pending.
+
+## 2026-09-25T04:44:00+00:00 — India upper-half acceleration plan, before launch
+
+Observed first cloud India shards at about 7–8 minutes each made its 56-shard serial path the first-submission bottleneck. `P5-SUB001-INDIA-HIGH-001` proposes only untouched India shards36–63 (354,947 S1); current `P5-SUB001-INDIA-001` supplies shards8–35 (354,229 S1) and Mac supplies0–7 (100,810 S1). Once shard35 has both SHA256-uploaded files, terminate the lower EC2 before it uploads shard36, preserving completed lower outputs. Upper worker has a 12-hour OS cap, on-demand r8i.4xlarge planning rate $1.11136/h, $13.33632 maximum compute plus $1 allowance, $14.33632 under a $15 ceiling, encrypted DeleteOnTermination EBS and per-shard S3 checkpointing. The expected benefit is about three hours earlier first submission, subject to measured pace. A fresh cost guard is mandatory; credit balance is unverified.
