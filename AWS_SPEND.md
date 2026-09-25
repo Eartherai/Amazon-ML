@@ -86,3 +86,29 @@ P5-LEARNING-FIT-001 exited zero and terminated after 506.54 seconds wall time; 4
 ## 2026-09-25T06:08:20+00:00 — urgent SUB-001 tail workers
 
 Five additional on-demand r8i.4xlarge workers were launched on legitimate account ending6318, region us-east-1. Runs/instance IDs: P5-SUB001-INDIA-TAIL-001/i-015dc5abe06575e2c; INDIA-TAIL-002/i-07fd2f957d20d488b; INDIA-TAIL-003/i-074cfb03b27241c48; US-TAIL-001/i-0ebaea8a0b4a878df; US-TAIL-002/i-047ca1fafa186eb50. Each is capped at240min, planning compute$1.11136/hour, max compute$4.44544 plus$1 allowance ($5.44544) under its$6.50 job ceiling, with automatic terminate-on-shutdown and encrypted delete-on-termination EBS. Code/input hashes, exact ranges, dates and S3 checkpoints are in `artifacts/cloud/phase5/<run>/ledger.json`. Latest fresh guard across active workers projects$97.5382798446 total including gross billing estimate versus$120 soft cap. Stop times and actual costs remain pending; monitor and terminate immediately at completion.
+
+## 2026-09-25T09:30:14.423504+00:00 — P5-SUB002-FIT-001 / SUB-002 active
+Profile `amamzon_01_a1_0`, account ending 6318, us-east-1, r8i.2xlarge on-demand `i-045185b5404fe3b7c`; two-hour OS cap and $2.50 planning ceiling. Reuses verified 200k/39.44m-pair EXP-032 store. EXP-033 fixed 15k OOF scale slope +0.00223578 from 20k to 100k supports final fit. Automatic terminate after verified result or failure. Exact cost pending. Existing full-retrieval worker remains active. Eight SUB-002 inference workers are prepared but not launched; each has disjoint shards and separate cost guard.
+
+## 2026-09-25T09:43:47.179540+00:00 — SUB-002 inference and EXP-034 active
+Eight disjoint on-demand r8i.4xlarge test workers `P5-SUB002-FR-001`, `IN0–IN3`, `US0–US2`, each four-hour OS stop/$5.50 planning ceiling, plus `P5-CONFLICT-OOF-001` r8i.2xlarge 90-minute/$2 planning ceiling. Last fresh cost guard: gross billed estimate $5.19235 (billing lag), active maximum commitments $62, proposed EXP-034 $1.83352, project worst case $69.02587, beneath user sprint $100 and existing $120/$150 guards. Training worker P5-SUB002-FIT-001 terminated exit0, estimated EC2 compute $0.0424; exact bill and credit balance pending. No duplicate retrieval or inference shards.
+
+## 2026-09-25T10:01:00+00:00 — EXP-034 and EXP-035 completed
+
+Both on-demand r8i.2xlarge jobs exited zero and terminated under 90-minute/$2 caps. EXP-034 140.85 seconds wall and $0.02174 estimated EC2 compute; EXP-035 141.86 seconds and $0.02190. Final billed cost, storage, and S3 requests remain unverified. Eight SUB-002 inference workers continue under their separate four-hour/$5.50 caps.
+
+## 2026-09-25T10:08:00.955739+00:00 — EXP-038 set-decision OOF launched
+
+On-demand r8i.2xlarge i-09c529fa680766637, 90-minute OS shutdown and automatic termination, planned $1.83352 maximum including $1 noncompute allowance. Fresh cost guard gross estimate $5.19235 plus $62 active maximum commitments plus new maximum = $69.02587, below the user sprint $100 cap. Only AWS profile amamzon_01_a1_0; final billed cost and credit balance pending.
+
+EXP-038 exited zero at 2026-09-25T10:10:23Z; estimated compute $0.02392 at planning rate, final bill unverified. Termination state was shutting-down at last collection.
+
+EXP-039 first summary-only failure exited1 and terminated after 264.83 seconds, estimated EC2 compute $0.04088. Recovery P5-HARDNEG-ENSEMBLE-002 exited0/terminated with an estimated compute cost recorded in its ledger; both used independent 90-minute/$2 caps. Final bill pending.
+
+## 2026-09-25T10:25:32.685992+00:00 — EXP-044 current-model OOF extraction
+
+On-demand r8i.2xlarge i-099f8bb45c6dc80ef, independent 90-minute shutdown/terminate-on-shutdown, maximum $1.83352 including noncompute allowance. Fresh cost guard gross $5.19235 plus active max $62 plus job max = $69.02587, under user $100 cap. Only profile amamzon_01_a1_0. Final bill pending.
+
+## 2026-09-25T12:25:00+00:00 — bounded concurrent validation and neural training
+
+Only authenticated profile `amamzon_01_a1_0` was used. Two SUB-002 `ml.r5.2xlarge` official validation jobs (`P5-SUB002-SM-VALIDATE-001`, `-002`) are in progress under their separate six-hour/$5 caps; their CloudWatch logs already show the base merge official default and strict PASS. India neural G5 job `P5-SUB002-NGPU-85c999e8-INDI-001` continues under its two-hour/$7 cap while the France+US job has completed. EXP-050 18k-query E5 inputs (420,347 owner-safe pairs; ten S3 objects with SHA256 receipts) were staged; its three-hour/$10 G5 job has **not** launched while the India G5 occupies capacity. Actual billed cost and credits remain unverified. Do not sum simultaneous maximum caps as actual spend.

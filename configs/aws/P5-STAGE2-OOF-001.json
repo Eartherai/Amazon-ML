@@ -1,0 +1,23 @@
+{
+  "run_id": "P5-STAGE2-OOF-001",
+  "experiment": "CL-003",
+  "job_kind": "learning_curve",
+  "bootstrap_script": "scripts/aws/stage2_oof_bootstrap.sh",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 90,
+  "compute_usd_per_hour": 0.55568,
+  "total_cost_ceiling_usd": 2.0,
+  "ebs_gib": 100,
+  "purpose": "Extract EXP-033 100k held-fold LightGBM top-12 OOF scores for all 200k feature-store S1 (folds 1-3) as classical stage-2 training data; EXP-044 6k stays the evaluation set",
+  "fold4": "CLOSED; absent from the 200k store",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/neural-confirm-200k-v001",
+  "input_receipt": "neural-confirm-200k-v001-upload.json",
+  "shard_prefix": "amazon-ml-2026/phase5/runs/P5-FEATURE-200K-001",
+  "estimated_training_hours": 0.3,
+  "estimate_basis": "EXP-044 scored two folds of the same 39.44m-pair store in 86 s on r8i.2xlarge; three folds plus top-12 sort bounded well under the 90-minute cap",
+  "checkpoint": "SHA verify all 854 feature parts and 100k fold models; upload three top-12 fold parquets with SHA256 receipts",
+  "expected_gain": "CL-001 stage-2 trained on 3k S1 gave +0.0131 (CI +0.0106..+0.0158) on the fixed 6k; ~30x more owner-safe training S1 should raise and stabilize it",
+  "cleanup": "90-minute OS shutdown, terminate-on-shutdown EC2, encrypted DeleteOnTermination EBS"
+}

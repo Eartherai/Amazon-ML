@@ -37,17 +37,23 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def select_fit_ids(queries: pl.DataFrame, old_ids: set[str], held_fold: int, size: int) -> set[str]:
+def select_fit_ids(queries: pl.DataFrame, old_ids: set[str], held_fold: int, size: int,
+                   fit_folds: tuple[int, ...] = (1, 2, 3)) -> set[str]:
     """Nested deterministic samples balanced over the two training folds."""
-    if size % 2 or held_fold not in THRESHOLDS:
+    if size < 1 or held_fold not in THRESHOLDS or held_fold not in fit_folds:
         raise ValueError("Invalid sample size or fold")
     selected: set[str] = set()
-    for fold in sorted(set(THRESHOLDS) - {held_fold}):
+    training = sorted(set(fit_folds) - {held_fold})
+    if len(training) < 2:
+        raise ValueError("At least two training folds required")
+    quotient, remainder = divmod(size, len(training))
+    for position, fold in enumerate(training):
         ids = queries.filter(pl.col("fold") == fold)["entity_id"].to_list()
         ordered = sorted(ids, key=lambda value: (value not in old_ids, hashlib.sha256(value.encode()).digest(), value))
-        if len(ordered) < size // 2:
+        count = quotient + (position < remainder)
+        if len(ordered) < count:
             raise ValueError("Insufficient training entities")
-        selected.update(ordered[:size // 2])
+        selected.update(ordered[:count])
     if len(selected) != size:
         raise ValueError("Unexpected fit-entity count")
     return selected
@@ -83,9 +89,19 @@ def main() -> None:
     parser.add_argument("--inputs", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--threads", type=int, default=8)
+    parser.add_argument("--sizes", default="20000,50000,100000")
+    parser.add_argument("--fit-folds", default="1,2,3")
+    parser.add_argument("--expected-queries", type=int, default=200_000)
+    parser.add_argument("--experiment-id", default="EXP-033")
     parser.add_argument("--upload-bucket")
     parser.add_argument("--upload-prefix")
     args = parser.parse_args()
+    sizes = tuple(int(value) for value in args.sizes.split(","))
+    fit_folds = tuple(int(value) for value in args.fit_folds.split(","))
+    if (not sizes or sorted(set(sizes)) != list(sizes) or min(sizes) < 1
+            or not fit_folds or len(fit_folds) != len(set(fit_folds))
+            or not set(fit_folds) <= {0, 1, 2, 3} or not {1, 2, 3} <= set(fit_folds)):
+        raise ValueError("Invalid fit sizes or unlocked fold configuration")
     if args.output.exists():
         raise FileExistsError(args.output)
     if args.threads < 1 or bool(args.upload_bucket) != bool(args.upload_prefix):
@@ -102,7 +118,7 @@ def main() -> None:
     old = pl.read_parquet(args.inputs / "old_20k_ids.parquet")
     eval_frame = pl.read_parquet(args.inputs / "eval_queries.parquet")
     truth_frame = pl.read_parquet(args.inputs / "truth.parquet")
-    if len(queries) != 200_000 or len(old) != 20_000 or len(eval_frame) != 15_000:
+    if len(queries) != args.expected_queries or len(old) != 20_000 or len(eval_frame) != 15_000:
         raise ValueError("Unexpected training/evaluation population")
     if set(old["entity_id"]) & set(eval_frame["entity_id"]):
         raise ValueError("Old training IDs overlap new evaluation IDs")
@@ -112,12 +128,12 @@ def main() -> None:
     if not feature_files:
         raise FileNotFoundError("No feature parts")
     feature_report = json.loads((args.features / "metrics.json").read_text())
-    if feature_report["queries"] != 200_000 or feature_report["features"] != NAMES:
+    if feature_report["queries"] != args.expected_queries or feature_report["features"] != NAMES:
         raise ValueError("Feature store manifest mismatch")
     base_params = json.loads(Path("configs/baselines/BASELINE-P4-001.yaml").read_text())["hyperparameters"]
     base_params["n_jobs"] = args.threads
     old_ids = set(old["entity_id"])
-    results = {size: {"truth": {}, "predicted": {}, "folds": []} for size in SIZES}
+    results = {size: {"truth": {}, "predicted": {}, "folds": []} for size in sizes}
     feature_scan = pl.scan_parquet([str(path) for path in feature_files])
     if feature_scan.collect_schema().names() != ["source1_entity_id", "target_id", "country", "fold", "owner_fold", "label", *NAMES]:
         raise ValueError("Unexpected feature columns or order")
@@ -130,10 +146,10 @@ def main() -> None:
         evaluated = feature_scan.filter(pl.col("source1_entity_id").is_in(eval_ids)).collect()
         if set(evaluated["source1_entity_id"]) != set(eval_ids):
             raise ValueError("Missing candidates for evaluation query")
-        valid_folds = sorted(set(THRESHOLDS) - {held_fold})
+        valid_folds = sorted(set(fit_folds) - {held_fold})
         validation_x = evaluated.select(NAMES).to_numpy()
-        for size in SIZES:
-            fit_ids = select_fit_ids(queries, old_ids, held_fold, size)
+        for size in sizes:
+            fit_ids = select_fit_ids(queries, old_ids, held_fold, size, fit_folds)
             fit = feature_scan.filter(pl.col("source1_entity_id").is_in(fit_ids) &
                                       pl.col("owner_fold").is_in([-1, *valid_folds])).collect()
             if fit["source1_entity_id"].n_unique() != size:
@@ -181,12 +197,13 @@ def main() -> None:
                               "elapsed": time.perf_counter() - started}), flush=True)
             del fit_x, fit_y, fit, model, probabilities, predicted
         del validation_x, evaluated
-    summary = {"experiment": "EXP-033", "scope": "Fixed 15k new entity OOF; Fold4 CLOSED",
+    summary = {"experiment": args.experiment_id, "scope": "Fixed 15k new entity OOF; Fold4 CLOSED",
                "threshold_policy": "0.83/0.79/0.83 frozen from old20k before new evaluation selection",
+               "fit_folds": fit_folds,
                "feature_store_sha256": sha256(args.features / "metrics.json"),
                "sizes": {}, "runtime_seconds": time.perf_counter() - started,
                "peak_rss_gib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024**2}
-    for size in SIZES:
+    for size in sizes:
         truth = results[size]["truth"]
         predicted = results[size]["predicted"]
         if len(truth) != 15_000:
@@ -200,11 +217,11 @@ def main() -> None:
                                                       for country in sorted(eval_frame["country"].unique().to_list())},
                                        "folds": results[size]["folds"]}
     (args.output / "metrics.json").write_text(json.dumps(summary, indent=2) + "\n")
-    (args.output / "COMPLETE.json").write_text(json.dumps({"experiment": "EXP-033", "sizes": list(SIZES),
-                                                  "validation_queries": 15_000, "models": 9,
+    (args.output / "COMPLETE.json").write_text(json.dumps({"experiment": args.experiment_id, "sizes": list(sizes),
+                                                  "validation_queries": 15_000, "models": 3 * len(sizes),
                                                   "fold4": "CLOSED"}, indent=2) + "\n")
     print(json.dumps({"complete": True, "scores": {size: summary["sizes"][str(size)]["overall"]["macro_f0_5"]
-                                                for size in SIZES}}), flush=True)
+                                                for size in sizes}}), flush=True)
 
 
 if __name__ == "__main__":

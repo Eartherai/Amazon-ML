@@ -1,0 +1,79 @@
+{
+  "run_id": "P5-SUB002-SM-VALIDATE-001",
+  "experiment": "SUB-002",
+  "job_kind": "sagemaker_validation",
+  "region": "us-east-1",
+  "instance_type": "ml.r5.2xlarge",
+  "instance_count": 1,
+  "volume_gib": 100,
+  "max_runtime_seconds": 21600,
+  "price_usd_per_hour": 0.605,
+  "noncompute_allowance_usd": 1.0,
+  "total_cost_ceiling_usd": 5.0,
+  "image_uri": "683313688378.dkr.ecr.us-east-1.amazonaws.com/sagemaker-scikit-learn@sha256:2ce4d4b8f312608308eeb9c9a89efb3a329eafcf399ea7c199bace80fceacee6",
+  "verified_image_tag": "1.4-2-py312-cpu-py3",
+  "raw_test_prefix": "amazon-ml-2026/raw/test/",
+  "code_input_prefix": "amazon-ml-2026/phase5/sub002-validation-code-v001/",
+  "output_prefix": "amazon-ml-2026/phase5/runs/P5-SUB002-SM-VALIDATE-001/results/",
+  "launch_gate": "All eight disjoint SUB-002 workers successful and terminated; 384 matching/candidate shards; 1,732,544 S1",
+  "expected_gain": "Official default and strict validation of scaled model before portal upload",
+  "cleanup": "Managed six-hour SageMaker maximum; no endpoint",
+  "workers": [
+    {
+      "run_id": "P5-SUB002-FR-001",
+      "country": "France",
+      "first_shard": 0,
+      "last_shard": 64,
+      "queries": 259452
+    },
+    {
+      "run_id": "P5-SUB002-IN0-001",
+      "country": "India",
+      "first_shard": 0,
+      "last_shard": 16,
+      "queries": 202070
+    },
+    {
+      "run_id": "P5-SUB002-IN1-001",
+      "country": "India",
+      "first_shard": 16,
+      "last_shard": 32,
+      "queries": 202251
+    },
+    {
+      "run_id": "P5-SUB002-IN2-001",
+      "country": "India",
+      "first_shard": 32,
+      "last_shard": 48,
+      "queries": 203041
+    },
+    {
+      "run_id": "P5-SUB002-IN3-001",
+      "country": "India",
+      "first_shard": 48,
+      "last_shard": 64,
+      "queries": 202624
+    },
+    {
+      "run_id": "P5-SUB002-US0-001",
+      "country": "US",
+      "first_shard": 0,
+      "last_shard": 21,
+      "queries": 218139
+    },
+    {
+      "run_id": "P5-SUB002-US1-001",
+      "country": "US",
+      "first_shard": 21,
+      "last_shard": 42,
+      "queries": 217253
+    },
+    {
+      "run_id": "P5-SUB002-US2-001",
+      "country": "US",
+      "first_shard": 42,
+      "last_shard": 64,
+      "queries": 227714
+    }
+  ]
+}

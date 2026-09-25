@@ -36,6 +36,14 @@ def test_duplicate_pair_in_one_route_fails(tmp_path: Path) -> None:
         route_scores([name], 0, {})
 
 
+def test_full_route_skips_locked_query_before_feature_materialization(tmp_path: Path) -> None:
+    route = _route(tmp_path / "full.parquet", [
+        ("S1-unlocked", "S2-a", .8, 1), ("S1-locked", "S2-b", .9, 1)])
+    slots = {}
+    route_scores([route], 0, slots, {"S1-unlocked"})
+    assert set(slots) == {("S1-unlocked", "S2-a")}
+
+
 def test_full_tiny_feature_store(tmp_path: Path) -> None:
     inputs, routes, output = (tmp_path / name for name in ("inputs", "routes", "output"))
     inputs.mkdir()

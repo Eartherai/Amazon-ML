@@ -1,0 +1,23 @@
+{
+  "run_id": "P5-NEURAL-CURRENT-OOF-001",
+  "experiment": "EXP-044",
+  "job_kind": "learning_curve",
+  "bootstrap_script": "scripts/aws/neural_current_oof_bootstrap.sh",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 90,
+  "compute_usd_per_hour": 0.55568,
+  "total_cost_ceiling_usd": 2.0,
+  "ebs_gib": 100,
+  "purpose": "Extract current 100k-held-fold LightGBM top12 and full baseline predictions for 6000 disjoint S1 to confirm neural blend transfer",
+  "fold4": "CLOSED; fixed validation entities are outside old20k and absent from outer fit folds",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/neural-confirm-200k-v001",
+  "input_receipt": "neural-confirm-200k-v001-upload.json",
+  "shard_prefix": "amazon-ml-2026/phase5/runs/P5-FEATURE-200K-001",
+  "estimated_training_hours": 0.3,
+  "estimate_basis": "Score existing 39.44m feature pairs with three saved 100k fold models; 90-minute cap is conservative",
+  "checkpoint": "SHA verify all 854 feature parts, source labels, 6k selected IDs and 100k fold models; upload top12/ground truth/base predictions",
+  "expected_gain": "Cross-encoder showed +0.0128 on separate old-20k OOF, but must confirm on current 51-feature 200k model before full test GPU inference",
+  "cleanup": "90-minute OS shutdown, terminate-on-shutdown EC2, encrypted DeleteOnTermination EBS"
+}

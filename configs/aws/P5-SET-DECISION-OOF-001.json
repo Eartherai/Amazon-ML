@@ -1,0 +1,23 @@
+{
+  "run_id": "P5-SET-DECISION-OOF-001",
+  "experiment": "EXP-038",
+  "job_kind": "learning_curve",
+  "bootstrap_script": "scripts/aws/set_decision_oof_bootstrap.sh",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 90,
+  "compute_usd_per_hour": 0.55568,
+  "total_cost_ceiling_usd": 2.0,
+  "ebs_gib": 100,
+  "purpose": "Explore high-upside entity-level set selection, cardinality, singleton rescue, per-source cap and expected F0.5 on all 200k strictly OOF queries",
+  "fold4": "CLOSED; fixed validation entities are outside old20k and absent from outer fit folds",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/learning-eval-200k-v001",
+  "input_receipt": "learning-eval-200k-upload.json",
+  "shard_prefix": "amazon-ml-2026/phase5/runs/P5-FEATURE-200K-001",
+  "estimated_training_hours": 0.3,
+  "estimate_basis": "Score existing 39.44m feature pairs with three saved 100k fold models; 90-minute cap is conservative",
+  "checkpoint": "SHA256 verify 854 feature parts/three models, upload exact macro F0.5 for predeclared set rules",
+  "expected_gain": "Potential material improvement to one-match/singleton scoring; promote only if measured OOF and country slices improve",
+  "cleanup": "90-minute OS shutdown, terminate-on-shutdown EC2, encrypted DeleteOnTermination EBS"
+}

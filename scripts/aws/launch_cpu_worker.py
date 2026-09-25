@@ -31,11 +31,13 @@ if not (root/cfg.get('input_receipt','input-upload.json')).exists():raise Runtim
 if cfg.get('job_kind') in {'full_retrieval','sample_retrieval'}:
  benchmark=json.loads((root/'P5-INDEX-001/ledger.json').read_text())
  if benchmark.get('exit_code')!=0 or benchmark.get('instance_state')!='terminated':raise RuntimeError('Benchmark must succeed and terminate first')
-if cfg.get('job_kind')=='sample_features':
- retrieval=json.loads((root/'P5-LEARNING-200K-001/ledger.json').read_text())
- if retrieval.get('exit_code')!=0 or retrieval.get('instance_state')!='terminated':raise RuntimeError('Complete 200k retrieval must terminate successfully first')
- complete=root/'P5-LEARNING-200K-001/results-COMPLETE.json'
- if not complete.exists() or json.loads(complete.read_text()).get('query_count')!=200000:raise RuntimeError('Missing complete 200k retrieval summary')
+if cfg.get('job_kind') in {'sample_features','full_features'}:
+ retrieval_run,expected_queries=(('P5-LEARNING-200K-001',200000) if cfg['job_kind']=='sample_features'
+                                 else ('P5-FULL-RETRIEVAL-001',2206821))
+ retrieval=json.loads((root/retrieval_run/'ledger.json').read_text())
+ if retrieval.get('exit_code')!=0 or retrieval.get('instance_state')!='terminated':raise RuntimeError('Complete prerequisite retrieval must terminate successfully first')
+ complete=root/retrieval_run/'results-COMPLETE.json'
+ if not complete.exists() or json.loads(complete.read_text()).get('query_count')!=expected_queries:raise RuntimeError('Missing complete prerequisite retrieval summary')
  archive_prefix=cfg['shard_prefix'].rstrip('/')+'/shards/'
  archives=[key for key in s3_keys(infra['bucket'],archive_prefix) if key.endswith('.tar')]
  if len(archives)!=256:raise RuntimeError('Incomplete 256-archive retrieval checkpoint')

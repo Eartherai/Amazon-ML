@@ -1,0 +1,23 @@
+{
+  "run_id": "P5-SUB002-FIT-001",
+  "experiment": "SUB-002-200K",
+  "job_kind": "learning_curve",
+  "bootstrap_script": "scripts/aws/sub002_train_bootstrap.sh",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 120,
+  "compute_usd_per_hour": 0.55568,
+  "total_cost_ceiling_usd": 2.5,
+  "ebs_gib": 100,
+  "purpose": "Fit final 200k-owner-safe 51-feature LightGBM for SUB-002 from completed EXP-032 store",
+  "fold4": "CLOSED; fixed validation entities are outside old20k and absent from outer fit folds",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/learning-eval-200k-v001",
+  "input_receipt": "learning-eval-200k-upload.json",
+  "shard_prefix": "amazon-ml-2026/phase5/runs/P5-FEATURE-200K-001",
+  "estimated_training_hours": 0.5,
+  "estimate_basis": "EXP-033 100k heldout fits complete in minutes; 200k final fit and verification expected under one hour",
+  "checkpoint": "Each of nine models and fold metrics uploaded with SHA256 after fit; complete feature inputs checked against every S3 part receipt",
+  "expected_gain": "EXP-033 fixed 15k heldout rose from .93492235 at 20k to .93715814 at 100k; 200k final model may improve public submission but not guaranteed",
+  "cleanup": "Two-hour OS shutdown; terminate-on-shutdown encrypted delete-on-termination EC2"
+}

@@ -1,0 +1,23 @@
+{
+  "run_id": "P5-FEATURE-UNLOCKED-001",
+  "experiment": "EXP-036",
+  "job_kind": "full_features",
+  "bootstrap_script": "scripts/aws/full_feature_worker_bootstrap.sh",
+  "instance_type": "r8i.2xlarge",
+  "region": "us-east-1",
+  "purchase": "on-demand",
+  "runtime_cap_minutes": 720,
+  "compute_usd_per_hour": 0.55568,
+  "total_cost_ceiling_usd": 8.5,
+  "ebs_gib": 100,
+  "purpose": "Materialize 51 classical pair features for every unlocked fold0-3 S1 from the existing full 2206821-query retrieval, skipping Fold4 query routes",
+  "fold4": "CLOSED; only fold0-3 query labels and truth exported; target owner_fold4 retained only for exclusion",
+  "input_prefix": "amazon-ml-2026/phase5/inputs/feature-unlocked-v001",
+  "input_receipt": "feature-unlocked-v001-upload.json",
+  "shard_prefix": "amazon-ml-2026/phase5/runs/P5-FULL-RETRIEVAL-001",
+  "estimated_feature_hours": 7.5,
+  "estimate_basis": "EXP-032 built 39.44m candidate features in 42.3 minutes. Scaling to about 348m pairs suggests 6.2h core work plus archive download and S3 uploads; 12h hard cap leaves margin but is not a guarantee.",
+  "checkpoint": "Each <=200k-row feature part uploaded with S3 SHA256; all 256 existing EXP-025 retrieval archives and input files reverified before processing",
+  "expected_gain": "Enable 250k/500k/1M owner-safe training on fixed new15k validation S1 without duplicating full retrieval",
+  "cleanup": "Independent 12h OS shutdown; terminate-on-shutdown encrypted DeleteOnTermination EBS; no endpoint"
+}

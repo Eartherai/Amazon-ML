@@ -39,9 +39,12 @@ def route_files(root: Path, field: str, country_index: int, shard: int) -> list[
     return found
 
 
-def route_scores(paths: list[str], position: int, slots: dict[tuple[str, str], list[float]]) -> None:
+def route_scores(paths: list[str], position: int, slots: dict[tuple[str, str], list[float]],
+                 allowed_queries: set[str] | None = None) -> None:
     frame = pl.read_parquet(paths, columns=["source1_entity_id", "target_id", "route_score", "route_rank"])
     for query_id, target_id, score, rank in frame.iter_rows():
+        if allowed_queries is not None and query_id not in allowed_queries:
+            continue
         key = (query_id, target_id)
         slot = slots.setdefault(key, [0., 0., 0., 0., 0.])
         if slot[2 + position] or rank < 1:
@@ -69,12 +72,18 @@ def main() -> None:
     parser.add_argument("--chunk-rows", type=int, default=50_000)
     parser.add_argument("--expected-queries", type=int, default=200_000)
     parser.add_argument("--expected-targets", type=int, default=10_320_219)
+    parser.add_argument("--folds", default="1,2,3", help="Unlocked labeled S1 folds, never fold 4")
+    parser.add_argument("--restrict-to-queries", action="store_true",
+                        help="Skip unlabeled/locked query routes from the full retrieval")
+    parser.add_argument("--experiment-id", default="EXP-032")
     parser.add_argument("--upload-bucket")
     parser.add_argument("--upload-prefix")
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(args.output)
-    if min(args.shards, args.chunk_rows, args.expected_queries, args.expected_targets) < 1:
+    folds = tuple(int(value) for value in args.folds.split(","))
+    if (min(args.shards, args.chunk_rows, args.expected_queries, args.expected_targets) < 1
+            or not folds or len(folds) != len(set(folds)) or not set(folds) <= {0, 1, 2, 3}):
         raise ValueError("Positive shard/chunk sizes required")
     if bool(args.upload_bucket) != bool(args.upload_prefix):
         raise ValueError("Upload bucket and prefix must be specified together")
@@ -96,10 +105,12 @@ def main() -> None:
         if path.stat().st_size != item["bytes"] or sha256(path) != item["sha256"]:
             raise ValueError(f"Feature input checksum mismatch: {path}")
     queries = pl.read_parquet(args.inputs / "labeled_queries.parquet")
-    if len(queries) != args.expected_queries or queries["entity_id"].n_unique() != len(queries) or set(queries["fold"].unique().to_list()) != {1, 2, 3}:
+    if (len(queries) != args.expected_queries or queries["entity_id"].n_unique() != len(queries)
+            or set(queries["fold"].unique().to_list()) != set(folds)):
         raise ValueError("Unexpected query/fold coverage")
     query_lookup = {qid: (name, address, country, int(fold)) for qid, country, name, address, fold in
                     queries.select("entity_id", "country", "n", "a", "fold").iter_rows()}
+    allowed_queries = set(query_lookup) if args.restrict_to_queries else None
     truth_frame = pl.read_parquet(args.inputs / "truth.parquet")
     truth = set(truth_frame.iter_rows())
     if len(truth) != len(truth_frame):
@@ -125,8 +136,8 @@ def main() -> None:
         print(json.dumps({"country": country, "targets": len(targets), "seconds": time.perf_counter() - started}), flush=True)
         for shard in range(args.shards):
             scores: dict[tuple[str, str], list[float]] = {}
-            route_scores(route_files(args.routes, "name", ci, shard), 0, scores)
-            route_scores(route_files(args.routes, "address", ci, shard), 1, scores)
+            route_scores(route_files(args.routes, "name", ci, shard), 0, scores, allowed_queries)
+            route_scores(route_files(args.routes, "address", ci, shard), 1, scores, allowed_queries)
             pending: list[tuple] = []
             part = 0
             for (qid, tid), (name_score, address_score, name_rank, address_rank, route_count) in sorted(scores.items()):
@@ -158,7 +169,7 @@ def main() -> None:
     complete = sum(retrieved_positive_counts[qid] == truth_counts[qid] for qid in query_lookup if truth_counts[qid] > 0)
     any_match = sum(retrieved_positive_counts[qid] > 0 for qid in query_lookup if truth_counts[qid] > 0)
     link_recall = total_positive / len(truth)
-    report = {"experiment": "EXP-032", "queries": len(query_lookup), "features": NAMES,
+    report = {"experiment": args.experiment_id, "queries": len(query_lookup), "features": NAMES,
               "candidate_pairs": total_pairs, "retrieved_positives": total_positive,
               "truth_pairs": len(truth), "link_recall": link_recall,
               "complete_positive_entity_recall": complete / positive_entities,
@@ -167,7 +178,7 @@ def main() -> None:
                                        "p95": float(np.quantile(counts, .95)), "p99": float(np.quantile(counts, .99))},
               "fold4": "CLOSED", "seconds": time.perf_counter() - started}
     (args.output / "metrics.json").write_text(json.dumps(report, indent=2) + "\n")
-    (args.output / "COMPLETE.json").write_text(json.dumps({"experiment": "EXP-032", "queries": len(query_lookup),
+    (args.output / "COMPLETE.json").write_text(json.dumps({"experiment": args.experiment_id, "queries": len(query_lookup),
                                                          "candidate_pairs": total_pairs, "feature_parts": len(list(args.output.glob('features-*.parquet'))),
                                                          "uploaded_parts": len(receipts) if args.upload_bucket else None,
                                                          "fold4": "CLOSED"}, indent=2) + "\n")
