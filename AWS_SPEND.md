@@ -82,3 +82,7 @@ EXP-032 / P5-FEATURE-200K-001 exited zero and terminated at 05:25:15 UTC, 2,598.
 ## 2026-09-25T05:36:25+00:00 — EXP-033 completion
 
 P5-LEARNING-FIT-001 exited zero and terminated after 506.54 seconds wall time; 427.73 seconds were inside the training script. EC2 compute estimate $0.07818756 at the planning rate, versus $4.50 ceiling. Final billed compute, storage and request costs remain unverified. All 18 model/fold-report checkpoints and summary receipts passed SHA256/version verification. No further paid job was launched for the 250k/500k/1M plan yet; the already-running EXP-025 full retrieval will supply its routes.
+
+## 2026-09-25T06:08:20+00:00 — urgent SUB-001 tail workers
+
+Five additional on-demand r8i.4xlarge workers were launched on legitimate account ending6318, region us-east-1. Runs/instance IDs: P5-SUB001-INDIA-TAIL-001/i-015dc5abe06575e2c; INDIA-TAIL-002/i-07fd2f957d20d488b; INDIA-TAIL-003/i-074cfb03b27241c48; US-TAIL-001/i-0ebaea8a0b4a878df; US-TAIL-002/i-047ca1fafa186eb50. Each is capped at240min, planning compute$1.11136/hour, max compute$4.44544 plus$1 allowance ($5.44544) under its$6.50 job ceiling, with automatic terminate-on-shutdown and encrypted delete-on-termination EBS. Code/input hashes, exact ranges, dates and S3 checkpoints are in `artifacts/cloud/phase5/<run>/ledger.json`. Latest fresh guard across active workers projects$97.5382798446 total including gross billing estimate versus$120 soft cap. Stop times and actual costs remain pending; monitor and terminate immediately at completion.
