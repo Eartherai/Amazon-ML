@@ -1,9 +1,13 @@
 """Compare final inference feature adapter against the saved measured training features."""
 import duckdb,numpy as np,polars as pl
+import pytest
+from pathlib import Path
 from src.models.sub001_features import NAMES,pair_features
 
 
 def test_sampled_feature_parity():
+    if not Path('artifacts/audit.duckdb').exists():
+      pytest.skip('Full derived audit database archived to private S3; restore via artifacts/cloud/phase5/audit-backup-v001.json to rerun this integration parity check')
     sampled=pl.scan_parquet('outputs/oof/P4-B-001/features/part-*.parquet').head(40).collect()
     numeric=pl.scan_parquet('artifacts/features/P4-NUMERIC-B-001/part-*.parquet').join(sampled.select('source1_entity_id','target_id').lazy(),on=['source1_entity_id','target_id']).collect()
     expected=sampled.join(numeric,on=['source1_entity_id','target_id'],validate='1:1')

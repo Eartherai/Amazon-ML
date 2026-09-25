@@ -54,3 +54,7 @@ Profile `amamzon_01_a1_0`, account ending 6318, us-east-1, on-demand r8i.4xlarge
 ### 2026-09-25T04:07:36+00:00 — launch
 
 Launched on EC2 `i-0a29e371cccca1b99` under profile `amamzon_01_a1_0`, account ending 6318, code commit `4a1872ddcf9549286df75d3009ca11fc30af3c9e`. Prelaunch gross bill estimate $3.0928398446, active worst-case commitments $37.50, proposed maximum $14.33632 and projected project worst case $54.9291598446 below the $120 soft cap. Credit balance unverified. Stop, measured runtime and actual billed cost pending.
+
+## 2026-09-25T04:32:00+00:00 — audit artifact disk backup
+
+The generated 3,444,322,304-byte `artifacts/audit.duckdb` was stored in the same private S3 project bucket under `amazon-ml-2026/phase5/backups/audit-20260925.duckdb`, SSE-AES256, then streamed back and SHA256-verified before removing the idle local copy. S3 Standard storage at the previously verified $0.023/GiB-month rate is approximately $0.074/month while retained; actual request and data-transfer charges are not yet billed. This is a reversible disk reserve action, not paid compute. The backup version, hash and restore command are in `artifacts/cloud/phase5/audit-backup-v001.json`.
