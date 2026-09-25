@@ -49,6 +49,8 @@ def expand(source: Path, target: Path, expected_sha256: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--matching-only", action="store_true",
+                        help="Download only the portal-required matching TSV plus validation evidence")
     args = parser.parse_args()
     config = json.loads(CONFIG.read_text())
     job = aws("sagemaker", "describe-processing-job", "--processing-job-name", config["run_id"])
@@ -65,7 +67,8 @@ def main() -> None:
                 "official.log", "official_check_ids.log"}
     if set(manifest["files"]) != required:
         raise ValueError("Unexpected validator result file inventory")
-    for name in sorted(required):
+    to_download = required - ({"candidate_pairs.tsv.gz"} if args.matching_only else set())
+    for name in sorted(to_download):
         target = args.output / name
         download(prefix, name, target)
         metadata = manifest["files"][name]
@@ -86,11 +89,13 @@ def main() -> None:
     if any(line.startswith("WARNING:") for line in (args.output / "official_check_ids.log").read_text().splitlines()):
         raise ValueError("Strict official validator emitted warnings")
     expand(args.output / "matching_results.tsv.gz", args.output / "matching_results.tsv", manifest["matching_sha256"])
-    expand(args.output / "candidate_pairs.tsv.gz", args.output / "candidate_pairs.tsv", manifest["candidate_sha256"])
+    if not args.matching_only:
+        expand(args.output / "candidate_pairs.tsv.gz", args.output / "candidate_pairs.tsv", manifest["candidate_sha256"])
     receipt = {"processing_job": job["ProcessingJobArn"], "rows": 1732544,
                "matching_sha256": manifest["matching_sha256"],
                "candidate_sha256": manifest["candidate_sha256"],
-               "official_pass": True, "strict_id_check_pass": True}
+               "official_pass": True, "strict_id_check_pass": True,
+               "matching_only": args.matching_only}
     (args.output / "READY.json").write_text(json.dumps(receipt, indent=2) + "\n")
     print(json.dumps(receipt), flush=True)
 

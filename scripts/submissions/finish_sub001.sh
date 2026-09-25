@@ -5,7 +5,6 @@ cd "$(dirname "$0")/../.."
 export AWS_PROFILE=amamzon_01_a1_0
 receipt=artifacts/cloud/phase5/sub001-mac-shards-upload.complete.json
 validated=outputs/submissions/SUB-001/validated-v001
-package=outputs/submissions/SUB-001/amazon_ml_2026_submission.zip
 
 until test -f "$receipt"; do
   sleep 20
@@ -25,12 +24,10 @@ while true; do
   esac
 done
 echo "$(date -u +%FT%TZ) official SageMaker validator completed"
-.venv/bin/python scripts/submissions/download_validated.py --output "$validated"
+.venv/bin/python scripts/submissions/download_validated.py --matching-only --output "$validated"
 # The AWS merge validates S1 alignment and match-to-candidate membership
 # independently before both official validator modes run. Download verifies
-# every raw TSV SHA256; no local inference or second compute pipeline runs.
-.venv/bin/python scripts/submissions/build_final_package.py \
-  --validated-dir "$validated" --output "$package"
-shasum -a 256 "$validated/matching_results.tsv" "$validated/candidate_pairs.tsv" "$package" \
+# the raw matching TSV SHA256; no local inference or second compute pipeline runs.
+shasum -a 256 "$validated/matching_results.tsv" \
   > outputs/submissions/SUB-001/final-upload-hashes.sha256
-echo "$(date -u +%FT%TZ) FINAL_UPLOAD_FILES_READY"
+echo "$(date -u +%FT%TZ) FINAL_MATCHING_TSV_READY"
