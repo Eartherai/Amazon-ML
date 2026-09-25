@@ -78,3 +78,7 @@ The 2,327,511,818-byte reproducible processed-data/index archive was uploaded to
 ## 2026-09-25T05:27:58+00:00 — EXP-032 completion and EXP-033 launch
 
 EXP-032 / P5-FEATURE-200K-001 exited zero and terminated at 05:25:15 UTC, 2,598.52 s wall, estimated EC2 compute $0.401096; actual billed amount pending. EXP-033 / P5-LEARNING-FIT-001 launched on on-demand r8i.2xlarge `i-004e4dcc31fc9b130`, account ending6318, code commit `fd56a5e`, six-hour independent OS cutoff and automatic terminate-on-shutdown. Maximum compute $3.33408 plus $1 allowance = $4.33408 under its $4.50 planning ceiling. Fresh guard's project worst case was $70.42692 below the $120 soft cap. Credit balance and final bill unverified.
+
+## 2026-09-25T05:36:25+00:00 — EXP-033 completion
+
+P5-LEARNING-FIT-001 exited zero and terminated after 506.54 seconds wall time; 427.73 seconds were inside the training script. EC2 compute estimate $0.07818756 at the planning rate, versus $4.50 ceiling. Final billed compute, storage and request costs remain unverified. All 18 model/fold-report checkpoints and summary receipts passed SHA256/version verification. No further paid job was launched for the 250k/500k/1M plan yet; the already-running EXP-025 full retrieval will supply its routes.
