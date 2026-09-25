@@ -30,7 +30,7 @@ def main() -> None:
     (work / "utils").mkdir(parents=True)
     (work / "dataset").mkdir()
     output.mkdir()
-    (ROOT / "result").mkdir()
+    (ROOT / "result").mkdir(exist_ok=True)
     shutil.copy2(ROOT / "code" / "validate_submission.py", work / "utils" / "validate_submission.py")
     (work / "dataset" / "test").symlink_to(ROOT / "test", target_is_directory=True)
     source = ROOT / "matching" / "matching_results.tsv"
