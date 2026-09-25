@@ -15,15 +15,6 @@ if account[-4:]!=infra['account_suffix']:raise RuntimeError('Account mismatch')
 quota=aws('service-quotas','get-service-quota','--service-code','ec2','--quota-code',('L-34B43A08' if cfg.get('purchase')=='spot' else 'L-1216C47A'))['Quota']['Value']
 if quota<8:raise RuntimeError('Insufficient quota')
 if not (root/cfg.get('input_receipt','input-upload.json')).exists():raise RuntimeError('Inputs not verified')
-price_cap=str(cfg.get('spot_max_price',cfg['compute_usd_per_hour']))
-cost_record=guard(cfg,price_cap)
-run=root/cfg['run_id'];run.mkdir(exist_ok=False)
-(run/'cost_guard.json').write_text(json.dumps(cost_record,indent=2))
-archive=run/'code.tar';subprocess.run(['git','archive','--format=tar','--output',str(archive),commit],check=True)
-key='amazon-ml-2026/phase5/code/'+commit+'.tar';receipt=upload(archive,infra['bucket'],key)
-ami=aws('ssm','get-parameter','--name','/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64')['Parameter']['Value']
-offerings=aws('ec2','describe-instance-type-offerings','--location-type','availability-zone','--filters','Name=instance-type,Values='+cfg['instance_type'])['InstanceTypeOfferings']
-azs={x['Location'] for x in offerings};subnet=next(s for s in infra['subnets'] if s['az'] in azs and (not cfg.get('availability_zone') or s['az']==cfg['availability_zone']))
 if cfg.get('job_kind') in {'full_retrieval','sample_retrieval'}:
  benchmark=json.loads((root/'P5-INDEX-001/ledger.json').read_text())
  if benchmark.get('exit_code')!=0 or benchmark.get('instance_state')!='terminated':raise RuntimeError('Benchmark must succeed and terminate first')
@@ -46,6 +37,15 @@ if cfg.get('job_kind')=='learning_curve':
  listing=aws('s3api','list-objects-v2','--bucket',infra['bucket'],'--prefix',feature_prefix)
  feature_parts=[row['Key'] for row in listing.get('Contents',[]) if row['Key'].split('/')[-1].startswith('features-') and row['Key'].endswith('.parquet')]
  if len(feature_parts)!=expected_parts or listing.get('IsTruncated'):raise RuntimeError('Incomplete feature part checkpoint')
+price_cap=str(cfg.get('spot_max_price',cfg['compute_usd_per_hour']))
+cost_record=guard(cfg,price_cap)
+run=root/cfg['run_id'];run.mkdir(exist_ok=False)
+(run/'cost_guard.json').write_text(json.dumps(cost_record,indent=2))
+archive=run/'code.tar';subprocess.run(['git','archive','--format=tar','--output',str(archive),commit],check=True)
+key='amazon-ml-2026/phase5/code/'+commit+'.tar';receipt=upload(archive,infra['bucket'],key)
+ami=aws('ssm','get-parameter','--name','/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64')['Parameter']['Value']
+offerings=aws('ec2','describe-instance-type-offerings','--location-type','availability-zone','--filters','Name=instance-type,Values='+cfg['instance_type'])['InstanceTypeOfferings']
+azs={x['Location'] for x in offerings};subnet=next(s for s in infra['subnets'] if s['az'] in azs and (not cfg.get('availability_zone') or s['az']==cfg['availability_zone']))
 values={'JOB_KIND':cfg.get('job_kind','index_benchmark'),'SHUTDOWN_MINUTES':str(cfg['runtime_cap_minutes']),'INDEX_PREFIX':cfg.get('index_prefix',''),'SHARD_PREFIX':cfg.get('shard_prefix',''),'BUCKET':infra['bucket'],'CODE_KEY':key,'CODE_SHA256':receipt['sha256'],'INPUT_PREFIX':cfg['input_prefix'],'OUTPUT_PREFIX':'amazon-ml-2026/phase5/runs/'+cfg['run_id']}
 script=Path('scripts/aws/worker_bootstrap.sh').read_text().splitlines()
 if cfg.get('bootstrap_script'):
