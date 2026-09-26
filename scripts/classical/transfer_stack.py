@@ -8,7 +8,7 @@ Evaluated with exact macro F0.5 on target-country fold-3 S1 (full truth). Source
 references computed by cross-fitting the stacker over two S1 halves of the source fold-3. Fold4 CLOSED.
 Usage: transfer_stack.py SRC CE_PARQUET
 """
-import hashlib, json, sys
+import hashlib, json, os, sys
 from collections import defaultdict
 from pathlib import Path
 import numpy as np, polars as pl, lightgbm as lgb
@@ -66,6 +66,10 @@ def main():
     p_full, p_text = m_full.predict_proba(X3)[:, 1], m_text.predict_proba(X3[:, TEXT])[:, 1]
     ce = {(q, t): v for q, t, v in pl.read_parquet(ce_file).select("q", "t", "logit").iter_rows()}
     lv = np.array([ce.get((q, t), np.nan) for q, t in zip(q3.tolist(), t3.tolist())], np.float32); rk, gp = ce_ctx(q3.tolist(), lv)
+    if os.environ.get("CE_REL"):  # calibration-invariant CE features: within-S1 z-score replaces the raw logit
+        zz = pl.DataFrame({"q": q3, "v": lv}).with_columns(pl.col("v").fill_nan(None)).select(
+            ((pl.col("v") - pl.col("v").mean().over("q")) / (pl.col("v").std().over("q").fill_null(1.0) + 1.0))).to_series().fill_null(np.nan).to_numpy().astype(np.float32)
+        lv = zz
     FS = {"FULL": np.column_stack([lg(p_full), X3[:, 0], X3[:, 2], X3[:, 3], X3[:, 4], lv, rk, gp]),
           "TEXT": np.column_stack([lg(p_text), lv, rk, gp]), "TEXT_NOCE": np.column_stack([lg(p_text)]), "FULL_NOCE": np.column_stack([lg(p_full), X3[:, 0], X3[:, 2], X3[:, 3], X3[:, 4]])}
     if len(sys.argv) > 3:  # extra pair scorer (e.g. zero-shot reranker) appended as logit + within-S1 rank + gap
@@ -108,11 +112,14 @@ def main():
         for tgt in sorted(set(c3.tolist()) - {src}):
             it = np.where(c3 == tgt)[0]; tq = sorted(set(q3[it].tolist()))
             pt = final.predict_proba(Fm[it])[:, 1]; tr_m, tr_nod = evaluate(it, pt, thr, tq)
+            if os.environ.get("DUMP_SYSTEM") == name:  # target predictions for pseudo-labelling (no target labels used)
+                pl.DataFrame({"q": q3[it], "t": t3[it], "prob": pt, "thr": np.full(len(it), thr)}).write_parquet(
+                    ROOT / f"outputs/experiments/CL-034/pred_{name}_{src}_to_{tgt}.parquet")
             row = {"system": name, "source": src, "ce": Path(ce_file).stem, "thr": round(float(thr), 2), "in_domain_" + src: round(ind, 6), "in_domain_no_dense": round(ind_nod, 6),
                    "transfer_" + tgt: round(tr_m, 6), "transfer_no_dense": round(tr_nod, 6)}
             rows.append(row); print(json.dumps(row), flush=True)
     out = ROOT / "outputs/experiments/CL-034"; out.mkdir(parents=True, exist_ok=True)
-    pl.DataFrame(rows).write_csv(out / f"transfer_stack_{src}_{Path(ce_file).stem}{'_' + Path(sys.argv[3]).stem if len(sys.argv) > 3 else ''}.csv")
+    pl.DataFrame(rows).write_csv(out / f"transfer_stack_{src}_{Path(ce_file).stem}{'_cerel' if os.environ.get('CE_REL') else ''}{'_' + Path(sys.argv[3]).stem if len(sys.argv) > 3 else ''}.csv")
 
 
 if __name__ == "__main__":
