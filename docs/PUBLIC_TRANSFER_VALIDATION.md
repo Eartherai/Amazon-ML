@@ -111,3 +111,14 @@ The CE and QNORM gains hold on every fold (fold spread 0.0007). The CE-decided d
 Primary v4 unseen-domain (CL-034 protocol with QNORM): TEXT+CE US->India 0.9137, India->US 0.9259 (mean **0.9198**, was 0.9108); FULL+CE 0.9255 / 0.9320 (mean 0.9288, optimistic).
 
 Killed (CL-045, TEXT+QNORM base 0.9067 mean transfer): monotone constraints 0.9069, stronger regularization 0.9075, both 0.9071; in-domain -0.001 to -0.010.
+
+## Dense retrieval transfer (CL-046, P5-BIENC-E5S-USONLY-001)
+
+e5-small bi-encoder trained on US S1 only (folds 1-2), evaluated on India fold 3. India sparse misses recovered: 3,321 / 5,554 at top-10 (both-country model 5,095), 3,900 at top-20, 4,374 at top-50; US in-domain unchanged (1,845 vs 1,883). Candidate oracle of sparse top-12 + dense top-k on India fold 3 (26,698 S1):
+
+| dense model | k=0 | k=10 | k=20 | k=50 |
+|---|---:|---:|---:|---:|
+| both countries | 0.97796 | 0.99861 | 0.99920 | 0.99959 |
+| US only (unseen India) | 0.97796 | 0.99199 | 0.99414 | 0.99567 |
+
+Under an unseen country, dense top-10 loses 0.0066 of oracle, and widening to top-50 recovers about 55% of that. Implication for France (unseen): widen the France dense route to top-50 before text-only pruning; India/US stay at top-10.
