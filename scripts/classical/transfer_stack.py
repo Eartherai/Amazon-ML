@@ -62,6 +62,12 @@ def main():
     fo = np.array([fold[q] for q in qa.tolist()]); co = np.array([s1c[q] for q in qa.tolist()])
     trm = (co == src) & np.isin(fo, [1, 2]); f3 = fo == 3
     TEXT = list(range(9, 57))
+    if os.environ.get("QUANT"):  # CL-079: label-free per-country quantile normalisation of every pair feature (rank / n within the country's pairs)
+        import scipy.stats as _ss
+        for c in np.unique(co):
+            m_ = co == c
+            for j in range(X.shape[1]):
+                col = X[m_, j]; X[m_, j] = (_ss.rankdata(col, method="average") / len(col)).astype(np.float32)
     if os.environ.get("QNORM"):  # CL-039/041: append within-S1 z-scores of the 48 pair features
         from stage2_qnorm import qnorm
         X = np.hstack([X, qnorm(qa, X)]); TEXT = list(range(9, X.shape[1]))
@@ -70,7 +76,12 @@ def main():
     q3, t3, X3, y3, c3 = qa[f3], ta[f3], X[f3], y[f3], co[f3]
     p_full, p_text = m_full.predict_proba(X3)[:, 1], m_text.predict_proba(X3[:, TEXT])[:, 1]
     ce = {(q, t): v for q, t, v in pl.read_parquet(ce_file).select("q", "t", "logit").iter_rows()}
-    lv = np.array([ce.get((q, t), np.nan) for q, t in zip(q3.tolist(), t3.tolist())], np.float32); rk, gp = ce_ctx(q3.tolist(), lv)
+    lv = np.array([ce.get((q, t), np.nan) for q, t in zip(q3.tolist(), t3.tolist())], np.float32)
+    if os.environ.get("QUANT"):  # CE logit quantile-normalised within country (non-missing only)
+        import scipy.stats as _ss
+        for c in np.unique(c3):
+            m_ = (c3 == c) & ~np.isnan(lv); lv[m_] = (_ss.rankdata(lv[m_]) / m_.sum()).astype(np.float32)
+    rk, gp = ce_ctx(q3.tolist(), lv)
     if os.environ.get("CE_REL"):  # calibration-invariant CE features: within-S1 z-score replaces the raw logit
         zz = pl.DataFrame({"q": q3, "v": lv}).with_columns(pl.col("v").fill_nan(None)).select(
             ((pl.col("v") - pl.col("v").mean().over("q")) / (pl.col("v").std().over("q").fill_null(1.0) + 1.0))).to_series().fill_null(np.nan).to_numpy().astype(np.float32)
@@ -124,7 +135,7 @@ def main():
                    "transfer_" + tgt: round(tr_m, 6), "transfer_no_dense": round(tr_nod, 6)}
             rows.append(row); print(json.dumps(row), flush=True)
     out = ROOT / "outputs/experiments/CL-034"; out.mkdir(parents=True, exist_ok=True)
-    pl.DataFrame(rows).write_csv(out / f"transfer_stack_{src}_{Path(ce_file).stem}{'_cerel' if os.environ.get('CE_REL') else ''}{'_qnorm' if os.environ.get('QNORM') else ''}{'_' + Path(sys.argv[3]).stem if len(sys.argv) > 3 else ''}.csv")
+    pl.DataFrame(rows).write_csv(out / f"transfer_stack_{src}_{Path(ce_file).stem}{'_cerel' if os.environ.get('CE_REL') else ''}{'_qnorm' if os.environ.get('QNORM') else ''}{'_quant' if os.environ.get('QUANT') else ''}{'_' + Path(sys.argv[3]).stem if len(sys.argv) > 3 else ''}.csv")
 
 
 if __name__ == "__main__":
