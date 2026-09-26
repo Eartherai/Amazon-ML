@@ -13,6 +13,8 @@ Steps (no labels of France exist; train labels only):
      cross-fit on train fold-3 only (as assemble_final_v2).
   4. France p is logit-shifted so the new threshold maps to 0.72 (the downstream compact assembly threshold) and written
      into a copy of the stack parquet; India/US rows are untouched.
+SYSTEM=NOCE (CL-066): the stacker drops the three CE features (simulator: CE is the main cross-country failure,
+India -> US FULL 0.932 vs no-CE 0.960); round-0 pseudo labels then come from a no-CE stacker on production p2.
 Fold4 CLOSED.
 """
 import hashlib, json, os, sys, time
@@ -24,7 +26,8 @@ from stage2_qnorm import qnorm, PARAMS as P2
 from assemble_final_v2 import PARAMS as PS, logit, ce_ctx, own_decide, f05
 
 POS, NEG = float(os.environ.get("POS", 0.9)), float(os.environ.get("NEG", 0.02))
-R2, RS = float(os.environ.get("R2", 0.29)), float(os.environ.get("RS", 0.58))
+R2, RS = float(os.environ.get("R2", 0.29)), float(os.environ.get("RS", 0.58)); SYSTEM = os.environ.get("SYSTEM", "FULL")
+NC = 5 if SYSTEM == "NOCE" else 8  # stacker columns: logit(p2), 4 stage-1 context (+ CE logit, CE rank, CE gap)
 OUT = ROOT / "outputs/experiments/CL-064"; OUT.mkdir(parents=True, exist_ok=True)
 STACK = ROOT / "outputs/experiments/CL-014/test-stack-CL-044-v2qbag-stack.parquet"
 
@@ -53,6 +56,14 @@ def main():
     lvt = fr.join(ce_t, on=["q", "t"], how="left").sort("i")["logit"].fill_null(np.nan).to_numpy().astype(np.float32)
     FK = list(zip(fq.tolist(), ft.tolist())); rkt, gpt = ce_ctx(FK, lvt)
     log(event="france", pairs=len(fq), s1=int(len(np.unique(fq))), ce_hits=int((~np.isnan(lvt)).sum()))
+    if SYSTEM == "NOCE":  # round 0 of the no-CE system: stacker on production fold-3 OOF p2, applied with production bag p2
+        p2oof = np.load(ROOT / "outputs/experiments/CL-003/train-oof-top12-v2q.npy")[f3]
+        bag = pl.read_parquet(ROOT / "outputs/experiments/CL-003/test_probs/CL-005-top12v2q-bag.parquet").select("q", "t", "p").unique(["q", "t"], keep="first")
+        p2bag = fr.join(bag, on=["q", "t"], how="left").sort("i")["p"].to_numpy(); X3_ = X[f3]
+        F0 = np.column_stack([logit(p2oof), X3_[:, 0], X3_[:, 2], X3_[:, 3], X3_[:, 4]]).astype(np.float32)
+        Ff0 = np.column_stack([logit(p2bag), FX[:, 0], FX[:, 2], FX[:, 3], FX[:, 4]]).astype(np.float32)
+        pcur = lgb.LGBMClassifier(**PS).fit(F0, y[f3]).predict_proba(Ff0)[:, 1]
+        log(event="noce_round0", france_mean_p=round(float(pcur.mean()), 5))
     # ---- pseudo labels (ownership among France pairs by current p)
     order = np.lexsort((ft, -pcur)); seen, own = set(), np.zeros(len(fq), bool)
     for i in order:
@@ -65,14 +76,14 @@ def main():
     Xs = np.vstack([X[tr12], FX[pi]]); ys = np.concatenate([y[tr12], pyv]); wv = np.concatenate([np.ones(tr12.sum()), np.full(len(pi), w2)])
     m2 = lgb.LGBMClassifier(**P2).fit(Xs, ys, sample_weight=wv); del Xs
     p2f3 = m2.predict_proba(X[f3])[:, 1]; p2fr = m2.predict_proba(FX)[:, 1]
-    m2.booster_.save_model(str(OUT / "stage2-v2q-f12-frpseudo.txt"))
+    m2.booster_.save_model(str(OUT / f"stage2-v2q-f12-frpseudo-{SYSTEM}.txt"))
     log(event="stage2", france_p2_mean=round(float(p2fr.mean()), 5))
     # ---- stacker (fold-3 train + France pseudo)
     K3 = list(zip(qa[f3].tolist(), ta[f3].tolist())); X3 = X[f3]; y3 = y[f3]
     ce = {(q, t): v for q, t, v in pl.read_parquet(ROOT / "outputs/experiments/CL-014/e5b4-ep3.parquet").select("q", "t", "logit").iter_rows()}
     lv = np.array([ce.get(k, np.nan) for k in K3], np.float32); rk, gp = ce_ctx(K3, lv)
-    Fm = np.column_stack([logit(p2f3), X3[:, 0], X3[:, 2], X3[:, 3], X3[:, 4], lv, rk, gp]).astype(np.float32)
-    Ff = np.column_stack([logit(p2fr), FX[:, 0], FX[:, 2], FX[:, 3], FX[:, 4], lvt, rkt, gpt]).astype(np.float32)
+    Fm = np.column_stack([logit(p2f3), X3[:, 0], X3[:, 2], X3[:, 3], X3[:, 4], lv, rk, gp]).astype(np.float32)[:, :NC]
+    Ff = np.column_stack([logit(p2fr), FX[:, 0], FX[:, 2], FX[:, 3], FX[:, 4], lvt, rkt, gpt]).astype(np.float32)[:, :NC]
     part = np.array([int(hashlib.sha256(("a" + q).encode()).hexdigest(), 16) % 3 for q, _ in K3]); oof = np.zeros(len(K3))
     for k in range(3):
         oof[part == k] = lgb.LGBMClassifier(**PS).fit(Fm[part != k], y3[part != k]).predict_proba(Fm[part == k])[:, 1]
@@ -89,12 +100,13 @@ def main():
     # ---- diagnostics: links per S1 at 0.72 with ownership among France sparse pairs only
     def links(p):
         d = own_decide(FK, p, 0.72); return float(sum(len(v) for v in d.values()) / len(np.unique(fq)))
+    pold = st.join(pl.DataFrame({"q": fq, "t": ft}), on=["q", "t"], how="semi")
     log(event="france_links_sparse", before=round(links(pcur), 4), after=round(links(padj), 4), changed_decisions=int(((pcur >= 0.72) != (padj >= 0.72)).sum()))
     new = pl.DataFrame({"q": fq, "t": ft, "p_new": padj})
     out = st.join(new, on=["q", "t"], how="left").with_columns(pl.coalesce("p_new", "p").alias("p")).drop("p_new")
     assert out.height == st.height
-    name = f"test-stack-CL-064-frst-{POS}-{NEG}.parquet"; out.write_parquet(ROOT / "outputs/experiments/CL-014" / name)
-    pl.DataFrame({"q": fq, "t": ft, "p_old": pcur, "p_new": padj}).write_parquet(OUT / f"france_p_{POS}_{NEG}.parquet")
+    name = f"test-stack-CL-064-frst-{POS}-{NEG}{'' if SYSTEM == 'FULL' else '-' + SYSTEM}.parquet"; out.write_parquet(ROOT / "outputs/experiments/CL-014" / name)
+    pl.DataFrame({"q": fq, "t": ft, "p_old": pcur, "p_new": padj}).write_parquet(OUT / f"france_p_{POS}_{NEG}{'' if SYSTEM == 'FULL' else '_' + SYSTEM}.parquet")
     log(event="done", stack=name)
 
 

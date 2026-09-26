@@ -126,6 +126,10 @@ def main():
     if cfg.get("pseudo_glob"):  # CL-059: self-training on label-free target-domain pseudo-positives (q, t[, y])
         ps = pd.concat([pd.read_parquet(p) for p in glob.glob(str(root / "pseudo" / cfg["pseudo_glob"]))], ignore_index=True)
         if "y" in ps.columns: ps = ps[ps["y"] == 1]
+        if cfg.get("pseudo_test"):  # CL-067: France pseudo pairs reference TEST records; add their texts (same formats)
+            ts1_ = read_src(root / "test/test_source1.tsv"); ttg_ = pd.concat([read_src(root / f"test/test_source{i}.tsv") for i in (2, 3)])
+            s1_text.update(dict(zip(ts1_["entity_id"], "query: " + ts1_["business_name"] + " | " + ts1_["business_address"])))
+            tg_text.update(dict(zip(ttg_["entity_id"], "passage: " + ttg_["entity_id"].str[:2].str.lower() + ": " + ttg_["business_name"] + " | " + ttg_["business_address"])))
         train_pos = [(q, t) for q, t in zip(ps["q"], ps["t"]) if q in s1_text and t in tg_text]
         log(event="pseudo", pairs=len(train_pos))
     random.shuffle(train_pos)

@@ -56,8 +56,8 @@ def main():
             pi, pyv = pseudo; Xs = np.vstack([Xs, X[it[pi]][:, cols]]); ys = np.concatenate([ys, pyv]); ws = np.concatenate([ws, np.full(len(pi), W)])
         m2 = lgb.LGBMClassifier(**P).fit(Xs, ys, sample_weight=ws)
         p2 = np.zeros(len(qa)); idx = np.concatenate([it, ist]); p2[idx] = m2.predict_proba(X[idx][:, cols])[:, 1]
-        base = [X[:, 0], X[:, 2], X[:, 3], X[:, 4]] if system == "FULL" else []
-        Fm = np.column_stack([lg(p2)] + base + [lv, rk, gp]).astype(np.float32)
+        base = [X[:, 0], X[:, 2], X[:, 3], X[:, 4]] if system.startswith("FULL") else []
+        Fm = np.column_stack([lg(p2)] + base + ([] if system.endswith("NOCE") else [lv, rk, gp])).astype(np.float32)
         Fs, ysrc, wsrc = Fm[ist], y[ist], np.ones(len(ist))
         if pseudo is not None:
             pi, pyv = pseudo; Fs = np.vstack([Fs, Fm[it[pi]]]); ysrc = np.concatenate([ysrc, pyv]); wsrc = np.concatenate([wsrc, np.full(len(pi), W)])
@@ -88,11 +88,30 @@ def main():
             curve = {round(float(th), 3): realize(it, pt, th, tq) for th in np.arange(0.3, 0.97, 0.02)}
             thp = min(curve, key=lambda th: abs(curve[th][1] - src_links))
             extra.update({"src_links": round(src_links, 4), "prior_thr": thp, "prior_macro": round(curve[thp][0], 6), "prior_links": round(curve[thp][1], 4)})
+        extra["_realize"] = (realize, it, tq)
         return m_fixed, pt, thr, extra
 
     rows = []
-    for system in ("TEXT", "FULL"):
-        m0, pt, thr, ex = run(system); rows.append({"system": system, "source": src, "round": 0, "transfer_macro": round(m0, 6), "thr": round(float(thr), 2), **ex}); print(json.dumps(rows[-1]), flush=True)
+    if os.environ.get("BLEND"):  # CL-066: blend of FULL and FULL_NOCE stacks after self-training round 1 (and round 0 reference)
+        res = {}
+        for system in ("FULL", "FULL_NOCE"):
+            m0, pt0, thr0, ex0 = run(system); res[(system, 0)] = (m0, pt0, thr0)
+            owner = defaultdict(lambda: (-1, None))
+            for i, (q, t) in enumerate(zip(qa[it].tolist(), ta[it].tolist())):
+                if pt0[i] > owner[t][0]: owner[t] = (pt0[i], i)
+            own = np.zeros(len(it), bool); own[[v[1] for v in owner.values() if v[1] is not None]] = True
+            pos = np.where((pt0 >= POS) & own)[0]; neg = np.where(pt0 <= NEG)[0]
+            pi = np.concatenate([pos, neg]); pyv = np.concatenate([np.ones(len(pos), np.int8), np.zeros(len(neg), np.int8)])
+            m1, pt1, thr1, ex1 = run(system, (pi, pyv)); res[(system, 1)] = (m1, pt1, thr1); realize = ex1["_realize"][0]
+        for r in (0, 1):
+            (mf, pf, tf), (mn, pn, tn) = res[("FULL", r)], res[("FULL_NOCE", r)]
+            for w in (0.0, 0.25, 0.5, 0.75, 1.0):
+                pb = w * pf + (1 - w) * pn; tb = w * tf + (1 - w) * tn; mb = realize(it, pb, tb, tq)[0]
+                rows.append({"source": src, "round": r, "w_full": w, "macro": round(mb, 6), "thr": round(float(tb), 3)}); print(json.dumps(rows[-1]), flush=True)
+        out = ROOT / "outputs/experiments/CL-066"; out.mkdir(parents=True, exist_ok=True)
+        pl.DataFrame(rows).write_csv(out / f"blend_{src}{'_indomain' if os.environ.get('INDOMAIN') else ''}.csv"); return
+    for system in os.environ.get("SYSTEMS", "TEXT,FULL").split(","):
+        m0, pt, thr, ex = run(system); rows.append({"system": system, "source": src, "round": 0, "transfer_macro": round(m0, 6), "thr": round(float(thr), 2), **{k: v for k, v in ex.items() if not k.startswith("_")}}); print(json.dumps(rows[-1]), flush=True)
         for r in range(1, rounds + 1):
             owner = defaultdict(lambda: (-1, None))
             for i, (q, t) in enumerate(zip(qa[it].tolist(), ta[it].tolist())):
@@ -103,9 +122,9 @@ def main():
             yt = y[it[pi]]; prec_pos = float(yt[:len(pos)].mean()) if len(pos) else None; npv = float(1 - yt[len(pos):].mean()) if len(neg) else None
             m, pt, thr, ex = run(system, (pi, pyv))
             rows.append({"system": system, "source": src, "round": r, "transfer_macro": round(m, 6), "thr": round(float(thr), 2), "pseudo_pos": len(pos), "pos_precision": round(prec_pos, 4),
-                         "pseudo_neg": len(neg), "neg_npv": round(npv, 4), **ex}); print(json.dumps(rows[-1]), flush=True)
+                         "pseudo_neg": len(neg), "neg_npv": round(npv, 4), **{k: v for k, v in ex.items() if not k.startswith("_")}}); print(json.dumps(rows[-1]), flush=True)
     out = ROOT / "outputs/experiments/CL-060"; out.mkdir(parents=True, exist_ok=True)
-    pl.DataFrame(rows, strict=False).write_csv(out / f"selftrain_{src}_{POS}_{NEG}_{W}{'_prior' if os.environ.get('PRIOR') else ''}{'_indomain' if os.environ.get('INDOMAIN') else ''}.csv")
+    pl.DataFrame(rows, strict=False).write_csv(out / f"selftrain_{src}_{POS}_{NEG}_{W}{'_prior' if os.environ.get('PRIOR') else ''}{'_indomain' if os.environ.get('INDOMAIN') else ''}_{os.environ.get('SYSTEMS', 'TEXT,FULL').replace(',', '-')}.csv")
 
 
 if __name__ == "__main__":
