@@ -46,6 +46,7 @@ def main():
     ap.add_argument("--dense-ce", default=None, help="test CE logits for dense pairs (q,t,logit)")
     ap.add_argument("--dense-bundle", default=str(ROOT / "outputs/experiments/CL-025/bundles/dense_test.parquet"))
     ap.add_argument("--dense-model-thr", type=float, default=0.72)
+    ap.add_argument("--dump-cands", default=None, help="write the full candidate table (q,t,route,prob,thr,decision,country) for post-hoc correctors")
     a = ap.parse_args()
     s1 = pl.read_csv(TEST / "test_source1.tsv", separator="\t", quote_char=None, infer_schema_length=0).select(pl.col("entity_id").alias("q"), "country")
     order, country = s1["q"].to_list(), dict(s1.iter_rows())
@@ -60,6 +61,7 @@ def main():
     for q, t in extra.select("q", "t").iter_rows(): cand[q].add(t)
     # ---- sparse decisions (ownership among candidates)
     best = {}
+    sp = sp.sort(["p", "q", "t"], descending=[True, False, False])  # deterministic ownership tie-break (CL-055)
     for q, t, p in sp.select("q", "t", "p").iter_rows():
         if p >= a.thr and (t not in best or p > best[t][1]): best[t] = (q, p)
     chosen = defaultdict(set)
@@ -113,6 +115,19 @@ def main():
             if t in key_of:
                 for o in members[key_of[t]]:
                     if o not in allc: allc.add(o); chosen[q].add(o); cand[q].add(o); dup += 1
+    # ---- optional candidate table for post-hoc correctors (e.g. CLAUDE2-UNIV-MF-001)
+    if a.dump_cands:
+        sp_t = sp.select("q", "t", pl.lit("sparse").alias("route"), "p", pl.lit(a.thr).alias("thr"))
+        ex_t = (td.select("q", "t", pl.lit("dense").alias("route"), pl.col("pm").alias("p"), pl.lit(a.dense_model_thr).alias("thr")) if a.dense_ce else
+                extra.select("q", "t", pl.lit("dense").alias("route"), pl.col("p_text").alias("p"), pl.lit(a.add_thr).alias("thr")))
+        fr_t = fr.select("q", "t", pl.lit("dense").alias("route"), pl.col("p_text").alias("p"), pl.lit(a.add_thr).alias("thr"))
+        ct = pl.concat([sp_t, ex_t, fr_t]).unique(["q", "t"], keep="first").rename({"p": "prob"})
+        dup_rows = pl.DataFrame([(q, t) for q in order for t in cand.get(q, ()) ], schema=["q", "t"], orient="row").join(ct.select("q", "t"), on=["q", "t"], how="anti")
+        ct = pl.concat([ct, dup_rows.with_columns(pl.lit("dup").alias("route"), pl.lit(1.0).alias("prob"), pl.lit(0.5).alias("thr"))])
+        chosen_set = {(q, t) for q, ts in chosen.items() for t in ts}
+        ct = ct.with_columns(pl.Series("decision", [int((q, t) in chosen_set) for q, t in ct.select("q", "t").iter_rows()]),
+                             pl.col("q").replace_strict(country).alias("country"))
+        ct.write_parquet(a.dump_cands); print(json.dumps({"dump_cands": ct.height, "decisions": int(ct["decision"].sum())}), flush=True)
     # ---- write
     dest = ROOT / "outputs/submissions" / a.name; dest.mkdir(parents=True, exist_ok=False)
     mp, cp = dest / "matching_results.tsv", dest / "candidate_pairs.tsv"
