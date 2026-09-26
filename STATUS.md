@@ -1,3 +1,13 @@
+# 2026-09-26T02:14:07+00:00 — organizer update: candidate_pairs.tsv ranked; compact cascade submissions
+
+Organizer: candidate_pairs.tsv and its code are reviewed for final ranking; smaller candidate sets per S1 rank higher. Measured budget curves and Pareto frontier are in `docs/CANDIDATE_BUDGET.md` (CL-027). Fold-3 India/US: current 16.7 cand/S1 gives 0.980591; stage-1 band p>=0.005 + pruned dense gives 0.980835 at 7.5/S1; band p>=0.02 + dense p_text>=0.5 gives 0.980787 at 5.6/S1. Sparse char3 retrieval (~197/S1 raw) caps link recall at 0.967; dense retrieval lifts the oracle to 0.997+.
+
+Compact test submissions (CL-028, `scripts/classical/assemble_compact.py`), 6.33 cand/S1 (p95 12, 10,966,723 pairs; India 6.17, US 5.64, France 8.57). Matching is a subset of candidates by construction. Official default + --check-ids (with candidate file) + strict PASS:
+- `outputs/submissions/UPLOAD_SUB007_COMPACT_B_CL028/` matching `40be1040315437267cf0db8d571460d9e6e15748d79b0fe46c3db9c1d0f1d2fb`, candidates `48bc1b1ccd87df2aadf95e0067a284f6e9ca51077a9626519ce4abe478df10e8` (France = VSAFE rows restricted to candidates)
+- `outputs/submissions/UPLOAD_SUB008_COMPACT_A_CL028/` matching `65f17eb605c7fe697cc83230983c687c37ca8bd4a3cdce26a39b2e8195cc34d3`, candidates `03b4582ddac5b6e7a4ee72027dd78433cd614e05da9011897626e69ef8369755` (France = pipeline)
+
+Open caveat: dense/France-route pairs are pruned and decided by the same text-only model; the next step is scoring pruned dense survivors with the cross-encoder so every decision comes from the expensive matcher. claude2 profile verified as the same account/org as the primary (shared usage), so no delegation. Fold4 CLOSED.
+
 # 2026-09-25T23:55:14+00:00 — 12h sprint: final candidates SUB005-B and SUB006-A built and validated
 
 Fold-3 (~64k S1, labels, fold4 CLOSED): stage-2 alone 0.964662; + e5-base cross-encoder stack 0.973788 (4 epochs; 2 epochs 0.973764, tie); + ownership + dense e5-small top-10 rescue (text-only p>=0.8) **0.98049** (India 0.97786, US 0.98225). Same recipe applied to test from saved artifacts: 10,558,786 CE band logits (P5-CE-E5BASE-4EP-001), 7,432,606 dense pairs (P5-BIENC-E5S-TEST-T003), bundled on SageMaker (P5-BUNDLE-003) and downloaded with size match. Assembly `scripts/classical/assemble_final_v2.py` is deterministic (seeded LightGBM, sorted rescue tie-break).
