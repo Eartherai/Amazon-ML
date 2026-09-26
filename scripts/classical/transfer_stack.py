@@ -14,6 +14,7 @@ from pathlib import Path
 import numpy as np, polars as pl, lightgbm as lgb
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts/classical"))
 P = dict(objective="binary", n_estimators=500, learning_rate=0.06, num_leaves=63, min_child_samples=40, subsample=0.8, subsample_freq=1,
          colsample_bytree=0.8, verbose=-1, n_jobs=8, random_state=0, deterministic=True, force_col_wise=True)
 PS = dict(P, n_estimators=400, learning_rate=0.05, num_leaves=31, min_child_samples=50, colsample_bytree=0.9)
@@ -61,7 +62,11 @@ def main():
     fo = np.array([fold[q] for q in qa.tolist()]); co = np.array([s1c[q] for q in qa.tolist()])
     trm = (co == src) & np.isin(fo, [1, 2]); f3 = fo == 3
     TEXT = list(range(9, 57))
+    if os.environ.get("QNORM"):  # CL-039/041: append within-S1 z-scores of the 48 pair features
+        from stage2_qnorm import qnorm
+        X = np.hstack([X, qnorm(qa, X)]); TEXT = list(range(9, X.shape[1]))
     m_full = lgb.LGBMClassifier(**P).fit(X[trm], y[trm]); m_text = lgb.LGBMClassifier(**P).fit(X[trm][:, TEXT], y[trm])
+    m_dense = m_text if len(TEXT) == 48 else lgb.LGBMClassifier(**P).fit(X[trm][:, 9:57], y[trm])  # dense pairs: plain 48-feature text model
     q3, t3, X3, y3, c3 = qa[f3], ta[f3], X[f3], y[f3], co[f3]
     p_full, p_text = m_full.predict_proba(X3)[:, 1], m_text.predict_proba(X3[:, TEXT])[:, 1]
     ce = {(q, t): v for q, t, v in pl.read_parquet(ce_file).select("q", "t", "logit").iter_rows()}
@@ -81,7 +86,7 @@ def main():
     for c in ("India", "US"):
         d = pl.read_parquet(ROOT / f"outputs/experiments/CL-021/f3-{c}-dense-top10-scored.parquet").select("q", "t")
         Xd = np.load(ROOT / f"outputs/experiments/CL-021/f3-{c}-dense-top10-scored-X.npy")
-        dparts.append(d.with_columns(pl.Series("p", m_text.predict_proba(Xd)[:, 1])))
+        dparts.append(d.with_columns(pl.Series("p", m_dense.predict_proba(Xd)[:, 1])))
     dn = pl.concat(dparts); dq, dt, dp = dn["q"].to_list(), dn["t"].to_list(), dn["p"].to_numpy()
     half = np.array([int(hashlib.sha256(q.encode()).hexdigest(), 16) % 2 for q in q3.tolist()])
     grid = np.arange(0.3, 0.96, 0.02); rows = []
@@ -119,7 +124,7 @@ def main():
                    "transfer_" + tgt: round(tr_m, 6), "transfer_no_dense": round(tr_nod, 6)}
             rows.append(row); print(json.dumps(row), flush=True)
     out = ROOT / "outputs/experiments/CL-034"; out.mkdir(parents=True, exist_ok=True)
-    pl.DataFrame(rows).write_csv(out / f"transfer_stack_{src}_{Path(ce_file).stem}{'_cerel' if os.environ.get('CE_REL') else ''}{'_' + Path(sys.argv[3]).stem if len(sys.argv) > 3 else ''}.csv")
+    pl.DataFrame(rows).write_csv(out / f"transfer_stack_{src}_{Path(ce_file).stem}{'_cerel' if os.environ.get('CE_REL') else ''}{'_qnorm' if os.environ.get('QNORM') else ''}{'_' + Path(sys.argv[3]).stem if len(sys.argv) > 3 else ''}.csv")
 
 
 if __name__ == "__main__":

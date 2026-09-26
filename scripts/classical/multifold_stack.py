@@ -4,7 +4,7 @@ cross-fit by fold (train on two folds, predict the third); its ownership thresho
 the training folds. Compares stage-2 v2 vs v2q (QNORM) OOF, with and without CE. Exact macro F0.5, full truth. Fold4 CLOSED.
 Usage: multifold_stack.py CE_F1 CE_F2 CE_F3
 """
-import json, sys
+import hashlib, json, sys
 from collections import defaultdict
 from pathlib import Path
 import numpy as np, polars as pl, lightgbm as lgb
@@ -62,8 +62,10 @@ def main():
                 ip = np.zeros(len(tr))
                 for k in (a, b):
                     m = trf != k; ip[~m] = lgb.LGBMClassifier(**PS).fit(Fm[tr[m]], y[tr[m]]).predict_proba(Fm[tr[~m]])[:, 1]
-                trq = sorted(set(qa[tr].tolist()))
-                thr = max(np.arange(0.4, 0.95, 0.02), key=lambda th: np.mean(list(macro_of(qa[tr], ta[tr], ip, th, trq, truth).values())))
+                # threshold on a fixed 30k-S1 sample of the training folds (speed); held-fold evaluation stays exact and complete
+                trq_all = sorted(set(qa[tr].tolist())); samp = set(sorted(trq_all, key=lambda q: hashlib.sha256(("thr" + q).encode()).hexdigest())[:30000])
+                sm = np.array([q in samp for q in qa[tr].tolist()]); trq = sorted(samp)
+                thr = max(np.arange(0.5, 0.9, 0.04), key=lambda th: np.mean(list(macro_of(qa[tr][sm], ta[tr][sm], ip[sm], th, trq, truth).values())))
                 pt = lgb.LGBMClassifier(**PS).fit(Fm[tr], y[tr]).predict_proba(Fm[te])[:, 1]
                 teq = sorted(set(qa[te].tolist())); per = macro_of(qa[te], ta[te], pt, thr, teq, truth); per_all.update(per)
                 rows.append({"stage2": tag, "ce": use_ce, "fold": h, "thr": round(float(thr), 2), "macro": round(float(np.mean(list(per.values()))), 6), "s1": len(teq)})
