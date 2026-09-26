@@ -76,7 +76,7 @@ def main():
     print(json.dumps({"test_pairs": tp.height, "with_ce": pairs.height, "score_null": int(pairs["score"].null_count()), "base_null": int(pairs["base"].null_count())}), flush=True)
     # current decisions: post-corrector table (same state as candidates_mfu for the folds) for context; ownership from the final SUB017 decisions
     table = pl.read_parquet(R / "CL-066/test_cands_frblend050_postuniv.parquet").select("q", "t", "prob", "decision")
-    final = pl.read_csv(ROOT / "outputs/submissions/CL-070-v9-frblend050-univ-recall/matching_results.tsv", separator="\t", quote_char=None, infer_schema_length=0).with_columns(pl.col("matched_entity_ids").fill_null(""))
+    final = pl.read_csv(ROOT / "outputs/submissions" / __import__("os").environ.get("SPLOW_BASE", "CL-070-v9-frblend050-univ-recall") / "matching_results.tsv", separator="\t", quote_char=None, infer_schema_length=0).with_columns(pl.col("matched_entity_ids").fill_null(""))
     owned_final = set(final.filter(pl.col("matched_entity_ids") != "").select(pl.col("matched_entity_ids").str.split(",")).explode("matched_entity_ids")["matched_entity_ids"].to_list())
     x, _ = assemble(pairs, table, owned_final)
     p = m.predict_proba(M(x))[:, 1]; add = {}
@@ -85,7 +85,7 @@ def main():
         q, t = x["q"][int(i)], x["t"][int(i)]
         if t not in add: add[t] = q
     out = pl.DataFrame({"q": list(add.values()), "t": list(add.keys()), "new_decision": [1] * len(add)}, schema={"q": pl.String, "t": pl.String, "new_decision": pl.Int64})
-    out.write_parquet(R / "CL-069/test/splow_test_adds.parquet")
+    out.write_parquet(R / "CL-069/test" / __import__("os").environ.get("SPLOW_OUT", "splow_test_adds.parquet"))
     nq = 1473092
     print(json.dumps({"test_adds": out.height, "adds_per_100k_s1": round(1e5 * out.height / nq, 1), "ce_mean_test": round(float(x["ce"].mean()), 4), "ce_mean_folds": round(float(allx["ce"].mean()), 4),
                       "p_ge_thr_frac_test": round(float((p >= THR).mean()), 6), "score_mean_test": round(float(x["score"].mean()), 5), "score_mean_folds": round(float(allx["score"].mean()), 5)}))
