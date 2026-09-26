@@ -72,3 +72,25 @@ Per-slice fold-3 macro of the new primary system (CL-037): India 0.98377, US 0.9
 | GBDT-only (no CE) | 0.9738 (stage-2 + ctx) | ~0.902 | India 0.952 | 12 |
 
 Public-gap risk for P-new: MEDIUM-HIGH for France specifically (unseen-domain ~0.91 in simulation, ~0.855 implied by the public score), LOW for India/US.
+
+## Transfer-improvement block (CL-038 .. CL-043)
+
+| lever | test | in-domain | transfer | decision |
+|---|---|---:|---:|---|
+| QNORM: within-S1 z-scores of the 48 pair features (CL-039) | TEXT stage-2 | +0.003 (US 0.9687->0.9716, India 0.9466->0.9492) | US->India 0.8736->0.8794, India->US 0.9176->0.9341 (mean +0.011) | **promoted** |
+| QNORM on FULL features | stage-2 | both-country fold-3 0.96361->0.96540 | US->India 0.9178->0.9236, India->US 0.9511->0.9619 | **promoted** |
+| QNORM in the CE stack (fold 3) | stage-2 v2q + CE stack | 0.9739-0.9744 -> 0.9752-0.9757 over 8 salted stacker partitions | | **promoted** |
+| relative gaps / within-S1 ranks only | TEXT | -0.05 | worse | killed |
+| CE pseudo-label adaptation (positives only, 98.3% precise) | US-only CE -> India | | pair AUC 0.960->0.975, but stack transfer 0.9104->0.8941 (logit calibration shift) | killed |
+| calibration-invariant CE features (within-S1 z-score) | stack | 0.9824->0.9801 | no gain | killed |
+| France accent folding (CE) | label-free agreement with accent-invariant stage-2 | | France AUC 0.98366 raw vs 0.98326 folded; accented 0.98327 vs ASCII 0.98393 | killed: accents do not confuse the CE |
+
+Deployment finding (CL-043): the stacker is sensitive to which stage-2 model produced p2. When the stacker's cross-fit
+partition equals the stage-2 OOF partition, v2q scores 0.97336 instead of ~0.9755. Test p2 therefore uses the mean of
+the three stage-2 fold models (the same distribution the stacker trained on), and the stacker threshold cross-fit uses a
+salted partition.
+
+France: CE-versus-stage-2 agreement on France (0.9837) is at US level (0.9861) and above India (0.9757), so the matcher
+is internally consistent on France. The ~0.855 implied France score assumes India/US score publicly exactly as locally;
+that assumption is untested. A per-country diagnostic upload (France rows empty, or India rows empty) is the only way to
+measure where the public gap comes from.

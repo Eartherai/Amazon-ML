@@ -62,12 +62,15 @@ def main():
     for x in ("--ce-held", "--ce-test", "--dense", "--name"): ap.add_argument(x, required=True)
     ap.add_argument("--france", choices=["new", "vsafe"], default="new")
     ap.add_argument("--dense-thr", type=float, default=0.8)
+    ap.add_argument("--salt", default="", help="stacker threshold cross-fit partition salt ('' reproduces CL-025)")
+    ap.add_argument("--oof", default="train-oof-top12-v2.npy", help="stage-2 OOF file in CL-003 (v2 or v2q)")
+    ap.add_argument("--probs", default="CL-005-top12v2-v1.parquet", help="stage-2 test probabilities in CL-003/test_probs")
     ap.add_argument("--vsafe", default=str(ROOT / "outputs/submissions/UPLOAD_FINAL_VSAFE/UPLOAD_FINAL_VSAFE_matching_results.tsv"))
     ap.add_argument("--france-rescue", default=str(ROOT / "outputs/experiments/CL-012/France-rescue-VSAFE.parquet"))
     a = ap.parse_args()
     # ---- stacker on fold-3 OOF (same features as stack_ce_fold3 'stack_all')
     z = np.load(ROOT / "outputs/experiments/CL-003/trainmat-top12-v2.npz", allow_pickle=True)
-    keys, X = z["keys"], z["X"]; p2 = np.load(ROOT / "outputs/experiments/CL-003/train-oof-top12-v2.npy")
+    keys, X = z["keys"], z["X"]; p2 = np.load(ROOT / "outputs/experiments/CL-003" / a.oof)
     top = pl.concat([pl.read_parquet(ROOT / f"outputs/experiments/CL-003/s3/results/top12-fold{k}.parquet") for k in (1, 2, 3)])
     fold = dict(zip(top["source1_entity_id"].to_list(), top["fold"].to_list()))
     m3 = np.array([fold[q] == 3 for q in keys[:, 0].tolist()]); keys, X, p2 = keys[m3], X[m3], p2[m3]
@@ -80,7 +83,8 @@ def main():
     qs = sorted({k[0] for k in K})
     gt = pl.read_csv(ROOT / "student_resource/dataset/train/train_ground_truth.tsv", separator="\t", quote_char=None, infer_schema_length=0).filter(pl.col("source1_entity_id").is_in(qs))
     truth = {q: set(r.split(",")) if r else set() for q, r in gt.iter_rows()}
-    part = np.array([int(hashlib.sha256(q.encode()).hexdigest(), 16) % 3 for q, _ in K])
+    # salted partition: decorrelated from the stage-2 OOF partition (sha256(q) % 3), see CL-043
+    part = np.array([int(hashlib.sha256((a.salt + q).encode()).hexdigest(), 16) % 3 for q, _ in K])
     oof = np.zeros(len(K))
     for k in range(3):
         oof[part == k] = lgb.LGBMClassifier(**PARAMS).fit(Fm[part != k], y[part != k]).predict_proba(Fm[part == k])[:, 1]
@@ -91,7 +95,7 @@ def main():
     model = lgb.LGBMClassifier(**PARAMS).fit(Fm, y)
     print(json.dumps({"stacker_threshold": float(thr), "fold3_oof_macro_own": oof_macro}), flush=True)
     # ---- test stacked probabilities
-    probs = pl.read_parquet(ROOT / "outputs/experiments/CL-003/test_probs/CL-005-top12v2-v1.parquet").select("q", "t", "p").unique(subset=["q", "t"], keep="first")
+    probs = pl.read_parquet(ROOT / "outputs/experiments/CL-003/test_probs" / a.probs).select("q", "t", "p").unique(subset=["q", "t"], keep="first")
     bundled = Path(a.ce_test).is_file()  # one concatenated parquet (q,t,logit) or a dir of per-shard parts
     ce_all = pl.read_parquet(a.ce_test, columns=["q", "t", "logit"]).unique(subset=["q", "t"], keep="first") if bundled else None
     ce_parts = {} if bundled else {Path(f).stem: f for f in glob.glob(str(Path(a.ce_test) / "*.parquet"))}

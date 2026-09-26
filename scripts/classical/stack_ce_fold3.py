@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 ce_files = sys.argv[1:]
 z = np.load(ROOT / "outputs/experiments/CL-003/trainmat-top12-v2.npz", allow_pickle=True)
 keys, X = z["keys"], z["X"]
-p2 = np.load(ROOT / "outputs/experiments/CL-003/train-oof-top12-v2.npy")
+p2 = np.load(ROOT / "outputs/experiments/CL-003" / __import__("os").environ.get("OOF_FILE", "train-oof-top12-v2.npy"))
 top = pl.concat([pl.read_parquet(ROOT / f"outputs/experiments/CL-003/s3/results/top12-fold{k}.parquet") for k in (1, 2, 3)])
 fold = dict(zip(top["source1_entity_id"].to_list(), top["fold"].to_list()))
 m3 = np.array([fold[q] == 3 for q in keys[:, 0].tolist()])
