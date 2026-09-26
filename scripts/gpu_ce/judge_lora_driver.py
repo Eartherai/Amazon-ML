@@ -15,7 +15,7 @@ def log(**k):
 
 
 def main():
-    root = Path("/opt/ml/input/data"); cfg = json.loads((root / "code/config.json").read_text()); log(event="config", **cfg)
+    root = Path("/opt/ml/input/data"); cfg = json.loads((root / "code" / os.environ.get("JUDGE_CONFIG", "config.json")).read_text()); log(event="config", **cfg)
     try:
         import peft  # noqa
     except ImportError:
