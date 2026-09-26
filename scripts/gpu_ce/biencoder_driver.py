@@ -104,6 +104,8 @@ def main():
     pos = [(q, t) for q, raw in zip(gt["source1_entity_id"], gt["matched_entity_ids"]) if raw and q in fold for t in raw.split(",")]
     held_owned = {t for q, t in pos if fold[q] == held}
     train_pos = [(q, t) for q, t in pos if fold[q] in cfg["train_folds"] and t not in held_owned]
+    if cfg.get("train_countries"):  # CL-046 retrieval transfer: source-country positives only
+        train_pos = [(q, t) for q, t in train_pos if s1_c[q] in cfg["train_countries"]]
     held_pos = [(q, t) for q, t in pos if fold[q] == held]
     in_top = set(zip(top["source1_entity_id"], top["target_id"]))
     held_miss = [(q, t) for q, t in held_pos if (q, t) not in in_top]

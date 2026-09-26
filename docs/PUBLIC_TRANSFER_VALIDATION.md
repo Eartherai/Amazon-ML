@@ -94,3 +94,20 @@ France: CE-versus-stage-2 agreement on France (0.9837) is at US level (0.9861) a
 is internally consistent on France. The ~0.855 implied France score assumes India/US score publicly exactly as locally;
 that assumption is untested. A per-country diagnostic upload (France rows empty, or India rows empty) is the only way to
 measure where the public gap comes from.
+
+## Multi-fold confirmation (CL-042) and further transfer pilots (CL-045)
+
+All ~194k labeled S1, folds 1-3; each fold's CE never trained on that fold (P5-CE-E5BASE-F1-001, P5-CE-E5BASE-F2-001, A3 for fold 3); stacker cross-fit by fold with inner-fold thresholds:
+
+| system | fold 1 | fold 2 | fold 3 | all | India | US |
+|---|---:|---:|---:|---:|---:|---:|
+| stage-2 v2 | 0.96543 | 0.96556 | 0.96512 | 0.96537 | 0.95318 | 0.97352 |
+| v2 + CE stack | 0.97362 | 0.97412 | 0.97413 | 0.97395 | 0.96524 | 0.97978 |
+| stage-2 v2q (QNORM) | 0.96709 | 0.96774 | 0.96707 | 0.96729 | 0.95484 | 0.97562 |
+| **v2q + CE stack** | **0.97546** | **0.97485** | **0.97554** | **0.97529** | **0.96626** | **0.98132** |
+
+The CE and QNORM gains hold on every fold (fold spread 0.0007). The CE-decided dense rescue (+0.009 on fold 3) is single-fold; confirming it on folds 1/2 needs held-fold bi-encoders.
+
+Primary v4 unseen-domain (CL-034 protocol with QNORM): TEXT+CE US->India 0.9137, India->US 0.9259 (mean **0.9198**, was 0.9108); FULL+CE 0.9255 / 0.9320 (mean 0.9288, optimistic).
+
+Killed (CL-045, TEXT+QNORM base 0.9067 mean transfer): monotone constraints 0.9069, stronger regularization 0.9075, both 0.9071; in-domain -0.001 to -0.010.

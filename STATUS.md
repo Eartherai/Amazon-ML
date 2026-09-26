@@ -1,3 +1,11 @@
+# 2026-09-26T05:37:49+00:00 — primary v4 (QNORM) multi-fold confirmed; transfer block
+
+Primary v4 = stage-2 v2q (57 + 48 within-S1 z-score features, test p2 = mean of 3 fold models) + e5-base CE stack (salted threshold 0.72) + ownership + compact cascade + CE-decided dense rescue. Multi-fold (194k S1): v2q + CE stack **0.97529** (v2 + CE 0.97395; +0.0013 on every fold). Fold-3 with dense rescue **0.98435**. Unseen-domain simulator mean 0.9198 (was 0.9108). Uploads (PASS x3 with candidate file, 6.33 cand/S1):
+- `outputs/submissions/UPLOAD_SUB011_V4_B_CL044/` matching `092ecf82f8f39a053eb972955d40495ff1e681fd533e72d6f575df564f067fbc`, candidates `b29417fe533900f9459727e0205c7eebe309e91eb28480eca5161adf61d68013` (France = VSAFE rows restricted to candidates)
+- `outputs/submissions/UPLOAD_SUB012_V4_A_CL044/` matching `32815506f3d7dd0d76e3bfa4d2a7f52989ad30f4c50f345f1bae649211ed34c1`, candidates `1325d121de4872a505a4cab393380246f3ec7f29b4d6d58dd7effb7a895817c0` (France = pipeline)
+
+Killed this block: CE pseudo-label adaptation, calibration-invariant CE features, France accent folding (agreement diagnostic), monotone constraints, stronger regularization. P5-BIENC-E5S-USONLY-001 measures dense-retrieval transfer. Disk was at 2 GB; removed three regenerable duplicates (CLEANUP_LOG.txt). Fold4 CLOSED.
+
 # 2026-09-26T03:22:21+00:00 — robustness sprint: transfer simulator, primary v3, killed tracks
 
 Primary v3 (CL-036): compact cascade (stage-1 band p>=0.02 in top-12, dense top-10 and France char3 route pruned at text-only p>=0.2), stage-2 + e5-base CE stack + ownership, and dense rescue decided by a CE dense stacker (log p_text, CE logit, cos, rank; threshold 0.72). Fold-3 India/US cross-fit macro **0.983137** at 5.9 cand/S1 (was 0.980789 with text-only dense rescue). Test: 6.33 cand/S1. Uploads (official default + --check-ids with candidate file + strict PASS):
