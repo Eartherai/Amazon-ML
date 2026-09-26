@@ -1,3 +1,11 @@
+# 2026-09-26T03:22:21+00:00 — robustness sprint: transfer simulator, primary v3, killed tracks
+
+Primary v3 (CL-036): compact cascade (stage-1 band p>=0.02 in top-12, dense top-10 and France char3 route pruned at text-only p>=0.2), stage-2 + e5-base CE stack + ownership, and dense rescue decided by a CE dense stacker (log p_text, CE logit, cos, rank; threshold 0.72). Fold-3 India/US cross-fit macro **0.983137** at 5.9 cand/S1 (was 0.980789 with text-only dense rescue). Test: 6.33 cand/S1. Uploads (official default + --check-ids with candidate file + strict PASS):
+- `outputs/submissions/UPLOAD_SUB009_V3_B_CL036/` matching `c1151055aca682eb948089252ac805a79462c80c28db5993c3481f2128a92557`, candidates `2d25cd174c02019b64160a7a44ac600edb58bd9319d3eb30ebe9b8185da61c06` (France = VSAFE rows restricted to candidates). Recommended first.
+- `outputs/submissions/UPLOAD_SUB010_V3_A_CL036/` matching `cce882847b2aa996398617c3fa4e4f35d1f0c71481b543b25aff80f6edd5f1f7`, candidates `5cbdc2c858a9abb983dfe3816331822433326d8815331727016d7cdafd3217b6` (France = pipeline).
+
+Transfer simulator (`docs/PUBLIC_TRANSFER_VALIDATION.md`): honest unseen-country analogue (TEXT + CE, all parts source-only) 0.9104 US->India / 0.9111 India->US; stage-2 TEXT alone US->India 0.8736 matches the implied public France ~0.855. Rank features and calibration are not shift drivers. Retrieval vocab adaptation +1.2-1.9 pts recall. France S1 are 38.6% accented while train S1 are ~0% accented: P5-PAIRSCORE-CE-FRFOLD-001 re-scores France pairs on accent-folded text for an A/B candidate. Killed: Fellegi-Sunter EM, zero-shot bge-reranker-v2-m3, byte-level CE, e5-large. Phase GPU spend ~$3.2 (list-price estimate). Fold4 CLOSED.
+
 # 2026-09-26T02:14:07+00:00 — organizer update: candidate_pairs.tsv ranked; compact cascade submissions
 
 Organizer: candidate_pairs.tsv and its code are reviewed for final ranking; smaller candidate sets per S1 rank higher. Measured budget curves and Pareto frontier are in `docs/CANDIDATE_BUDGET.md` (CL-027). Fold-3 India/US: current 16.7 cand/S1 gives 0.980591; stage-1 band p>=0.005 + pruned dense gives 0.980835 at 7.5/S1; band p>=0.02 + dense p_text>=0.5 gives 0.980787 at 5.6/S1. Sparse char3 retrieval (~197/S1 raw) caps link recall at 0.967; dense retrieval lifts the oracle to 0.997+.

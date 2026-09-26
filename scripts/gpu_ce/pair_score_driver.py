@@ -3,12 +3,13 @@
 config.json keys:
   model: {"kind": "ce_tar"} (init channel *.tar.gz with encoder/ + head.pt, EXP-050 text format)
       or {"kind": "hf_seqcls", "model_id": ..., "revision": ...} (zero-shot reranker; plain 'name, address' text)
-  pair_sets: list of {"name", "split": train|test, "source": "top12" (fold, band) | channel name (glob, max_rank)}
+  pair_sets: list of {"name", "split": train|test, "source": "top12" (fold, band) | channel name (glob, max_rank; *.tsv.gz
+             test12 shards filtered at band)}, optional "accent_fold": true applies NFKC + accent stripping to both texts
   max_len, infer_batch, s3_out
 Channels: code, train (raw train TSVs), test (raw test TSVs), top12, init, and any pair channels named in pair_sets.
 Output parquet parts q, t, logit (streamed to s3_out). Fold4 is absent from every input.
 """
-import glob, json, time, tarfile
+import glob, json, time, tarfile, unicodedata
 from pathlib import Path
 import numpy as np, pandas as pd, torch
 
@@ -20,13 +21,18 @@ def log(**kw):
     print(json.dumps({"t": round(time.time() - T0, 1), **kw}), flush=True)
 
 
-def texts(split, fmt):
+def fold(x):
+    return "".join(c for c in unicodedata.normalize("NFKD", unicodedata.normalize("NFKC", x)) if not unicodedata.combining(c))
+
+
+def texts(split, fmt, folded=False):
     out = {}
     for i in (1, 2, 3):
         df = pd.read_csv(ROOT / f"{split}/{split}_source{i}.tsv", sep="\t", quoting=3, dtype=str, keep_default_na=False,
                          na_filter=False, usecols=["entity_id", "business_name", "business_address"])
         sep = " | " if fmt == "ce" else ", "
-        out.update(zip(df["entity_id"], df["business_name"] + sep + df["business_address"]))
+        vals = df["business_name"] + sep + df["business_address"]
+        out.update(zip(df["entity_id"], map(fold, vals) if folded else vals))
     return out
 
 
@@ -52,8 +58,9 @@ def main():
     pad = tok.pad_token_id; s3 = __import__("boto3").client("s3"); cache = {}
     for spec in cfg["pair_sets"]:
         split = spec["split"]
-        if split not in cache: cache[split] = texts(split, "ce" if kind == "ce_tar" else "plain")
-        tx = cache[split]
+        ck = (split, bool(spec.get("accent_fold")))
+        if ck not in cache: cache[ck] = texts(split, "ce" if kind == "ce_tar" else "plain", folded=ck[1])
+        tx = cache[ck]
         if spec["source"] == "top12":
             top = pd.concat([pd.read_parquet(p) for p in sorted(glob.glob(str(ROOT / "top12/top12-fold*.parquet")))])
             top = top[(top["fold"] == spec["fold"]) & (top["base_score"] >= spec["band"])]
@@ -61,7 +68,11 @@ def main():
         else:
             frames = []
             for fp in sorted(glob.glob(str(ROOT / spec["source"] / spec["glob"]))):
-                df = pd.read_parquet(fp)
+                if fp.endswith(".tsv.gz"):  # test12 shard: source1_entity_id, target_id, score (stage-1)
+                    df = pd.read_csv(fp, sep="\t", quoting=3, dtype={"source1_entity_id": str, "target_id": str, "score": float})
+                    df = df[df["score"] >= spec.get("band", 0.0)].rename(columns={"source1_entity_id": "q", "target_id": "t"})
+                else:
+                    df = pd.read_parquet(fp)
                 if spec.get("max_rank"): df = df[df["rank"] <= spec["max_rank"]]
                 frames.append((Path(fp).stem, df[["q", "t"]]))
         for stem, df in frames:
