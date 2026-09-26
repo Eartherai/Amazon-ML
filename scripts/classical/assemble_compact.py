@@ -8,6 +8,8 @@ Cascade (per country partition):
              max-probability ownership at --thr; dense/France-route additions at p >= --add-thr on unclaimed targets,
              ownership among additions; exact content-duplicate expansion (a deterministic exact-key blocking route,
              its pairs are added to the candidate set)
+  dense CE   with --dense-ce, dense additions are decided by a small stacker (log p_text, CE logit, dense cos, rank)
+             trained on all fold-3 India/US dense pairs (CL-034b) at --dense-model-thr, instead of p_text >= --add-thr
   France     'new' uses the pipeline; 'vsafe' keeps VSAFE France rows restricted to the France candidates
 Every matched pair is a candidate pair by construction (asserted). Fold4 CLOSED.
 """
@@ -41,6 +43,9 @@ def main():
     ap.add_argument("--cand-text", type=float, default=0.2)
     ap.add_argument("--thr", type=float, default=0.70)
     ap.add_argument("--add-thr", type=float, default=0.8)
+    ap.add_argument("--dense-ce", default=None, help="test CE logits for dense pairs (q,t,logit)")
+    ap.add_argument("--dense-bundle", default=str(ROOT / "outputs/experiments/CL-025/bundles/dense_test.parquet"))
+    ap.add_argument("--dense-model-thr", type=float, default=0.72)
     a = ap.parse_args()
     s1 = pl.read_csv(TEST / "test_source1.tsv", separator="\t", quote_char=None, infer_schema_length=0).select(pl.col("entity_id").alias("q"), "country")
     order, country = s1["q"].to_list(), dict(s1.iter_rows())
@@ -62,7 +67,25 @@ def main():
     claimed = set(best)
     # ---- additions: dense / France-route candidates at add-thr, plus VSAFE-filtered France rescue pairs that are candidates
     fa = pl.read_parquet(a.fr_add).select("q", "t", pl.col("p").alias("p_text"))
-    pool = pl.concat([extra.filter(pl.col("p_text") >= a.add_thr), fa]).group_by("q", "t").agg(pl.col("p_text").max()).sort(["p_text", "q", "t"], descending=[True, False, False])
+    if a.dense_ce:
+        import lightgbm as lgb, hashlib as _h
+        f3 = pl.concat([pl.read_parquet(ROOT / f"outputs/experiments/CL-021/f3-{c}-dense-top10-scored.parquet") for c in ("India", "US")]).select("q", "t", "cos", "rank", "p_text")
+        f3 = f3.join(pl.concat([pl.read_parquet(ROOT / f"outputs/experiments/CL-034/cedense-f3-{c}.parquet") for c in ("India", "US")]).rename({"logit": "ce"}), on=["q", "t"], how="left")
+        gt = pl.read_csv(ROOT / "student_resource/dataset/train/train_ground_truth.tsv", separator="\t", quote_char=None, infer_schema_length=0).filter(pl.col("source1_entity_id").is_in(f3["q"].unique().to_list()))
+        tr = {q: set(r.split(",")) if r else set() for q, r in gt.iter_rows()}
+        yd = np.array([int(t in tr.get(q, ())) for q, t in f3.select("q", "t").iter_rows()])
+        FEAT = [pl.col("p_text").log(), "ce", "cos", "rank"]
+        dm = lgb.LGBMClassifier(objective="binary", n_estimators=300, learning_rate=0.05, num_leaves=15, min_child_samples=50, subsample=0.8, subsample_freq=1,
+                                verbose=-1, n_jobs=8, random_state=0, deterministic=True).fit(f3.select(FEAT).to_numpy().astype(np.float32), yd)
+        td = dn.join(pl.read_parquet(a.dense_bundle).select("q", "t", "cos", "rank").unique(["q", "t"]), on=["q", "t"], how="inner")
+        td = td.join(pl.read_parquet(a.dense_ce).select("q", "t", pl.col("logit").alias("ce")).unique(["q", "t"]), on=["q", "t"], how="inner")
+        td = td.with_columns(pl.Series("pm", dm.predict_proba(td.select(FEAT).to_numpy().astype(np.float32))[:, 1]))
+        dense_add = td.filter(pl.col("pm") >= a.dense_model_thr).select("q", "t", pl.col("pm").alias("p_text"))
+        route_add = fr.filter(pl.col("p_text") >= a.add_thr)  # France char3 route has no CE scores: text-only rule as before
+        print(json.dumps({"dense_ce_pairs": td.height, "dense_candidates": dn.height, "dense_model_adds": dense_add.height}), flush=True)
+        pool = pl.concat([dense_add, route_add, fa]).group_by("q", "t").agg(pl.col("p_text").max()).sort(["p_text", "q", "t"], descending=[True, False, False])
+    else:
+        pool = pl.concat([extra.filter(pl.col("p_text") >= a.add_thr), fa]).group_by("q", "t").agg(pl.col("p_text").max()).sort(["p_text", "q", "t"], descending=[True, False, False])
     add = {}
     for q, t, p in pool.iter_rows():
         if t in claimed or t in add or t not in cand.get(q, ()): continue
