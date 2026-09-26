@@ -48,3 +48,18 @@ Per country (fold 3): India 0.9847 (oracle 0.99645), US 0.98407 (oracle 0.99716)
 2. Set-level completion for partially matched S1 (largest in-candidate loss).
 3. France wide dense (top-50) plus pruning plus CE.
 4. Semantic judges for FP/FN on hard pairs, only if the net test delta is positive.
+
+## Ledger after the promoted name-collision corrector (CL-055/056, pooled 3 folds, 193,289 S1)
+
+| stage | pooled | folds | notes |
+|---|---:|---|---|
+| core (v2q + CE stack) | 0.975523 | | |
+| + dense rescue (CL-050) | 0.984301 | +0.00890 / +0.00854 / +0.00889 | confirmed |
+| + name-collision corrector (claude2 UNIV-MF) | **0.987277** | +0.00293 / +0.00297 / +0.00304 | FP fixed/created 1,656/399, FN 5,364/1,869; India +0.00263, US +0.00321 |
+| + set completion (codex3) | 0.987276 | | alone +0.000334, but redundant with the corrector (1,006 overlapping flips): not integrated |
+| transitive consistency (codex3) | +0.000001 | | killed |
+| zero-shot LLM judges | +0.00018 / 0.0 | | killed |
+
+Remaining loss 0.012723: retrieval 0.003308; in-candidate 0.009415, of which missed true matches (FN) 0.007390 (13,679 partially matched S1) and false positives 0.002032 (67 singleton S1 with a false match). The frontier is now recall inside the candidate set.
+
+Test transfer caveat for the corrector: the candidate-file feature t_nq_in_file shifts (train 1.23 vs test 3.8-19.4) because training tables cover a 9% S1 sample. A shift-robust variant is being built (CLAUDE2-UNIV-ROBUST-001) before submission use.
