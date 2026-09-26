@@ -123,6 +123,11 @@ def main():
         log(event="loaded_init", tar=tar)
     if cfg.get("init_tar"):
         train_pos = train_pos[:0]
+    if cfg.get("pseudo_glob"):  # CL-059: self-training on label-free target-domain pseudo-positives (q, t[, y])
+        ps = pd.concat([pd.read_parquet(p) for p in glob.glob(str(root / "pseudo" / cfg["pseudo_glob"]))], ignore_index=True)
+        if "y" in ps.columns: ps = ps[ps["y"] == 1]
+        train_pos = [(q, t) for q, t in zip(ps["q"], ps["t"]) if q in s1_text and t in tg_text]
+        log(event="pseudo", pairs=len(train_pos))
     random.shuffle(train_pos)
     qi = tok_all(tok, [s1_text[q] for q, _ in train_pos], cfg["max_len"]); ti = tok_all(tok, [tg_text[t] for _, t in train_pos], cfg["max_len"])
     opt = torch.optim.AdamW(model.parameters(), lr=cfg["lr"], weight_decay=0.01)
