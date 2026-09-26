@@ -60,7 +60,8 @@ def main():
     if cfg.get("adapter_channel"): cfg["epochs"] = 0; tr = tr.iloc[:0]
     ids = enc(text(tr)) if len(tr) else []; y = torch.tensor(tr["label"].values.astype("float32") if len(tr) else [], dtype=torch.float32)
     log(event="train_data", rows=len(tr), pos=float(tr["label"].mean()) if len(tr) else None)
-    opt = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=cfg.get("lr", 1e-4), weight_decay=0.0)
+    tp_ = [p for p in model.parameters() if p.requires_grad] or [torch.nn.Parameter(torch.zeros(1, device="cuda"))]  # score-only mode has no trainable params
+    opt = torch.optim.AdamW(tp_, lr=cfg.get("lr", 1e-4), weight_decay=0.0)
     bs, acc = cfg.get("batch", 16), cfg.get("accum", 2); epochs = cfg.get("epochs", 1)
     steps = math.ceil(len(ids) / bs) * epochs // acc; warm = max(1, int(0.03 * steps))
     sched = torch.optim.lr_scheduler.LambdaLR(opt, lambda s: min(1.0, (s + 1) / warm) * max(0.05, 1 - s / max(steps, 1)))
