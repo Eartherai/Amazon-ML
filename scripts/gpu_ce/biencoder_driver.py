@@ -176,7 +176,7 @@ def main():
         t12 = set()
         for sp in sorted(glob.glob(str(root / "test12/*-scores.tsv.gz"))):
             d = pd.read_csv(sp, sep="\t", quoting=3, dtype=str, usecols=["source1_entity_id", "target_id"]); t12.update(zip(d["source1_entity_id"], d["target_id"]))
-        for country in sorted(ts1["country"].unique()):
+        for country in [c for c in sorted(ts1["country"].unique()) if not cfg.get("test_countries") or c in cfg["test_countries"]]:
             qd = ts1[ts1["country"] == country]; td = ttg[ttg["country"] == country]
             qs = qd["entity_id"].tolist(); ts = td["entity_id"].tolist()
             E_t = embed(model, tok_all(tok, ("passage: " + td["entity_id"].str[:2].str.lower() + ": " + td["business_name"] + " | " + td["business_address"]).tolist(), cfg["max_len"]), pad, dev, cfg["infer_batch"])

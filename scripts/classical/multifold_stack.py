@@ -51,9 +51,13 @@ def main():
     rk = ctx.select(pl.col("v").rank("ordinal", descending=True).over("q")).to_series().fill_null(np.nan).to_numpy().astype(np.float32)
     gp = ctx.select(pl.col("v").max().over("q") - pl.col("v")).to_series().fill_null(np.nan).to_numpy().astype(np.float32)
     rows = []
+    import os
+    only = os.environ.get("ONLY")  # e.g. "v2q:1" -> only stage-2 v2q with CE, and dump per-pair stack probabilities
     for tag, oof_file in (("v2", "train-oof-top12-v2.npy"), ("v2q", "train-oof-top12-v2q.npy")):
         p2 = np.load(ROOT / "outputs/experiments/CL-003" / oof_file)
         for use_ce in (False, True):
+            if only and only != f"{tag}:{int(use_ce)}": continue
+            dump = [] if only else None
             cols = [lg(p2), X[:, 0], X[:, 2], X[:, 3], X[:, 4]] + ([lv, rk, gp] if use_ce else [])
             Fm = np.column_stack(cols).astype(np.float32); per_all = {}
             for h in (1, 2, 3):
@@ -68,8 +72,10 @@ def main():
                 thr = max(np.arange(0.5, 0.9, 0.04), key=lambda th: np.mean(list(macro_of(qa[tr][sm], ta[tr][sm], ip[sm], th, trq, truth).values())))
                 pt = lgb.LGBMClassifier(**PS).fit(Fm[tr], y[tr]).predict_proba(Fm[te])[:, 1]
                 teq = sorted(set(qa[te].tolist())); per = macro_of(qa[te], ta[te], pt, thr, teq, truth); per_all.update(per)
+                if dump is not None: dump.append(pl.DataFrame({"q": qa[te], "t": ta[te], "base": X[te, 0], "prob": pt, "thr": np.full(len(te), thr), "fold": np.full(len(te), h), "label": y[te]}))
                 rows.append({"stage2": tag, "ce": use_ce, "fold": h, "thr": round(float(thr), 2), "macro": round(float(np.mean(list(per.values()))), 6), "s1": len(teq)})
                 print(json.dumps(rows[-1]), flush=True)
+            if dump is not None: pl.concat(dump).write_parquet(ROOT / "outputs/experiments/CL-042" / f"multifold-stack-{tag}-ce{int(use_ce)}.parquet")
             allq = sorted(per_all)
             rows.append({"stage2": tag, "ce": use_ce, "fold": "all", "macro": round(float(np.mean([per_all[q] for q in allq])), 6), "s1": len(allq),
                          "India": round(float(np.mean([per_all[q] for q in allq if s1c[q] == "India"])), 6), "US": round(float(np.mean([per_all[q] for q in allq if s1c[q] == "US"])), 6)})
