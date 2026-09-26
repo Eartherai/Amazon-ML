@@ -22,6 +22,7 @@ def main():
     ap.add_argument("--split", choices=["train", "test"], required=True)
     ap.add_argument("--inp", required=True); ap.add_argument("--out", required=True)
     ap.add_argument("--procs", type=int, default=7)
+    ap.add_argument("--no-x", action="store_true", help="do not save the feature matrix")
     a = ap.parse_args(); t0 = time.time()
     df = pl.read_parquet(a.inp)
     D = ROOT / f"student_resource/dataset/{a.split}"
@@ -40,7 +41,8 @@ def main():
         X = np.vstack(pool.map(work, chunks)) if chunks else np.zeros((0, len(F.NAMES) - 9), np.float32)
     p = lgb.Booster(model_file=str(ROOT / "outputs/experiments/CL-003/stage2-200k-top12-textonly.txt")).predict(X, num_threads=8)
     df.with_columns(pl.Series("p_text", p)).write_parquet(a.out)
-    np.save(a.out.replace(".parquet", "-X.npy"), X)
+    if not a.no_x:
+        np.save(a.out.replace(".parquet", "-X.npy"), X)
     print(json.dumps({"pairs": len(items), "s": round(time.time() - t0, 1), "ge_0.5": int((p >= 0.5).sum())}))
 
 

@@ -16,6 +16,10 @@ The transfer simulator (US<->India, ~0.92) is far below the public score. It is 
 
 The public test also contains France (15% of S1, no labels). If India/US score publicly at the local full level (0.9843) with India/US 85% of S1, then France would be ~0.90. If the dense rescue gain were not real on other folds, India/US would sit near the core (0.9753) and France near ~0.95. The dense-rescue multi-fold confirmation (running) decides between these.
 
+## Update: dense rescue confirmed on all folds (CL-050)
+
+Pooled folds 1-3 (193,289 S1): core 0.975523 -> core + dense 0.984301 (+0.00878; per fold +0.00890 / +0.00854 / +0.00889; India 0.9667 -> 0.9844, US 0.9815 -> 0.9842). The local full system is a genuine ~0.9843. The public gap is therefore not dense optimism. SUB011 used VSAFE France rows (old stage-2 + rescue, no CE stack and no CE dense rescue). With India/US at 0.9843 on 85% of S1, SUB011's 0.97205 implies France ~0.90. **France is the main public lever: each +0.01 of France F0.5 is +0.0015 public.** Next: the full pipeline on France (SUB012 / SUB013).
+
 ## Fold-3 loss decomposition of the full primary (63,102 India/US S1, exact macro F0.5)
 
 | component | loss (macro F0.5) | maximum recovery | best experiment |
